@@ -1,6 +1,18 @@
 # Default ignored files
 /workspace.xml
 
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+
 ##############################
 ## Java
 ##############################
@@ -42,7 +54,14 @@ gradle-app.setting
 ##############################
 out/
 .idea/
-.idea_modules/
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/**/gradle.xml
+.idea/**/libraries
+.idea/*.iml
+.idea/modules
 *.iml
 *.ipr
 *.iws
