@@ -1,46 +1,24 @@
 package it.polimi.ingsw.PSP41;
 
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
-/**
- * @author Lorenzo Mainetti
- */
+
 public class Cell implements Cloneable {
-    //private ArrayList<String> level; (gestisci level con list e enum)
+    //private ArrayList<String> level; (gestisci level con list e enum ?)
     private int level;
-    private int row;
-    private int column;
     private boolean dome;
     private boolean occupied;
+    Color color;
 
     /**
-     * Initialize the Cell with the given row and column and setting other attributes to default value
-     * @param row given row of the Cell in the Board
-     * @param column given column of the Cell in the Board
+     * Initialize the Cell with the given row and column and set other attributes to default value
      */
-    public Cell(int row, int column) {
-        this.row = row;
-        this.column = column;
+    public Cell() {
         this.level = 0;
         this.occupied = false;
         this.dome = false;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
+        this.color = Color.NONE;
     }
 
     public boolean isDome() {
@@ -65,21 +43,27 @@ public class Cell implements Cloneable {
 
     /**
      * Increase the Cell level by one if there isn't a dome already
-     * @param currLevel initial level of the Cell
      */
-    public void addLevel(int currLevel) {
-        if(!isDome()) {
-            if(currLevel == 3) this.dome = true;
-            this.level = currLevel + 1;
+    public void addLevel() {
+        if(!isDome() && this.level < 4) {
+            if(this.level == 3) this.dome = true;
+            this.level ++;
         }
     }
 
     /**
      * Decrease the Cell level by one if it isn't the ground level
-     * @param currLevel initial level of the Cell
      */
-    public void removeLevel(int currLevel) {
-        if(currLevel > 0) this.level = currLevel - 1;
+    public void removeLevel() {
+        if(this.level > 0) this.level--;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     /**

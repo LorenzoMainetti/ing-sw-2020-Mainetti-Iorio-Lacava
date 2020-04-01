@@ -8,19 +8,16 @@ import org.junit.Test;
 /**
  * Unit test for Cell.
  */
-public class CellTest
-{
+public class CellTest {
     Cell cell;
 
     @Before
     public void setup() {
-        cell = new Cell(1,2);
+        cell = new Cell();
     }
 
     @Test
     public void testConstructor() {
-        assertEquals(1, cell.getRow());
-        assertEquals(2, cell.getColumn());
         assertEquals(0, cell.getLevel());
         assertFalse(cell.isDome());
         assertFalse(cell.isOccupied());
@@ -28,31 +25,32 @@ public class CellTest
 
     @Test
     public void testSetters() {
-        cell.setRow(3);
-        cell.setColumn(0);
         cell.setOccupied(true);
-        assertEquals(3, cell.getRow());
-        assertEquals(0, cell.getColumn());
+        cell.setColor(Color.RED);
         assertTrue(cell.isOccupied());
+        assertEquals(Color.RED, cell.getColor());
     }
 
     @Test
     public void addLevel_noDomeNoLev3_increaseLev() {
-        cell.addLevel(1);
-        assertEquals(2, cell.getLevel());
+        cell.addLevel();
+        assertEquals(1, cell.getLevel());
     }
 
     @Test
     public void addLevel_noDomeLev3_increaseLevAddDome() {
-        cell.addLevel(3);
+        cell.addLevel();
+        cell.addLevel();
+        cell.addLevel();
+        cell.addLevel();
         assertEquals(4, cell.getLevel());
         assertTrue(cell.isDome());
     }
 
     @Test
     public void removeLevel_noGround_decreaseLevel() {
-        cell.addLevel(0);
-        cell.removeLevel(1);
+        cell.addLevel();
+        cell.removeLevel();
         assertEquals(0, cell.getLevel());
     }
 
@@ -60,11 +58,10 @@ public class CellTest
     public void testClone() {
         Cell copy = cell.clone();
         assertNotSame(cell, copy);
-        assertEquals(cell.getRow(), copy.getRow());
-        assertEquals(cell.getColumn(), copy.getColumn());
         assertEquals(cell.getLevel(), copy.getLevel());
         assertEquals(cell.isDome(), copy.isDome());
         assertEquals(cell.isOccupied(), copy.isOccupied());
+        assertEquals(cell.getColor(), copy.getColor());
     }
 
     @Test

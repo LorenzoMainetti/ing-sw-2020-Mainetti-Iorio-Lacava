@@ -11,7 +11,7 @@ public class WorkerTest {
 
     @Before
     public void setup() {
-        position = new Cell(1,2);
+        position = new Cell();
         worker = new Worker(Color.RED);
     }
 
@@ -22,7 +22,7 @@ public class WorkerTest {
 
     @Test
     public void setPositionTest() {
-        Cell newPosition = new Cell(3, 0);
+        Cell newPosition = new Cell();
         worker.setPosition(newPosition);
         assertSame(newPosition, worker.getPosition());
     }

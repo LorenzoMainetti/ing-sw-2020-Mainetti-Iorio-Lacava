@@ -17,8 +17,8 @@ public class Player {
     public Player(String nickname, Color color) {
         this.nickname = nickname;
         this.color = color;
-        worker1 = new Worker(color);
-        worker2 = new Worker(color);
+        this.worker1 = new Worker(color);
+        this.worker2 = new Worker(color);
     }
 
     public String getNickname() {
@@ -49,6 +49,7 @@ public class Player {
             worker.getPosition().setOccupied(false);
             worker.setPosition(cell);
             cell.setOccupied(true);
+            cell.setColor(color);
         }
     }
 
@@ -57,7 +58,7 @@ public class Player {
      * @param cell cell where the player wants to build
      */
     public void build(Cell cell) {
-        cell.addLevel(cell.getLevel());
+        cell.addLevel();
     }
 
 }

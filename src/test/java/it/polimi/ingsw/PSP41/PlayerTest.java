@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 public class PlayerTest {
     Player player;
-    Cell startPosition1 = new Cell(0, 0);
-    Cell startPosition2 = new Cell(3, 3);
+    Cell startPosition1 = new Cell();
+    Cell startPosition2 = new Cell();
 
     @Before
     public void setup() {
@@ -27,7 +27,7 @@ public class PlayerTest {
 
     @Test
     public void moveWorker1Test() {
-        Cell newPosition1 = new Cell(1, 1);
+        Cell newPosition1 = new Cell();
         player.move(player.getWorker1(), newPosition1);
         assertFalse(startPosition1.isOccupied());
         assertSame(newPosition1, player.getWorker1().getPosition());
@@ -36,7 +36,7 @@ public class PlayerTest {
 
     @Test
     public void moveWorker2Test() {
-        Cell newPosition2 = new Cell(4, 2);
+        Cell newPosition2 = new Cell();
         player.move(player.getWorker2(), newPosition2);
         assertFalse(startPosition2.isOccupied());
         assertSame(newPosition2, player.getWorker2().getPosition());
@@ -45,7 +45,7 @@ public class PlayerTest {
 
     @Test
     public void buildTest() {
-        Cell buildPosition = new Cell(0,4);
+        Cell buildPosition = new Cell();
         player.build(buildPosition);
         assertEquals(1, buildPosition.getLevel());
     }
