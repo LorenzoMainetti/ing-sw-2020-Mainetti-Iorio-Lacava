@@ -5,16 +5,19 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * Unit test for Player.
+ */
 public class PlayerTest {
     Player player;
-    Cell startPosition1 = new Cell();
-    Cell startPosition2 = new Cell();
+    Board board;
 
     @Before
     public void setup() {
+        board = new Board();
         player = new Player("Olimpia", Color.RED);
-        player.getWorker1().setPosition(startPosition1);
-        player.getWorker2().setPosition(startPosition2);
+        player.getWorker1().setPosition(0, 3);
+        player.getWorker2().setPosition(4, 4);
     }
 
     @Test
@@ -27,26 +30,16 @@ public class PlayerTest {
 
     @Test
     public void moveWorker1Test() {
-        Cell newPosition1 = new Cell();
-        player.move(player.getWorker1(), newPosition1);
-        assertFalse(startPosition1.isOccupied());
-        assertSame(newPosition1, player.getWorker1().getPosition());
-        assertTrue(player.getWorker1().getPosition().isOccupied());
-    }
-
-    @Test
-    public void moveWorker2Test() {
-        Cell newPosition2 = new Cell();
-        player.move(player.getWorker2(), newPosition2);
-        assertFalse(startPosition2.isOccupied());
-        assertSame(newPosition2, player.getWorker2().getPosition());
-        assertTrue(player.getWorker2().getPosition().isOccupied());
+        player.move(player.getWorker1(), board, 0, 2);
+        assertFalse(board.getCell(0, 3).isOccupied());
+        assertEquals(0, player.getWorker1().getRow());
+        assertEquals(2, player.getWorker1().getColumn());
+        assertTrue(board.getCell(0, 2).isOccupied());
     }
 
     @Test
     public void buildTest() {
-        Cell buildPosition = new Cell();
-        player.build(buildPosition);
-        assertEquals(1, buildPosition.getLevel());
+        player.build(board, 0, 3);
+        assertEquals(1, board.getCell(0, 3).getLevel());
     }
 }

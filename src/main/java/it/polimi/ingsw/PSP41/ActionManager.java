@@ -51,7 +51,7 @@ public class ActionManager {
                 filter(moves -> (moves.getLevel() < currLevel + 2)).
                 filter(moves -> !moves.isDome()).
                 filter(moves -> !moves.isOccupied()).
-                collect(Collectors.toList());
+                collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -66,7 +66,7 @@ public class ActionManager {
                 stream().
                 filter(builds -> !builds.isDome()).
                 filter(builds -> !builds.isOccupied()).
-                collect(Collectors.toList());
+                collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -76,14 +76,14 @@ public class ActionManager {
      * @param column current Worker's column
      * @return list of the Cells where are placed Opponent's workers
      */
-    public List<Cell> getNeighbouringOpponentWorker(Board board, int row, int column) {
-        Color currColor = board.getCell(row, column).getColor();
+    public List<Cell> getNeighbouringOpponentWorkers(Board board, int row, int column) {
+        Color currColor = board.getCell(row, column).getWorker().getColor();
 
         return this.getNeighbouringCells(board, row, column).
                 stream().
                 filter(Cell::isOccupied).
-                filter(pos -> (pos.getColor() != currColor)).
-                collect(Collectors.toList());
+                filter(pos -> (pos.getWorker().getColor() != currColor)).
+                collect(Collectors.toUnmodifiableList());
     }
 
 }

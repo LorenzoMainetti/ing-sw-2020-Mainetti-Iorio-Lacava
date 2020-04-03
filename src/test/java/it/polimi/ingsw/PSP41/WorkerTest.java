@@ -5,6 +5,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+
+/**
+ * Unit test for Worker.
+ */
 public class WorkerTest {
     Worker worker;
     Cell position;
@@ -18,12 +22,14 @@ public class WorkerTest {
     @Test
     public void testConstructor() {
         assertSame(Color.RED, worker.getColor());
+        assertEquals(-1, worker.getRow());
+        assertEquals(-1, worker.getColumn());
     }
 
     @Test
     public void setPositionTest() {
-        Cell newPosition = new Cell();
-        worker.setPosition(newPosition);
-        assertSame(newPosition, worker.getPosition());
+        worker.setPosition(0, 3);
+        assertEquals(0, worker.getRow());
+        assertEquals(3, worker.getColumn());
     }
 }

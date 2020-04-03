@@ -9,16 +9,16 @@ public class Cell implements Cloneable {
     private int level;
     private boolean dome;
     private boolean occupied;
-    Color color;
+    Worker worker;
 
     /**
-     * Initialize the Cell with the given row and column and set other attributes to default value
+     * Initialize the Cell setting the attributes to default value
      */
     public Cell() {
         this.level = 0;
         this.occupied = false;
         this.dome = false;
-        this.color = Color.NONE;
+        this.worker = null;
     }
 
     public boolean isDome() {
@@ -33,20 +33,14 @@ public class Cell implements Cloneable {
         return occupied;
     }
 
-    public void setOccupied(boolean occupied) {
-        this.occupied = occupied;
-    }
-
-    public int getLevel() {
-        return level;
-    }
+    public int getLevel() { return level; }
 
     /**
      * Increase the Cell level by one if there isn't a dome already
      */
     public void addLevel() {
-        if(!isDome() && this.level < 4) {
-            if(this.level == 3) this.dome = true;
+        if (!isDome() && this.level < 4) {
+            if (this.level == 3) this.dome = true;
             this.level ++;
         }
     }
@@ -55,27 +49,33 @@ public class Cell implements Cloneable {
      * Decrease the Cell level by one if it isn't the ground level
      */
     public void removeLevel() {
-        if(this.level > 0) this.level--;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
+        if (this.level > 0) this.level--;
     }
 
     /**
-     * Redefinition of the clone method of the class Object
-     * @return a shallow copy of the Cell
+     * Gets the Worker if there is one in the Cell
+     * @return the worker placed in the Cell, null if there is no Worker
      */
-    @Override
-    public Cell clone() {
-        try {
-            return (Cell) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+    public Worker getWorker() {
+        if (isOccupied())
+            return worker;
+        else //exception
+            return null;
     }
+
+    /**
+     * Set a Worker in the Cell
+     * @param worker to be placed it the Cell
+     */
+    public void attachWorker(Worker worker) {
+        this.worker = worker;
+        this.occupied = worker != null;
+       // else input = null => throw exception ?
+    }
+
+    public void detachWorker() {
+        this.worker = null;
+        this.occupied = false;
+    }
+
 }

@@ -2,7 +2,8 @@ package it.polimi.ingsw.PSP41;
 
 public class Worker {
     private Color color;
-    private Cell position;
+    private int row;
+    private int column;
 
     /**
      * Worker constructor: it sets the color of the worker, the position will be set later by the player
@@ -10,15 +11,20 @@ public class Worker {
      */
     public Worker(Color color) {
         this.color = color;
+        this.row = -1;
+        this.column = -1;
     }
 
-    /* Posizione con riga e colonna? */
-    public Cell getPosition() {
-        return position;
+    public int getRow() {
+        return row;
     }
 
-    public void setPosition(Cell position) {
-        this.position = position;
+    public int getColumn() { return column; }
+
+    public void setPosition(int row, int column) {
+        //exception if inputs are not part of the Board
+        this.row = row;
+        this.column = column;
     }
 
     public Color getColor() {

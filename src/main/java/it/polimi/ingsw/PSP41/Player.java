@@ -42,23 +42,28 @@ public class Player {
     /**
      * Set worker position equals to input cell
      * @param worker worker that the player wants to move
-     * @param cell cell selected by the player where the worker will move
+     * @param board board state
+     * @param row selected by the player where the worker will move
+     * @param column selected by the player where the worker will move
      */
-    public void move(Worker worker, Cell cell) {
-        if (cell != worker.getPosition()) {
-            worker.getPosition().setOccupied(false);
-            worker.setPosition(cell);
-            cell.setOccupied(true);
-            cell.setColor(color);
+    public void move(Worker worker, Board board, int row, int column) {
+        if (row != worker.getRow() || column != worker.getColumn()) {
+            //elimina worker dalla cella in cui si trovava
+            board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
+            //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
+            worker.setPosition(row, column);
+            board.getCell(row, column).attachWorker(worker);
         }
     }
 
     /**
      * Build a level on the input cell
-     * @param cell cell where the player wants to build
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
      */
-    public void build(Cell cell) {
-        cell.addLevel();
+    public void build(Board board, int row, int column) {
+        board.getCell(row, column).addLevel();
     }
 
 }
