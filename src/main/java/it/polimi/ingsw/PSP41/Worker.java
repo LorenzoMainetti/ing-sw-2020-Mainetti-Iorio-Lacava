@@ -21,13 +21,25 @@ public class Worker {
 
     public int getColumn() { return column; }
 
-    public void setPosition(int row, int column) {
-        //exception if inputs are not part of the Board
-        this.row = row;
-        this.column = column;
-    }
-
     public Color getColor() {
         return color;
     }
+
+    /**
+     * Set worker position equals to input cell
+     * @param board board state
+     * @param row of the worker position
+     * @param column of the worker position
+     */
+    public void setPosition(Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException  {
+        if(board.getCell(row, column).isOccupied())
+            throw new IllegalStateException("Position taken.");
+        else if (!board.inBound(row, column))
+            throw new ArrayIndexOutOfBoundsException("Invalid position.");
+        else {
+            this.row = row;
+            this.column = column;
+        }
+    }
+
 }

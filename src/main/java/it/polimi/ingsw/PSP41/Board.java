@@ -25,8 +25,15 @@ public class Board {
      * @param column of the wanted Cell
      * @return the Cell identified by the given row and column
      */
-    public Cell getCell(int row, int column) {
-        return grid[row][column];
+    public Cell getCell(int row, int column) throws ArrayIndexOutOfBoundsException {
+        if (row < 0 || row >= MAX_SIZE && column < 0 || column >= MAX_SIZE )
+            throw new ArrayIndexOutOfBoundsException("Invalid position.");
+        else
+            return grid[row][column];
+    }
+
+    public boolean inBound( int row, int column){
+        return (row >= 0 && row < MAX_SIZE && column >= 0 && column < MAX_SIZE);
     }
 
 }

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import java.lang.*;
 
 /**
  * Unit test for Cell.
@@ -27,40 +28,120 @@ public class CellTest {
 
     @Test
     public void addLevel_noDomeNoLev3_increaseLev() {
-        cell.addLevel();
-        assertEquals(1, cell.getLevel());
+        try {
+            cell.addLevel();
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("You can't add another level.", ex.getMessage());
+        }
+        finally{
+            assertEquals(1, cell.getLevel());
+        }
     }
 
     @Test
     public void addLevel_noDomeLev3_increaseLevAddDome() {
-        cell.addLevel();
-        cell.addLevel();
-        cell.addLevel();
-        cell.addLevel();
-        assertEquals(4, cell.getLevel());
-        assertTrue(cell.isDome());
+        try {
+            cell.addLevel();
+            cell.addLevel();
+            cell.addLevel();
+            cell.addLevel();
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("You can't add another level.", ex.getMessage());
+        }
+        finally {
+            assertEquals(4, cell.getLevel());
+            assertTrue(cell.isDome());
+        }
+
     }
 
     @Test
     public void removeLevel_noGround_decreaseLevel() {
-        cell.addLevel();
-        cell.removeLevel();
-        assertEquals(0, cell.getLevel());
+        try{
+            cell.addLevel();
+            cell.removeLevel();
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("There are no levels to remove.", ex.getMessage());
+        }
+        finally {
+            assertEquals(0, cell.getLevel());
+        }
     }
 
     @Test
+    public void testAddLevelException() {
+        try {
+            cell.addLevel();
+            cell.addLevel();
+            cell.addLevel();
+            cell.addLevel();
+            cell.addLevel();
+        } catch (IllegalStateException ex) {
+            assertEquals("You can't add another level.", ex.getMessage());
+        } finally {
+            assertEquals(4, cell.getLevel());
+            assertTrue(cell.isDome());
+        }
+    }
+
+
+    @Test
     public void testWorkerMethods() {
-        assertNull(cell.getWorker());
+        try {
+            assertNull(cell.getWorker());
+            cell.attachWorker(worker);
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("Cell occupied.", ex.getMessage());
+        }
+        finally{
+            assertTrue(cell.isOccupied());
+            assertEquals(worker, cell.getWorker());
+        }
 
-        cell.attachWorker(null);
-        assertNull(cell.getWorker());
-        cell.attachWorker(worker);
-        assertTrue(cell.isOccupied());
-        assertEquals(worker, cell.getWorker());
+        try {
+            cell.detachWorker();
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("There isn't a worker in this cell.", ex.getMessage());
+        }
+        finally{
+            assertNull(cell.getWorker());
+            assertFalse(cell.isOccupied());
+        }
+    }
 
-        cell.detachWorker();
-        assertNull(cell.getWorker());
-        assertFalse(cell.isOccupied());
+    @Test
+    public void testWorkerMethodsExceptions() {
+        Worker anotherWorker = new Worker(Color.YELLOW);
+
+        try{
+            assertNull(cell.getWorker());
+            cell.attachWorker(worker);
+            cell.attachWorker(anotherWorker);
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("Cell occupied.", ex.getMessage());
+        }
+        finally{
+            assertTrue(cell.isOccupied());
+            assertEquals(worker, cell.getWorker());
+        }
+
+        try {
+            cell.detachWorker();
+            cell.detachWorker();
+        }
+        catch (IllegalStateException ex) {
+            assertEquals("There isn't a worker in this cell.", ex.getMessage());
+        }
+        finally{
+            assertNull(cell.getWorker());
+            assertFalse(cell.isOccupied());
+        }
     }
 
 }

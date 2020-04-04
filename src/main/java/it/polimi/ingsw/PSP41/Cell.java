@@ -1,6 +1,6 @@
 package it.polimi.ingsw.PSP41;
 
-
+import java.lang.*;
 //import java.util.ArrayList;
 
 
@@ -29,6 +29,7 @@ public class Cell implements Cloneable {
         this.dome = dome;
     }
 
+
     public boolean isOccupied() {
         return occupied;
     }
@@ -38,44 +39,66 @@ public class Cell implements Cloneable {
     /**
      * Increase the Cell level by one if there isn't a dome already
      */
-    public void addLevel() {
-        if (!isDome() && this.level < 4) {
-            if (this.level == 3) this.dome = true;
+    public void addLevel() throws IllegalStateException {
+        if(!isDome() && this.level < 4) {
+            if(this.level == 3) this.dome = true;
             this.level ++;
         }
+        else
+            throw new IllegalStateException("You can't add another level.");
     }
+
 
     /**
      * Decrease the Cell level by one if it isn't the ground level
      */
-    public void removeLevel() {
-        if (this.level > 0) this.level--;
+    public void removeLevel() throws IllegalStateException {
+        if(this.level > 0)
+            this.level--;
+        else
+            throw new IllegalStateException("There are no levels to remove.");
     }
+
 
     /**
      * Gets the Worker if there is one in the Cell
-     * @return the worker placed in the Cell, null if there is no Worker
+     * @return the worker placed in the Cell if it exists, otherwise return null
      */
     public Worker getWorker() {
         if (isOccupied())
             return worker;
-        else //exception
+        else
             return null;
     }
 
     /**
      * Set a Worker in the Cell
-     * @param worker to be placed it the Cell
+     * @param worker to be placed in the Cell
      */
-    public void attachWorker(Worker worker) {
-        this.worker = worker;
-        this.occupied = worker != null;
-       // else input = null => throw exception ?
+    public void attachWorker(Worker worker) throws IllegalStateException {
+        if (this.isOccupied()) {
+            throw new IllegalStateException("Cell occupied.");
+        }
+        else {
+            this.worker = worker;
+            this.occupied = true;
+        }
     }
 
-    public void detachWorker() {
-        this.worker = null;
-        this.occupied = false;
+
+    /**
+     * Remove worker from the Cell
+     */
+
+    public void detachWorker() throws IllegalStateException {
+        if (this.isOccupied()) {
+            this.worker = null;
+            this.occupied = false;
+        }
+        else {
+            throw new IllegalStateException("There isn't a worker in this cell.");
+        }
+
     }
 
 }

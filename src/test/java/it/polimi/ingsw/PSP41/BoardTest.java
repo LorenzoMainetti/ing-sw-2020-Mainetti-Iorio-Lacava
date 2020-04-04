@@ -17,14 +17,27 @@ public class BoardTest {
 
     @Test
     public void getCell_exists() {
-        cell = board.getCell(1,3);
-        assertSame(board.getGrid()[1][3], cell);
+        try {
+            cell = board.getCell(1, 3);
+        }
+        catch (ArrayIndexOutOfBoundsException ex){
+            assertEquals("Invalid position.", ex.getMessage());
+        }
+        finally {
+            assertSame(board.getGrid()[1][3], cell);
+        }
+
     }
 
-    /*@Test
+    @Test
     public void getCell_notExists() {
-
-    }*/
+        try {
+            cell = board.getCell(3, 5);
+        }
+        catch (ArrayIndexOutOfBoundsException ex){
+            assertEquals("Invalid position.", ex.getMessage());
+        }
+    }
 
 }
 

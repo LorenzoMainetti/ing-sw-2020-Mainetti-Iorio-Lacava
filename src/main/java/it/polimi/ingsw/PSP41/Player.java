@@ -46,14 +46,16 @@ public class Player {
      * @param row selected by the player where the worker will move
      * @param column selected by the player where the worker will move
      */
-    public void move(Worker worker, Board board, int row, int column) {
-        if (row != worker.getRow() || column != worker.getColumn()) {
-            //elimina worker dalla cella in cui si trovava
-            board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
-            //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
-            worker.setPosition(row, column);
-            board.getCell(row, column).attachWorker(worker);
-        }
+    public void move(Worker worker, Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException {
+            if (row != worker.getRow() || column != worker.getColumn()) {
+                if(!board.getCell(row,column).isOccupied()) {
+                    //elimina worker dalla cella in cui si trovava
+                    board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
+                    //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
+                    worker.setPosition(board, row, column);
+                    board.getCell(row, column).attachWorker(worker);
+                }
+            }
     }
 
     /**
@@ -62,7 +64,7 @@ public class Player {
      * @param row where the player wants to build
      * @param column where the player wants to build
      */
-    public void build(Board board, int row, int column) {
+    public void build(Board board, int row, int column) throws IllegalStateException {
         board.getCell(row, column).addLevel();
     }
 
