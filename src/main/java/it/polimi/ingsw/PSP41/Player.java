@@ -6,6 +6,7 @@ public class Player {
     private Color color;
     private Worker worker1;
     private Worker worker2;
+    private boolean winner;
 
     /* La posizione dei worker viene settata subito dopo nel main tramite nomeplayer.getWorker().setPosition(cella) */
 
@@ -38,6 +39,14 @@ public class Player {
     }
 
     /* Mancano condizioni di vittoria */
+
+    public boolean isWinner() {
+        return winner;
+    }
+
+    public void setWinner(boolean winner) {
+        this.winner = winner;
+    }
 
     /**
      * Set worker position equals to input cell
