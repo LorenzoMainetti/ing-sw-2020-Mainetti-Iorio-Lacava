@@ -54,18 +54,17 @@ public class Apollo extends GodPower {
         List<Cell> validMoves = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
 
         // Se nessuna cella adiacente occupata è valida ed è possibile fare almeno una move normale, sicuramente il potere non potrà essere attivato
-        if (validOccupiedCells.isEmpty() && !validMoves.isEmpty()) {
+        if (validOccupiedCells.isEmpty())
             uim.setPower(false);
-        }
 
         // Se esiste almeno una cella adiacente occupata valida e non ci sono move normali disponibili, sicuramente il potere dovrà essere attivato
-        else if (!validOccupiedCells.isEmpty() && validMoves.isEmpty()) {
-            uim.setPower(true);
-        }
+        else {
+            if (validMoves.isEmpty())
+                uim.setPower(true);
 
-        // Se esiste almeno una cella adiacente valida occupata ed è possibile fare almeno una move normale, chiedo se attivare il potere
-        else if (!validOccupiedCells.isEmpty() /*&& !validMoves.isEmpty()*/) { // Basta else?
-            uim.readPower();
+            // Se esiste almeno una cella adiacente valida occupata ed è possibile fare almeno una move normale, chiedo se attivare il potere
+            else
+                uim.readPower();
         }
 
         int chosenColumn;
@@ -77,22 +76,21 @@ public class Apollo extends GodPower {
             chosenColumn = uim.getChosenColumn();
             Worker opponentWorker = board.getCell(chosenRow, chosenColumn).getWorker();
             checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-            // Elimina mio worker dalla cella in cui si trova
-            board.getCell(currWorker.getRow(), currWorker.getColumn()).detachWorker();
-            // Move del worker avversario nella cella prima occupata dal mio worker
-            player.move(opponentWorker, board, currWorker.getRow(), currWorker.getColumn());
-            // Sposta il mio worker alla cella in cui si deve muovere e aggiorna posizione worker
-            currWorker.setPosition(board, chosenRow, chosenColumn);
-            board.getCell(chosenRow, chosenColumn).attachWorker(currWorker);
+
+            int oldRow = currWorker.getRow();
+            int oldColumn = currWorker.getColumn();
+
+            // Elimina worker avversario dalla cella in cui si trova
+            board.getCell(chosenRow, chosenColumn).detachWorker();
+            // Move mio worker alla cella in cui si deve muovere
+            player.move(currWorker, board, chosenRow, chosenColumn);
+            // Force opponent's worker nella cella prima occupata dal mio worker
+            opponentWorker.setPosition(board, oldRow, oldColumn);
+            board.getCell(oldRow, oldColumn).attachWorker(opponentWorker);
         }
         // Se il potere non è attivo, move normale
-        else {
-            uim.readChosenCell(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower));
-            chosenRow = uim.getChosenRow();
-            chosenColumn = uim.getChosenColumn();
-            checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-            player.move(currWorker, board, chosenRow, chosenColumn);
-        }
+        else
+            super.moveBehaviour(board);
     }
 
     // Normale build ereditata da GodPower

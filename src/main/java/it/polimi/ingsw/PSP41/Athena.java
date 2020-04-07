@@ -13,28 +13,10 @@ public class Athena extends GodPower {
      * are able to move, if both workers are blocked the player lose the game
      * @param board current board state
      */
+    @Override
     public void activeWorkers(Board board) {
-
         athenaPower = false;
-
-        if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
-           am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            // Implementare rimozione player da una partita: magari una variabile che dice se è ancora in gioco, da controllare
-            // prima dell'inizio del turno. Se rimane un solo giocatore a non aver perso bisogna assegnargli vittoria
-        }
-        else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
-            currWorker = player.getWorker2();
-        }
-
-        else if(am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            currWorker = player.getWorker1();
-        }
-
-        else {
-            uim.readChosenWorker();
-            if (uim.isChosenWorker()) { currWorker = player.getWorker1(); }
-            else { currWorker = player.getWorker2(); }
-        }
+        super.activeWorkers(board);
     }
 
     /**

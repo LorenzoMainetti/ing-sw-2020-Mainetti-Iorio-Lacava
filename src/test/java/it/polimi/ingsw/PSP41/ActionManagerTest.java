@@ -39,7 +39,7 @@ public class ActionManagerTest {
         ArrayList<Cell> test = new ArrayList<>();
         test.add(c3);
         test.add(c4);
-        assertArrayEquals(test.toArray(), actionManager.getValidMoves(board, 0, 1).toArray());
+        assertArrayEquals(test.toArray(), actionManager.getValidMoves(board, 0, 1, false).toArray());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ActionManagerTest {
 
         ArrayList<Cell> test = new ArrayList<>();
         test.add(c2);
-        assertArrayEquals(test.toArray(), actionManager.getNeighbouringOpponentWorkers(board, 4, 4).toArray());
+        assertArrayEquals(test.toArray(), actionManager.getNeighbouringOpponentWorkers(board, 4, 4, false).toArray());
     }
 
     @After

@@ -62,7 +62,8 @@ public class Minotaur extends GodPower {
             // di celle da scegliere per la move del mio worker
             if (0 <= currWorker.getRow() + 2*deltaRow && currWorker.getRow() + 2*deltaRow <= 4 &&
                 0 <= currWorker.getColumn() + 2*deltaColumn && currWorker.getColumn() + 2*deltaColumn <= 4 &&
-                !board.getCell(currWorker.getRow() + 2*deltaRow, currWorker.getColumn() + 2*deltaColumn).isOccupied()) {
+                !board.getCell(currWorker.getRow() + 2*deltaRow, currWorker.getColumn() + 2*deltaColumn).isOccupied() &&
+                    !board.getCell(currWorker.getRow() + 2*deltaRow, currWorker.getColumn() + 2*deltaColumn).isDome()) {
                 powerCells.add(cell);
             }
         }
@@ -87,21 +88,12 @@ public class Minotaur extends GodPower {
                 player.move(currWorker, board, chosenRow, chosenColumn);
             }
             // Se il potere non è attivo faccio una move normale
-            else {
-                chosenRow = uim.getChosenRow();
-                chosenColumn = uim.getChosenColumn();
-                checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-                player.move(currWorker, board, chosenRow, chosenColumn);
-            }
+            else
+                super.moveBehaviour(board);
         }
-
         // Se la lista di celle occupate per cui sia possibile forzare "indietro" il worker avversario è vuota, faccio una move normale
-        else {
-            chosenRow = uim.getChosenRow();
-            chosenColumn = uim.getChosenColumn();
-            checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-            player.move(currWorker, board, chosenRow, chosenColumn);
-        }
+        else
+            super.moveBehaviour(board);
     }
 
     // Normale build ereditata da GodPower

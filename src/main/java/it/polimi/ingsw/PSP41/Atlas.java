@@ -23,13 +23,12 @@ public class Atlas extends GodPower {
         // Se il potere è attivo, costruisco una dome
         if (uim.isPower()) {
             uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
-            player.build(board, uim.getChosenRow(), uim.getChosenColumn());
-            board.getCell(currWorker.getRow(), currWorker.getColumn()).setDome(true);
+            board.getCell(uim.getChosenRow(), uim.getChosenColumn()).addLevel();
+            board.getCell(uim.getChosenRow(), uim.getChosenColumn()).setDome(true);
         }
         // Se il potere non è attivo, build normale
         else {
-            uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
-            player.build(board, uim.getChosenRow(), uim.getChosenColumn());
+            super.buildBehaviour(board);
         }
     }
 }

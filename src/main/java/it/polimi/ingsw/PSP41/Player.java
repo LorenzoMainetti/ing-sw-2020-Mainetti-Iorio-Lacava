@@ -57,13 +57,11 @@ public class Player {
      */
     public void move(Worker worker, Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException {
             if (row != worker.getRow() || column != worker.getColumn()) {
-                if(!board.getCell(row,column).isOccupied()) {
                     //elimina worker dalla cella in cui si trovava
                     board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
                     //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
                     worker.setPosition(board, row, column);
                     board.getCell(row, column).attachWorker(worker);
-                }
             }
     }
 

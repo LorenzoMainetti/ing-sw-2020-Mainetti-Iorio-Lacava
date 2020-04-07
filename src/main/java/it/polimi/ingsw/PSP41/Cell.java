@@ -4,7 +4,7 @@ import java.lang.*;
 //import java.util.ArrayList;
 
 
-public class Cell implements Cloneable {
+public class Cell {
     //private ArrayList<String> level; (gestisci level con list e enum ?)
     private int level;
     private boolean dome;

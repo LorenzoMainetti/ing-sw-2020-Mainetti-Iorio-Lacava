@@ -19,12 +19,10 @@ public class Hephaestus extends GodPower {
     @Override
     public void buildBehaviour(Board board) {
 
-        uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
-        player.build(board, uim.getChosenRow(), uim.getChosenColumn());
+        super.buildBehaviour(board);
 
         // Posso fare la seconda build nella stessa cella solo se non devo costruire una dome
-        if(board.getCell(uim.getChosenRow(), uim.getChosenColumn()).getLevel() < 3 &&
-           !board.getCell(uim.getChosenRow(), uim.getChosenColumn()).isDome()) {
+        if (board.getCell(uim.getChosenRow(), uim.getChosenColumn()).getLevel() < 3) {
             uim.readPower();
             if (uim.isPower()) {
                 player.build(board, uim.getChosenRow(), uim.getChosenColumn());

@@ -41,18 +41,18 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param athenaPower report Athena's power activation
+     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Cells where it is allowed to move in
      */
-    public List<Cell> getValidMoves(Board board, int row, int column, boolean athenaPower) {
+    public List<Cell> getValidMoves(Board board, int row, int column, boolean notHigher) {
         int currLevel = board.getCell(row, column).getLevel();
 
         return this.getNeighbouringCells(board, row, column).
                 stream().
-                filter(moves -> (athenaPower ? moves.getLevel() <= currLevel : moves.getLevel() < currLevel + 2)).
+                filter(moves -> (notHigher ? moves.getLevel() <= currLevel : moves.getLevel() < currLevel + 2)).
                 filter(moves -> !moves.isDome()).
                 filter(moves -> !moves.isOccupied()).
-                collect(Collectors.toUnmodifiableList());
+                collect(Collectors.toList());
     }
 
     /**
@@ -67,7 +67,7 @@ public class ActionManager {
                 stream().
                 filter(builds -> !builds.isDome()).
                 filter(builds -> !builds.isOccupied()).
-                collect(Collectors.toUnmodifiableList());
+                collect(Collectors.toList());
     }
 
     /**
@@ -75,18 +75,18 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param athenaPower report Athena's power activation
+     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Cells where are placed Opponent's workers
      */
     // Metodo utilizzato per Minotaur
-    public List<Cell> getNeighbouringOpponentWorkers(Board board, int row, int column, boolean athenaPower) {
+    public List<Cell> getNeighbouringOpponentWorkers(Board board, int row, int column, boolean notHigher) {
         Color currColor = board.getCell(row, column).getWorker().getColor();
         int currLevel = board.getCell(row, column).getLevel();
 
         return this.getNeighbouringCells(board, row, column).
                 stream().
                 filter(Cell::isOccupied).
-                filter(pos -> (athenaPower ? pos.getLevel() <= currLevel : pos.getLevel() < currLevel + 2)).
+                filter(pos -> (notHigher ? pos.getLevel() <= currLevel : pos.getLevel() < currLevel + 2)).
                 filter(pos -> (pos.getWorker().getColor() != currColor)).
                 collect(Collectors.toUnmodifiableList());
     }
@@ -96,18 +96,18 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param athenaPower report Athena's power activation
+     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Cells where are placed Opponent's workers surrounded by at least one cell where building is possible
      */
     // Metodo utilizzato per Apollo
-    public List<Cell> getActiveOpponentWorkers(Board board, int row, int column, boolean athenaPower) {
+    public List<Cell> getActiveOpponentWorkers(Board board, int row, int column, boolean notHigher) {
         Color currColor = board.getCell(row, column).getWorker().getColor();
         int currLevel = board.getCell(row, column).getLevel();
 
         return this.getNeighbouringCells(board, row, column).
                 stream().
                 filter(Cell::isOccupied).
-                filter(pos -> (athenaPower ? pos.getLevel() <= currLevel : pos.getLevel() < currLevel + 2)).
+                filter(pos -> (notHigher ? pos.getLevel() <= currLevel : pos.getLevel() < currLevel + 2)).
                 filter(pos -> (pos.getWorker().getColor() != currColor)).
                 filter(pos -> !getValidBuilds(board, pos.getWorker().getRow(), pos.getWorker().getColumn()).isEmpty()).
                 collect(Collectors.toUnmodifiableList());

@@ -26,7 +26,7 @@ public class Board {
      * @return the Cell identified by the given row and column
      */
     public Cell getCell(int row, int column) throws ArrayIndexOutOfBoundsException {
-        if (row < 0 || row >= MAX_SIZE && column < 0 || column >= MAX_SIZE )
+        if (row < 0 || row >= MAX_SIZE || column < 0 || column >= MAX_SIZE )
             throw new ArrayIndexOutOfBoundsException("Invalid position.");
         else
             return grid[row][column];

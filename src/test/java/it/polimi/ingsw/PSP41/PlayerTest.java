@@ -62,7 +62,7 @@ public class PlayerTest {
             assertEquals("Position taken.", ex.getMessage());
         }
         finally {
-            assertTrue(board.getCell(0, 3).isOccupied());
+            assertFalse(board.getCell(0, 3).isOccupied());
             assertTrue(board.getCell(4, 4).isOccupied());
             assertEquals(0, player.getWorker1().getRow());
             assertEquals(3, player.getWorker1().getColumn());

@@ -1,0 +1,161 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Player</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.PSP41</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Player (it.polimi.ingsw.PSP41)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Player</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/ 20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.PSP41;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;public class Player {
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;    private String nickname;
+<i>6</i>&nbsp;    private Color color;
+<i>7</i>&nbsp;    private Worker worker1;
+<i>8</i>&nbsp;    private Worker worker2;
+<i>9</i>&nbsp;    private boolean winner;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    /* La posizione dei worker viene settata subito dopo nel main tramite nomeplayer.getWorker().setPosition(cella) */
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    /**
+<i>14</i>&nbsp;     * Player constructor: it sets the name and the color of the player and creates two workers
+<i>15</i>&nbsp;     * @param nickname name chosen by the player
+<i>16</i>&nbsp;     * @param color color chosen by the player
+<i>17</i>&nbsp;     */
+<b class="fc"><i>18</i>&nbsp;    public Player(String nickname, Color color) {</b>
+<b class="fc"><i>19</i>&nbsp;        this.nickname = nickname;</b>
+<b class="fc"><i>20</i>&nbsp;        this.color = color;</b>
+<b class="fc"><i>21</i>&nbsp;        this.worker1 = new Worker(color);</b>
+<b class="fc"><i>22</i>&nbsp;        this.worker2 = new Worker(color);</b>
+<b class="fc"><i>23</i>&nbsp;    }</b>
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public String getNickname() {
+<b class="fc"><i>26</i>&nbsp;        return nickname;</b>
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public Color getColor() {
+<b class="fc"><i>30</i>&nbsp;        return color;</b>
+<i>31</i>&nbsp;    }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public Worker getWorker1() {
+<b class="fc"><i>34</i>&nbsp;        return worker1;</b>
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public Worker getWorker2() {
+<b class="fc"><i>38</i>&nbsp;        return worker2;</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /* Mancano condizioni di vittoria */
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public boolean isWinner() {
+<b class="fc"><i>44</i>&nbsp;        return winner;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void setWinner(boolean winner) {
+<b class="fc"><i>48</i>&nbsp;        this.winner = winner;</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Set worker position equals to input cell
+<i>53</i>&nbsp;     * @param worker worker that the player wants to move
+<i>54</i>&nbsp;     * @param board board state
+<i>55</i>&nbsp;     * @param row selected by the player where the worker will move
+<i>56</i>&nbsp;     * @param column selected by the player where the worker will move
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public void move(Worker worker, Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException {
+<b class="fc"><i>59</i>&nbsp;            if (row != worker.getRow() || column != worker.getColumn()) {</b>
+<i>60</i>&nbsp;                    //elimina worker dalla cella in cui si trovava
+<b class="fc"><i>61</i>&nbsp;                    board.getCell(worker.getRow(), worker.getColumn()).detachWorker();</b>
+<i>62</i>&nbsp;                    //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
+<b class="fc"><i>63</i>&nbsp;                    worker.setPosition(board, row, column);</b>
+<b class="fc"><i>64</i>&nbsp;                    board.getCell(row, column).attachWorker(worker);</b>
+<i>65</i>&nbsp;            }
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Build a level on the input cell
+<i>70</i>&nbsp;     * @param board board state
+<i>71</i>&nbsp;     * @param row where the player wants to build
+<i>72</i>&nbsp;     * @param column where the player wants to build
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    public void build(Board board, int row, int column) throws IllegalStateException {
+<b class="fc"><i>75</i>&nbsp;        board.getCell(row, column).addLevel();</b>
+<b class="fc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-07 22:40</div>
+</div>
+</body>
+</html>

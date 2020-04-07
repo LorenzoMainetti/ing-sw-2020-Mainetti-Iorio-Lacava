@@ -21,8 +21,7 @@ public class Demeter extends GodPower {
     @Override
     public void buildBehaviour(Board board) {
 
-        uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
-        player.build(board, uim.getChosenRow(), uim.getChosenColumn());
+        super.buildBehaviour(board);
 
         // Per attivare il potere è necessario che il worker possa ancora costruire in una delle celle adiacenti esclusa la cella in cui ha già costruito
         List<Cell> secondBuildCells;
@@ -33,7 +32,7 @@ public class Demeter extends GodPower {
             // Se il potere è attivo, faccio una seconda build escludendo la cella della prima build dalle possibili celle in cui costruire
             if (uim.isPower()) {
                 uim.readChosenCell(secondBuildCells);
-                player.build(board, uim.getChosenRow(), uim.getChosenColumn());
+                player.build(board, uim.getChosenRow2(), uim.getChosenColumn2());
             }
         }
     }

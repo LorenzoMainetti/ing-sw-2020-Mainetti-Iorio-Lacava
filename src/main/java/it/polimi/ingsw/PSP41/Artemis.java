@@ -23,14 +23,8 @@ public class Artemis extends GodPower {
         int startRow = currWorker.getRow();
         int startColumn = currWorker.getColumn();
 
-        int chosenRow;
-        int chosenColumn;
         // Se potere non è attivo, turno normale
-        uim.readChosenCell(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower));
-        chosenRow = uim.getChosenRow();
-        chosenColumn = uim.getChosenColumn();
-        checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-        player.move(currWorker, board, chosenRow, chosenColumn);
+        super.moveBehaviour(board);
 
         List<Cell> secondMoveCells;
         secondMoveCells = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
@@ -41,8 +35,8 @@ public class Artemis extends GodPower {
             // Se potere attivo, faccio la seconda move escludendo la casella iniziale dalle possibili celle di arrivo
             if (uim.isPower()) {
                 uim.readChosenCell(secondMoveCells);
-                chosenRow = uim.getChosenRow();
-                chosenColumn = uim.getChosenColumn();
+                int chosenRow = uim.getChosenRow2();
+                int chosenColumn = uim.getChosenColumn2();
                 checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
                 player.move(currWorker, board, chosenRow, chosenColumn);
             }

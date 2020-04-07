@@ -1,25 +1,17 @@
 package it.polimi.ingsw.PSP41;
 
 public abstract class GodPower {
-    public static boolean athenaPower;
+    protected static boolean athenaPower = false;
     protected Player player;
     protected ActionManager am;
     protected UserInputManager uim;
     protected Worker currWorker;
 
-    /*public GodPower(Player player, UserInputManager uim) {
-        this.player = player;
-        this.am = am;
-        this.uim = uim;
-    }*/
 
     public Player getPlayer() {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
     // Non permetto ad un giocatore di fare una mossa "autobloccante" (che non gli permettere di concludere il suo turno), ma gli permetto di fare una
     // mossa che lo blocchi per il turno successivo

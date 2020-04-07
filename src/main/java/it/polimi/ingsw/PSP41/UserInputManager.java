@@ -8,6 +8,18 @@ public class UserInputManager {
     private boolean power;
     private int chosenRow;
     private int chosenColumn;
+    //NB: aggiunta tmp per i test:
+    //per settare una possibile seconda azione
+    private int chosenRow2;
+    private int chosenColumn2;
+
+
+    public UserInputManager(boolean chooseWorker, boolean chooseActivation, int chooseRow, int chooseColumn) {
+        this.chosenWorker = chooseWorker;
+        this.power = chooseActivation;
+        this.chosenRow = chooseRow;
+        this.chosenColumn = chooseColumn;
+    }
 
     public boolean isChosenWorker() {
         return chosenWorker;
@@ -45,5 +57,18 @@ public class UserInputManager {
         //this.chosenRow = riga della cella scelta dal giocatore
         //this.chosenColumn = colonna della cella scelta dal giocatore
     }
+
+
+
+    //metodi tmp per il testing
+    public void setAdditionalPos(int row, int column) {
+       this.chosenRow2 = row;
+       this.chosenColumn2 = column;
+    }
+
+    public int getChosenRow2() { return chosenRow2; }
+
+    public int getChosenColumn2() { return chosenColumn2; }
+
 
 }
