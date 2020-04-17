@@ -1,6 +1,9 @@
 package it.polimi.ingsw.PSP41;
 
-public class Player {
+import java.util.Observable;
+
+
+public class Player extends Observable {
 
     private String nickname;
     private Color color;
@@ -18,8 +21,8 @@ public class Player {
     public Player(String nickname, Color color) {
         this.nickname = nickname;
         this.color = color;
-        this.worker1 = new Worker(color);
-        this.worker2 = new Worker(color);
+        this.worker1 = new Worker(color, 1);
+        this.worker2 = new Worker(color, 2);
     }
 
     public String getNickname() {
@@ -54,6 +57,9 @@ public class Player {
             //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
             worker.setPosition(row, column);
             board.getCell(row, column).attachWorker(worker);
+
+            setChanged();
+            notifyObservers(board);
         }
     }
 
@@ -65,6 +71,9 @@ public class Player {
      */
     public void build(Board board, int row, int column) {
         board.getCell(row, column).addLevel();
+
+        setChanged();
+        notifyObservers(board);
     }
 
 }

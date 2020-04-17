@@ -1,9 +1,6 @@
 package it.polimi.ingsw.PSP41;
 
 
-//import java.util.ArrayList;
-
-
 public class Cell implements Cloneable {
     //private ArrayList<String> level; (gestisci level con list e enum ?)
     private int level;
@@ -12,7 +9,7 @@ public class Cell implements Cloneable {
     Worker worker;
 
     /**
-     * Initialize the Cell setting the attributes to default value
+     * Initialize the Cell setting the attributes to default values
      */
     public Cell() {
         this.level = 0;
@@ -49,7 +46,9 @@ public class Cell implements Cloneable {
      * Decrease the Cell level by one if it isn't the ground level
      */
     public void removeLevel() {
-        if (this.level > 0) this.level--;
+        if (this.level > 0) {
+            this.level--;
+        }
     }
 
     /**
@@ -70,12 +69,15 @@ public class Cell implements Cloneable {
     public void attachWorker(Worker worker) {
         this.worker = worker;
         this.occupied = worker != null;
+
        // else input = null => throw exception ?
     }
 
     public void detachWorker() {
         this.worker = null;
         this.occupied = false;
+
     }
+
 
 }

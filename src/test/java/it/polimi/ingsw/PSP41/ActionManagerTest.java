@@ -21,7 +21,7 @@ public class ActionManagerTest {
     public void setup() {
         actionManager = new ActionManager();
         board = new Board();
-        worker = new Worker(Color.RED);
+        worker = new Worker(Color.RED, 1);
     }
 
     @Test
@@ -74,8 +74,8 @@ public class ActionManagerTest {
         c = board.getCell(4, 4);
         Cell c1 = board.getCell(3, 3);
         Cell c2 = board.getCell(3, 4);
-        Worker myWorker = new Worker(Color.RED);
-        Worker oppWorker = new Worker(Color.BLUE);
+        Worker myWorker = new Worker(Color.RED, 1);
+        Worker oppWorker = new Worker(Color.BLUE, 1);
         c.attachWorker(worker);
         c1.attachWorker(myWorker);
         c2.attachWorker(oppWorker);

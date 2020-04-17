@@ -16,7 +16,7 @@ public class WorkerTest {
     @Before
     public void setup() {
         position = new Cell();
-        worker = new Worker(Color.RED);
+        worker = new Worker(Color.RED, 1);
     }
 
     @Test
