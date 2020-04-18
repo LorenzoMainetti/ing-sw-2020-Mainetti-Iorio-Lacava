@@ -1,9 +1,17 @@
 package it.polimi.ingsw.PSP41;
 
 
+import it.polimi.ingsw.PSP41.controller.Athena;
+import it.polimi.ingsw.PSP41.controller.GodPower;
+import it.polimi.ingsw.PSP41.controller.UserInputManager;
+import it.polimi.ingsw.PSP41.model.ActionManager;
+import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.model.Color;
+import it.polimi.ingsw.PSP41.model.Player;
 import org.junit.Before;
 import org.junit.Test;
 
+import static it.polimi.ingsw.PSP41.controller.GodPower.*;
 import static org.junit.Assert.*;
 
 /**
@@ -22,9 +30,7 @@ public class AthenaTest {
         board = new Board();
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
-        board.getCell(0, 2).attachWorker(player.getWorker1());
         player.getWorker2().setPosition(board, 4, 4);
-        board.getCell(4, 4).attachWorker(player.getWorker2());
         actionManager = new ActionManager();
         inputManager = new UserInputManager(true, false, 0,1);
         godPower = new Athena(player, actionManager, inputManager);
@@ -37,7 +43,7 @@ public class AthenaTest {
 
         assertEquals(0, godPower.getPlayer().getWorker1().getRow());
         assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
-        assertFalse(godPower.athenaPower);
+        assertFalse(GodPower.getAthenaPower());
     }
 
     @Test
@@ -48,7 +54,7 @@ public class AthenaTest {
 
         assertEquals(0, godPower.getPlayer().getWorker1().getRow());
         assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
-        assertTrue(godPower.athenaPower);
+        assertTrue(GodPower.getAthenaPower());
     }
 
 }

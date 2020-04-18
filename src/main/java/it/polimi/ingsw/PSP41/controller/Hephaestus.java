@@ -1,4 +1,8 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.controller;
+
+import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.model.ActionManager;
+import it.polimi.ingsw.PSP41.model.Board;
 
 public class Hephaestus extends GodPower {
 

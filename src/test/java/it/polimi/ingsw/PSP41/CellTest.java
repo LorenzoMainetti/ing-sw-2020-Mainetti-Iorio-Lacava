@@ -2,6 +2,9 @@ package it.polimi.ingsw.PSP41;
 
 import static org.junit.Assert.*;
 
+import it.polimi.ingsw.PSP41.model.Cell;
+import it.polimi.ingsw.PSP41.model.Color;
+import it.polimi.ingsw.PSP41.model.Worker;
 import org.junit.Before;
 import org.junit.Test;
 import java.lang.*;
@@ -16,7 +19,7 @@ public class CellTest {
     @Before
     public void setup() {
         cell = new Cell();
-        worker = new Worker(Color.RED);
+        worker = new Worker(Color.RED, 1);
     }
 
     @Test
@@ -116,7 +119,7 @@ public class CellTest {
 
     @Test
     public void testWorkerMethodsExceptions() {
-        Worker anotherWorker = new Worker(Color.YELLOW);
+        Worker anotherWorker = new Worker(Color.YELLOW, 1);
 
         try{
             assertNull(cell.getWorker());

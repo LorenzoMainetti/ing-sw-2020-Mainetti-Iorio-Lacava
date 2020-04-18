@@ -1,4 +1,6 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.controller;
+
+import it.polimi.ingsw.PSP41.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,10 @@ public class Minotaur extends GodPower {
                 am.getNeighbouringOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
                 am.getNeighbouringOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            // Implementare rimozione player da una partita: magari una variabile che dice se è ancora in gioco, da controllare
-            // prima dell'inizio del turno. Se rimane un solo giocatore a non aver perso bisogna assegnargli vittoria
+            player.setStuck(true);
+            //detach worker dalle celle corrispondenti
+            board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
+            board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
         }
         else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getNeighbouringOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
@@ -53,18 +57,18 @@ public class Minotaur extends GodPower {
 
         int deltaRow;
         int deltaColumn;
-        List<Cell> powerCells = new ArrayList<>();
+        List<Position> powerCells = new ArrayList<>();
         // Tra le celle occupate mostro quelle per cui sia possibile forzare "indietro" il worker avversario
-        for (Cell cell: am.getNeighbouringOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
-            deltaRow = cell.getWorker().getRow() - currWorker.getRow();
-            deltaColumn = cell.getWorker().getColumn() - currWorker.getColumn();
+        for (Position pos: am.getNeighbouringOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
+            deltaRow = board.getCell(pos.getX(), pos.getY()).getWorker().getRow() - currWorker.getRow();
+            deltaColumn = board.getCell(pos.getX(), pos.getY()).getWorker().getColumn() - currWorker.getColumn();
             // Se la cella "dietro" al worker avversario è libera e valida allora aggiungo la posizione del worker avversario alla lista
             // di celle da scegliere per la move del mio worker
             if (0 <= currWorker.getRow() + 2*deltaRow && currWorker.getRow() + 2*deltaRow <= 4 &&
                 0 <= currWorker.getColumn() + 2*deltaColumn && currWorker.getColumn() + 2*deltaColumn <= 4 &&
                 !board.getCell(currWorker.getRow() + 2*deltaRow, currWorker.getColumn() + 2*deltaColumn).isOccupied() &&
                     !board.getCell(currWorker.getRow() + 2*deltaRow, currWorker.getColumn() + 2*deltaColumn).isDome()) {
-                powerCells.add(cell);
+                powerCells.add(pos);
             }
         }
 

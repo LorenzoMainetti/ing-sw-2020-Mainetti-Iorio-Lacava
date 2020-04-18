@@ -1,5 +1,9 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.model.Cell;
+import it.polimi.ingsw.PSP41.model.Color;
+import it.polimi.ingsw.PSP41.model.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,13 +21,14 @@ public class WorkerTest {
     @Before
     public void setup() {
         position = new Cell();
-        worker = new Worker(Color.RED);
+        worker = new Worker(Color.RED, 1);
         board = new Board();
     }
 
     @Test
     public void testConstructor() {
         assertSame(Color.RED, worker.getColor());
+        assertEquals(1, worker.getNumber());
         assertEquals(-1, worker.getRow());
         assertEquals(-1, worker.getColumn());
     }
@@ -42,16 +47,17 @@ public class WorkerTest {
         finally {
             assertEquals(0, worker.getRow());
             assertEquals(3, worker.getColumn());
+            assertTrue(board.getCell(0, 3).isOccupied());
+            assertSame(board.getCell(0, 3).getWorker(), worker);
         }
     }
 
     @Test
     public void setPositionExceptionTest() {
-        Worker anotherWorker = new Worker(Color.YELLOW);
+        Worker anotherWorker = new Worker(Color.YELLOW, 1);
 
         try {
             worker.setPosition(board,5, 9);
-            board.getCell(5,9).attachWorker(worker);
         }
         catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("Invalid position.", ex.getMessage());
@@ -67,7 +73,6 @@ public class WorkerTest {
 
         try {
             worker.setPosition(board,2, 3);
-            board.getCell(5,9).attachWorker(anotherWorker);
             anotherWorker.setPosition(board, 2,3);
         }
         catch (ArrayIndexOutOfBoundsException ex) {

@@ -1,15 +1,24 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.controller;
+
+//import java.util.List;
+
+import it.polimi.ingsw.PSP41.controller.UserInputManager;
+import it.polimi.ingsw.PSP41.model.*;
 
 public abstract class GodPower {
-    protected static boolean athenaPower = false;
-    protected Player player;
-    protected ActionManager am;
-    protected UserInputManager uim;
-    protected Worker currWorker;
+    static boolean athenaPower = false;
+    Player player;
+    ActionManager am;
+    UserInputManager uim;
+    Worker currWorker;
 
 
     public Player getPlayer() {
         return player;
+    }
+
+    public static boolean getAthenaPower() {
+        return athenaPower;
     }
 
 
@@ -26,9 +35,11 @@ public abstract class GodPower {
         // turni) prima di chiamare behavior controllo le mosse disponibili per i worker in modo tale da fornire al player
         // solo quello/i che può/possono muoversi. Nel caso nessun worker si possa muovere, il player è dichiarato sconfitto
         if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
-           am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            // Implementare rimozione player da una partita: magari ritornare una variabile che dice se è ancora in gioco, da controllare
-            // all'inizio del turno. Se rimane un solo giocatore a non aver perso bisogna assegnargli vittoria
+                am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
+            player.setStuck(true);
+            //detach worker dalle celle corrispondenti
+            board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
+            board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
         }
         else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
             currWorker = player.getWorker2();

@@ -1,4 +1,6 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.controller;
+
+import it.polimi.ingsw.PSP41.model.*;
 
 import java.util.List;
 
@@ -24,9 +26,9 @@ public class Demeter extends GodPower {
         super.buildBehaviour(board);
 
         // Per attivare il potere è necessario che il worker possa ancora costruire in una delle celle adiacenti esclusa la cella in cui ha già costruito
-        List<Cell> secondBuildCells;
-        secondBuildCells = am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn());
-        secondBuildCells.remove(board.getCell(uim.getChosenRow(), uim.getChosenColumn()));
+        List<Position> secondBuildCells = am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn());
+        secondBuildCells.removeIf(p -> (p.getX()==uim.getChosenRow() && p.getY()==uim.getChosenColumn()));
+
         if(!secondBuildCells.isEmpty()) {
             uim.readPower();
             // Se il potere è attivo, faccio una seconda build escludendo la cella della prima build dalle possibili celle in cui costruire

@@ -1,4 +1,6 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.controller;
+
+import it.polimi.ingsw.PSP41.model.*;
 
 import java.util.List;
 
@@ -22,8 +24,10 @@ public class Apollo extends GodPower {
            am.getActiveOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
            am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
            am.getActiveOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            // Implementare rimozione player da una partita: magari una variabile che dice se è ancora in gioco, da controllare
-            // prima dell'inizio del turno. Se rimane un solo giocatore a non aver perso bisogna assegnargli vittoria
+            player.setStuck(true);
+            //detach worker dalle celle corrispondenti
+            board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
+            board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
         }
         else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getActiveOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
@@ -50,8 +54,8 @@ public class Apollo extends GodPower {
     public void moveBehaviour(Board board) {
 
         // Per poter attivare il potere, i worker avversari in celle adiacenti devono avere possibilità di fare una build (celle valide)
-        List<Cell> validOccupiedCells = am.getActiveOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
-        List<Cell> validMoves = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
+        List<Position> validOccupiedCells = am.getActiveOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
+        List<Position> validMoves = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
 
         // Se nessuna cella adiacente occupata è valida ed è possibile fare almeno una move normale, sicuramente il potere non potrà essere attivato
         if (validOccupiedCells.isEmpty())
@@ -74,19 +78,11 @@ public class Apollo extends GodPower {
             uim.readChosenCell(validOccupiedCells);
             chosenRow = uim.getChosenRow();
             chosenColumn = uim.getChosenColumn();
-            Worker opponentWorker = board.getCell(chosenRow, chosenColumn).getWorker();
+
             checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
+            player.swap(currWorker, board, chosenRow, chosenColumn);
 
-            int oldRow = currWorker.getRow();
-            int oldColumn = currWorker.getColumn();
 
-            // Elimina worker avversario dalla cella in cui si trova
-            board.getCell(chosenRow, chosenColumn).detachWorker();
-            // Move mio worker alla cella in cui si deve muovere
-            player.move(currWorker, board, chosenRow, chosenColumn);
-            // Force opponent's worker nella cella prima occupata dal mio worker
-            opponentWorker.setPosition(board, oldRow, oldColumn);
-            board.getCell(oldRow, oldColumn).attachWorker(opponentWorker);
         }
         // Se il potere non è attivo, move normale
         else

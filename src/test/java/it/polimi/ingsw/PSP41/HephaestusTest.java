@@ -1,5 +1,12 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.controller.GodPower;
+import it.polimi.ingsw.PSP41.controller.Hephaestus;
+import it.polimi.ingsw.PSP41.controller.UserInputManager;
+import it.polimi.ingsw.PSP41.model.ActionManager;
+import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.model.Color;
+import it.polimi.ingsw.PSP41.model.Player;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,9 +28,7 @@ public class HephaestusTest {
         board = new Board();
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
-        board.getCell(0, 2).attachWorker(player.getWorker1());
         player.getWorker2().setPosition(board, 4, 4);
-        board.getCell(4, 4).attachWorker(player.getWorker2());
         actionManager = new ActionManager();
         inputManager = new UserInputManager(true, false, 0,1);
         godPower = new Hephaestus(player, actionManager, inputManager);

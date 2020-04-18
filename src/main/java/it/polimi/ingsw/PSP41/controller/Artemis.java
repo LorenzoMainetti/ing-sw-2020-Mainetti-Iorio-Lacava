@@ -1,4 +1,6 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.controller;
+
+import it.polimi.ingsw.PSP41.model.*;
 
 import java.util.List;
 
@@ -26,9 +28,8 @@ public class Artemis extends GodPower {
         // Se potere non è attivo, turno normale
         super.moveBehaviour(board);
 
-        List<Cell> secondMoveCells;
-        secondMoveCells = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
-        secondMoveCells.remove(board.getCell(startRow, startColumn));
+        List<Position> secondMoveCells = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
+        secondMoveCells.removeIf(p -> (p.getX()==startRow && p.getY()==startColumn));
         // Per attivare il potere è necessario che il worker si possa muovere in una delle celle adiacenti esclusa quella di partenza
         if(!secondMoveCells.isEmpty()) {
             uim.readPower();

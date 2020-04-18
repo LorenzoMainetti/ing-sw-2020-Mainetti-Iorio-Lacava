@@ -2,6 +2,8 @@ package it.polimi.ingsw.PSP41;
 
 import static org.junit.Assert.*;
 
+import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.model.Cell;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,6 +40,7 @@ public class BoardTest {
             assertEquals("Invalid position.", ex.getMessage());
         }
     }
+
 
 }
 
