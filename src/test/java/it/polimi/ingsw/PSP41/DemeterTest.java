@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit test for Demeter GodPower.
  */
-
+/*
 public class DemeterTest {
     GodPower godPower;
     Board board;
@@ -54,4 +54,4 @@ public class DemeterTest {
         assertEquals(1, board.getCell(1, 2).getLevel());
     }
 
-}
+}*/

@@ -6,9 +6,9 @@ import it.polimi.ingsw.PSP41.model.ActionManager;
 
 public class Athena extends GodPower {
 
-    public Athena(Player player, ActionManager am, UserInputManager uim) {
+    public Athena(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -32,7 +32,7 @@ public class Athena extends GodPower {
 
         int chosenRow;
         int chosenColumn;
-        uim.readChosenCell(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower));
+        uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
         chosenRow = uim.getChosenRow();
         chosenColumn = uim.getChosenColumn();
         // Se mi muovo verso l'alto, attivo la variabile statica athenaPower per impedire che i giocatori possano muoversi verso l'alto (all'inizio del

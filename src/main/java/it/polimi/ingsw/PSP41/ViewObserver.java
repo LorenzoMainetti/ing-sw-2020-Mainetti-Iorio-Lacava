@@ -1,9 +1,14 @@
-package it.polimi.ingsw.PSP41.controller;
+package it.polimi.ingsw.PSP41;
+
+import it.polimi.ingsw.PSP41.model.Position;
 
 public interface ViewObserver {
+
     void updateNickname(String nickname);
 
-    void updatePosition(int row, int column);
+    void updatePlayersNumber(int number);
+
+    void updatePosition(Position position);
 
     void updateWorker(boolean chosenWorker);
 
@@ -12,3 +17,5 @@ public interface ViewObserver {
     void updateDirection(String direction);
 
 }
+
+

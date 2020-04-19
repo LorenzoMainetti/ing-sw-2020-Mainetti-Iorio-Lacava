@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * Unit test for Artemis GodPower.
  */
-
+/*
 public class ArtemisTest {
     GodPower godPower;
     Board board;
@@ -107,4 +107,4 @@ public class ArtemisTest {
     }
 
 
-}
+}*/

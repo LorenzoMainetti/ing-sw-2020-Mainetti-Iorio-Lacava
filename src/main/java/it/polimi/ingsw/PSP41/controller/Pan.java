@@ -6,9 +6,9 @@ import it.polimi.ingsw.PSP41.model.Cell;
 
 public class Pan extends GodPower {
 
-    public Pan(Player player, ActionManager am, UserInputManager uim) {
+    public Pan(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 

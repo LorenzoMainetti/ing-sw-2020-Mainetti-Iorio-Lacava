@@ -1,51 +1,85 @@
 package it.polimi.ingsw.PSP41.controller;
 
-import it.polimi.ingsw.PSP41.model.ActionManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.view.CLI;
 
 import java.util.*;
 
+/**
+ * Controller class that handles the game logic
+ */
 public class TurnHandler {
     private final List<Player> playerList;
-    private final ActionManager actionManager;
     private UserInputManager userInputManager;
     private final Board board;
-    //private View theView
+    private CLI theView;
 
-    //avrà theView in input
-    public TurnHandler(Board board) {
+    public TurnHandler(Board board, CLI theView) {
         playerList = new ArrayList<>();
-        actionManager = new ActionManager();
-        //userInputManager = new UserInputManager();
+        userInputManager = new UserInputManager(theView);
         this.board = board;
-        //this.theView = theView;
+        this.theView = theView;
     }
 
     /**
      * setup game and handle turn shifts
      */
     public void play() {
-        //seleziona view: Welcome ecc.
+        theView.setUpGame();
         ArrayList<String> godList = new ArrayList<>(Arrays.asList("Apollo", "Artemis", "Athena", "Atlas", "Demeter", "Hephaestus", "Minotaur", "Pan", "Prometheus"));
         GodPowerFactory godFactory = new GodPowerFactory();
-
         ArrayList<GodPower> activeGodList = new ArrayList<>();
-        //seleziona view: askNickname()
-        playerList.add(new Player("name1", Color.RED));
-        playerList.add(new Player("name2", Color.BLUE));
+        Color color = Color.RED;
+
+        playerList.add(new Player(userInputManager.getNickname(), color));
+
+        while(playerList.size() != userInputManager.getPlayersNumber()) {
+            theView.askNickname();
+            while (takenNickname(playerList))
+                theView.printError();
+            color = color.next();
+            playerList.add(new Player(userInputManager.getNickname(), color));
+        }
+
         //timeout -> ask for 2 o 3 players
-        //if (3players) playersList.add(new Player("name3", Color.YELLOW));
+
         for(Player player : playerList) {
             Collections.shuffle(godList);
             String godName = godList.get(0);
+            theView.printGodPower(player.getNickname(), godName);
             godList.remove(0);
-            activeGodList.add(godFactory.createGodPower(godName, player, actionManager, userInputManager));
-            //seleziona view: ask position worker1
-            player.getWorker1().setPosition(board, userInputManager.getChosenRow(), userInputManager.getChosenColumn());
-            //seleziona view: ask position worker2
-            player.getWorker2().setPosition(board, userInputManager.getChosenRow(), userInputManager.getChosenColumn());
+            activeGodList.add(godFactory.createGodPower(godName, player, userInputManager));
+
+            //view osserva i player nel model
+            player.addObserver(theView);
+            player.getWorker1().addObserver(theView);
+            player.getWorker2().addObserver(theView);
+
+            boolean illegal = true;
+
+            while(illegal) {
+                theView.askInitialPosition();
+                try {
+                    player.getWorker1().setPosition(board, userInputManager.getChosenRow(), userInputManager.getChosenColumn());
+                    illegal = false;
+                } catch (IllegalStateException e) {
+                    theView.positionTaken();
+                }
+            }
+
+            illegal = true;
+
+            while(illegal) {
+                theView.askInitialPosition();
+                try {
+                    player.getWorker2().setPosition(board, userInputManager.getChosenRow(), userInputManager.getChosenColumn());
+                    illegal = false;
+                } catch (IllegalStateException e) {
+                    theView.positionTaken();
+                }
+            }
         }
 
         int i;
@@ -67,20 +101,38 @@ public class TurnHandler {
      * @param board current game state
      */
     private void performTurn(GodPower godPower, Board board) {
-        //seleziona view: print "is your turn" (start turn)
+        theView.startTurn(godPower.getPlayer().getNickname());
         godPower.activeWorkers(board);
-        //if(godPower.getPlayer().isStuck())
-            //seleziona view: "'name' got stuck! Game over!"
-            //playerList.remove(godPower.getPlayer());
-            //if(playerList.size()==1)
-               //seleziona view: theView.endGame(playerList.get(0).getNickname();
-        //else
-        godPower.moveBehaviour(board);
-        //if(godPower.getPlayer().isWinner())
-            //seleziona view: theView.endGame(godPower.getPlayer().getNickname());
-        //else
-            godPower.buildBehaviour(board);
-            //seleziona view: end turn
+        if(godPower.getPlayer().isStuck()) {
+            theView.looser(godPower.getPlayer().getNickname());
+            playerList.remove(godPower.getPlayer());
+            if (playerList.size() == 1)
+                theView.endGame(playerList.get(0).getNickname());
+        }
+        else {
+            theView.MovePhase();
+            godPower.moveBehaviour(board);
+            if(godPower.getPlayer().isWinner())
+                theView.endGame(godPower.getPlayer().getNickname());
+            else {
+                theView.BuildPhase();
+                godPower.buildBehaviour(board);
+                theView.endTurn();
+               }
+            }
+    }
+
+    /**
+     * Check if a nickname is already taken
+     * @param playerList list of players
+     * @return true if the nickname is taken
+     */
+    private boolean takenNickname(List<Player> playerList) {
+        for(Player player : playerList) {
+            if(player.getNickname().equals(userInputManager.getNickname()))
+                return true;
+        }
+        return false;
     }
 
 }

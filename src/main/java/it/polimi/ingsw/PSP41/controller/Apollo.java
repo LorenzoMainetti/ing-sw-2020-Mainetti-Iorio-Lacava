@@ -6,9 +6,9 @@ import java.util.List;
 
 public class Apollo extends GodPower {
 
-    public Apollo(Player player, ActionManager am, UserInputManager uim) {
+    public Apollo(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -59,12 +59,12 @@ public class Apollo extends GodPower {
 
         // Se nessuna cella adiacente occupata è valida ed è possibile fare almeno una move normale, sicuramente il potere non potrà essere attivato
         if (validOccupiedCells.isEmpty())
-            uim.setPower(false);
+            uim.updatePower(false);
 
         // Se esiste almeno una cella adiacente occupata valida e non ci sono move normali disponibili, sicuramente il potere dovrà essere attivato
         else {
             if (validMoves.isEmpty())
-                uim.setPower(true);
+                uim.updatePower(true);
 
             // Se esiste almeno una cella adiacente valida occupata ed è possibile fare almeno una move normale, chiedo se attivare il potere
             else
@@ -75,7 +75,7 @@ public class Apollo extends GodPower {
         int chosenRow;
         // Se il potere è attivo, mostro tutte le celle adiacenti valide occupate
         if (uim.isPower()) {
-            uim.readChosenCell(validOccupiedCells);
+            uim.readChosenDirection(validOccupiedCells, currWorker.getRow(), currWorker.getColumn());
             chosenRow = uim.getChosenRow();
             chosenColumn = uim.getChosenColumn();
 

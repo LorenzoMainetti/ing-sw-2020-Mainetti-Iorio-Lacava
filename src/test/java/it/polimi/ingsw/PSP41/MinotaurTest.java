@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit test for Minotaur GodPower.
  */
-
+/*
 public class MinotaurTest {
     GodPower godPower;
     Board board;
@@ -77,4 +77,4 @@ public class MinotaurTest {
         assertEquals(3, opponent.getColumn());
     }
 
-}
+}*/

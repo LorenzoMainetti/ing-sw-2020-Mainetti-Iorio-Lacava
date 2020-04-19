@@ -9,7 +9,7 @@ public class Cell {
     private Worker worker;
 
     /**
-     * Initialize the Cell setting the attributes to default value
+     * Initialize the Cell setting the attributes to default values
      */
     public Cell() {
         level = 0;
@@ -50,6 +50,7 @@ public class Cell {
     public void removeLevel() throws IllegalStateException {
         if (level > 0)
             level--;
+            //notify obs
         else
             throw new IllegalStateException("There are no levels to remove.");
     }

@@ -6,9 +6,9 @@ import java.util.List;
 
 public class Artemis extends GodPower {
 
-    public Artemis(Player player, ActionManager am, UserInputManager uim) {
+    public Artemis(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -35,9 +35,9 @@ public class Artemis extends GodPower {
             uim.readPower();
             // Se potere attivo, faccio la seconda move escludendo la casella iniziale dalle possibili celle di arrivo
             if (uim.isPower()) {
-                uim.readChosenCell(secondMoveCells);
-                int chosenRow = uim.getChosenRow2();
-                int chosenColumn = uim.getChosenColumn2();
+                uim.readChosenDirection(secondMoveCells, currWorker.getRow(), currWorker.getColumn());
+                int chosenRow = uim.getChosenRow();
+                int chosenColumn = uim.getChosenColumn();
                 checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
                 player.move(currWorker, board, chosenRow, chosenColumn);
             }

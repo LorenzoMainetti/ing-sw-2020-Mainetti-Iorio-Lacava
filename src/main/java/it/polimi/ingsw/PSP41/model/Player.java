@@ -3,8 +3,11 @@ package it.polimi.ingsw.PSP41.model;
 //import java.util.ArrayList;
 //import java.util.Collections;
 //import java.util.List;
+import it.polimi.ingsw.PSP41.ModelObservable;
 
-public class Player {
+
+
+public class Player extends ModelObservable {
     private final String nickname;
     private final Color color;
     private final Worker worker1;
@@ -85,13 +88,14 @@ public class Player {
      * @param column selected by the player where the worker will move
      */
     public void move(Worker worker, Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException {
-            if (row != worker.getRow() || column != worker.getColumn()) {
-                    //elimina worker dalla cella in cui si trovava
-                    board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
-                    //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
-                    worker.setPosition(board, row, column);
-                    //notify observers
-            }
+        if (row != worker.getRow() || column != worker.getColumn()) {
+            //elimina worker dalla cella in cui si trovava
+            board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
+            //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
+            worker.setPosition(board, row, column);
+
+            //notify observers (in setPosition)
+        }
     }
 
     /**
@@ -113,7 +117,8 @@ public class Player {
             worker.setPosition(board, row, column);
             // Force opponent's worker nella cella prima occupata dal mio worker
             opponent.setPosition(board, oldRow, oldColumn);
-            //notify observers
+
+            //notify observers in setPosition
         }
     }
 
@@ -125,7 +130,9 @@ public class Player {
      */
     public void build(Board board, int row, int column) throws IllegalStateException {
         board.getCell(row, column).addLevel();
+
         //notify observers
+        notify(board.clone());
     }
 
 }

@@ -6,9 +6,9 @@ import java.util.List;
 
 public class Prometheus extends GodPower {
 
-    public Prometheus(Player player, ActionManager am, UserInputManager uim) {
+    public Prometheus(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -42,12 +42,12 @@ public class Prometheus extends GodPower {
                      if (uim.isPower()) {
                          List<Position> buildCells = am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn());
                          buildCells.remove(notHigherCells.get(0));
-                         uim.readChosenCell(buildCells);
+                         uim.readChosenDirection(buildCells, currWorker.getRow(), currWorker.getColumn());
                          player.build(board, uim.getChosenRow(), uim.getChosenColumn());
 
-                         uim.readChosenCell(notHigherCells);
-                         int chosenRow = uim.getChosenRow2();
-                         int chosenColumn = uim.getChosenColumn2();
+                         uim.readChosenDirection(notHigherCells, currWorker.getRow(), currWorker.getColumn());
+                         int chosenRow = uim.getChosenRow();
+                         int chosenColumn = uim.getChosenColumn();
                          checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
                          player.move(currWorker, board, chosenRow, chosenColumn);
                      }
@@ -58,12 +58,12 @@ public class Prometheus extends GodPower {
             else {
                 uim.readPower();
                 if (uim.isPower()) {
-                    uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
+                    uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
                     player.build(board, uim.getChosenRow(), uim.getChosenColumn());
 
-                    uim.readChosenCell(notHigherCells);
-                    int chosenRow = uim.getChosenRow2();
-                    int chosenColumn = uim.getChosenColumn2();
+                    uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), true), currWorker.getRow(), currWorker.getColumn());
+                    int chosenRow = uim.getChosenRow();
+                    int chosenColumn = uim.getChosenColumn();
                     checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
                     player.move(currWorker, board, chosenRow, chosenColumn);
                 } else

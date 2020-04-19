@@ -6,9 +6,9 @@ import it.polimi.ingsw.PSP41.model.Board;
 
 public class Hephaestus extends GodPower {
 
-    public Hephaestus(Player player, ActionManager am, UserInputManager uim) {
+    public Hephaestus(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 

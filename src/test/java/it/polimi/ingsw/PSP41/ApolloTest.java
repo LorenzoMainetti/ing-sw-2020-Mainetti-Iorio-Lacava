@@ -13,7 +13,7 @@ import org.junit.Test;
 /**
  * Unit test for Apollo GodPower.
  */
-
+/*
 public class ApolloTest {
     GodPower godPower;
     Board board;
@@ -101,4 +101,4 @@ public class ApolloTest {
 
 
 }
-
+*/

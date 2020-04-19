@@ -6,9 +6,9 @@ import it.polimi.ingsw.PSP41.model.ActionManager;
 
 public class Atlas extends GodPower {
 
-    public Atlas(Player player, ActionManager am, UserInputManager uim) {
+    public Atlas(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -26,7 +26,7 @@ public class Atlas extends GodPower {
         uim.readPower();
         // Se il potere è attivo, costruisco una dome
         if (uim.isPower()) {
-            uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
+            uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
             board.getCell(uim.getChosenRow(), uim.getChosenColumn()).addLevel();
             board.getCell(uim.getChosenRow(), uim.getChosenColumn()).setDome(true);
         }

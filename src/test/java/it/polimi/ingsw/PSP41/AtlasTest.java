@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * Unit test for Atlas GodPower.
  */
-
+/*
 public class AtlasTest {
     GodPower godPower;
     Board board;
@@ -54,6 +54,6 @@ public class AtlasTest {
         assertTrue(board.getCell(0, 1).isDome());
     }
 
-}
+}*/
 
 

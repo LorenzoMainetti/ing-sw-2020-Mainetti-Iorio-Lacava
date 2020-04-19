@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit test for Pan GodPower.
  */
-
+/*
 public class PanTest {
     GodPower godPower;
     Board board;
@@ -58,4 +58,4 @@ public class PanTest {
         assertTrue(godPower.getPlayer().isWinner());
     }
 
-}
+}*/

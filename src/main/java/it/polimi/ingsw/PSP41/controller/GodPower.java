@@ -2,7 +2,6 @@ package it.polimi.ingsw.PSP41.controller;
 
 //import java.util.List;
 
-import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.*;
 
 public abstract class GodPower {
@@ -62,7 +61,7 @@ public abstract class GodPower {
      */
     public void moveBehaviour(Board board) {
         //Normale comportamento della move di un worker
-        uim.readChosenCell(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower));
+        uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
         int chosenRow = uim.getChosenRow();
         int chosenColumn = uim.getChosenColumn();
         checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
@@ -76,7 +75,7 @@ public abstract class GodPower {
     // Non è necessario nessun controllo generale sulla build perchè con una normale move un worker può semore costruire nella cella da cui è partito
     public void buildBehaviour(Board board) {
         //Normale comportamento della build
-        uim.readChosenCell(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()));
+        uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
         player.build(board, uim.getChosenRow(), uim.getChosenColumn());
     }
 

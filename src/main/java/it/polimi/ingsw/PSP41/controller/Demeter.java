@@ -6,9 +6,9 @@ import java.util.List;
 
 public class Demeter extends GodPower {
 
-    public Demeter(Player player, ActionManager am, UserInputManager uim) {
+    public Demeter(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -33,8 +33,8 @@ public class Demeter extends GodPower {
             uim.readPower();
             // Se il potere è attivo, faccio una seconda build escludendo la cella della prima build dalle possibili celle in cui costruire
             if (uim.isPower()) {
-                uim.readChosenCell(secondBuildCells);
-                player.build(board, uim.getChosenRow2(), uim.getChosenColumn2());
+                uim.readChosenDirection(secondBuildCells, currWorker.getRow(), currWorker.getColumn());
+                player.build(board, uim.getChosenRow(), uim.getChosenColumn());
             }
         }
     }

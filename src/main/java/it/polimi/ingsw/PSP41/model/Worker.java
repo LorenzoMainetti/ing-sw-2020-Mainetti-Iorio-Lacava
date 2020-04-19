@@ -1,7 +1,10 @@
 package it.polimi.ingsw.PSP41.model;
 
 
-public class Worker {
+import it.polimi.ingsw.PSP41.ModelObservable;
+
+
+public class Worker extends ModelObservable {
     private final Color color;
     private final int number;
     private int row;
@@ -45,6 +48,8 @@ public class Worker {
             this.row = row;
             this.column = column;
             board.getCell(row, column).attachWorker(this);
+
+            notify(board.clone());
         }
     }
 

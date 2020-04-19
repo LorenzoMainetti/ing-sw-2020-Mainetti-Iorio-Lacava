@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit test for Hephaestus GodPower.
  */
-
+/*
 public class HephaestusTest {
     GodPower godPower;
     Board board;
@@ -51,4 +51,5 @@ public class HephaestusTest {
 
         assertEquals(2, board.getCell(0, 1).getLevel());
     }
-}
+
+}*/

@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 /**
  * Unit test for Athena GodPower.
  */
-
+/*
 public class AthenaTest {
     GodPower godPower;
     Board board;
@@ -57,4 +57,4 @@ public class AthenaTest {
         assertTrue(GodPower.getAthenaPower());
     }
 
-}
+}*/

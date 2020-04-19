@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Minotaur extends GodPower {
 
-    public Minotaur(Player player, ActionManager am, UserInputManager uim) {
+    public Minotaur(Player player, UserInputManager uim) {
         this.player = player;
-        this.am = am;
+        am = new ActionManager();
         this.uim = uim;
     }
 
@@ -79,7 +79,7 @@ public class Minotaur extends GodPower {
             uim.readPower();
             // Se il potere è attivo, sposto i due worker
             if (uim.isPower()) {
-                uim.readChosenCell(powerCells);
+                uim.readChosenDirection(powerCells, currWorker.getRow(), currWorker.getColumn());
                 chosenRow = uim.getChosenRow();
                 chosenColumn = uim.getChosenColumn();
                 Worker opponentWorker = board.getCell(chosenRow, chosenColumn).getWorker();
