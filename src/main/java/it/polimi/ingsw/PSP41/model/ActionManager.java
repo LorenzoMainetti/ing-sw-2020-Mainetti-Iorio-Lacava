@@ -44,9 +44,9 @@ public class ActionManager {
 
         return getNeighbouringCells(row, column).
                 stream().
-                filter(p -> (notHigher ? board.getCell(p.getX(), p.getY()).getLevel() <= currLevel : board.getCell(p.getX(), p.getY()).getLevel() < currLevel + 2)).
-                filter(p -> !board.getCell(p.getX(), p.getY()).isDome()).
-                filter(p -> !board.getCell(p.getX(), p.getY()).isOccupied()).
+                filter(p -> (notHigher ? board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() <= currLevel : board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
+                filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isDome()).
+                filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isOccupied()).
                 collect(Collectors.toList());
     }
 
@@ -60,8 +60,8 @@ public class ActionManager {
     public List<Position> getValidBuilds(Board board, int row, int column) {
         return getNeighbouringCells(row, column).
                 stream().
-                filter(p -> !board.getCell(p.getX(), p.getY()).isDome()).
-                filter(p -> !board.getCell(p.getX(), p.getY()).isOccupied()).
+                filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isDome()).
+                filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isOccupied()).
                 collect(Collectors.toList());
     }
 
@@ -80,9 +80,9 @@ public class ActionManager {
 
         return getNeighbouringCells(row, column).
                 stream().
-                filter(p -> board.getCell(p.getX(), p.getY()).isOccupied()).
-                filter(p -> (notHigher ? board.getCell(p.getX(), p.getY()).getLevel() <= currLevel : board.getCell(p.getX(), p.getY()).getLevel() < currLevel + 2)).
-                filter(p -> (board.getCell(p.getX(), p.getY()).getWorker().getColor() != currColor)).
+                filter(p -> board.getCell(p.getPosRow(), p.getPosColumn()).isOccupied()).
+                filter(p -> (notHigher ? board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() <= currLevel : board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
+                filter(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getColor() != currColor)).
                 collect(Collectors.toUnmodifiableList());
     }
 
@@ -102,10 +102,10 @@ public class ActionManager {
 
         return getNeighbouringCells(row, column).
                 stream().
-                filter(p -> board.getCell(p.getX(), p.getY()).isOccupied()).
-                filter(p -> (notHigher ? board.getCell(p.getX(), p.getY()).getLevel() <= currLevel : board.getCell(p.getX(), p.getY()).getLevel() < currLevel + 2)).
-                filter(p -> (board.getCell(p.getX(), p.getY()).getWorker().getColor() != currColor)).
-                filter(p -> !getValidBuilds(board, board.getCell(p.getX(), p.getY()).getWorker().getRow(), board.getCell(p.getX(), p.getY()).getWorker().getColumn()).isEmpty()).
+                filter(p -> board.getCell(p.getPosRow(), p.getPosColumn()).isOccupied()).
+                filter(p -> (notHigher ? board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() <= currLevel : board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
+                filter(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getColor() != currColor)).
+                filter(p -> !getValidBuilds(board, board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getRow(), board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getColumn()).isEmpty()).
                 collect(Collectors.toUnmodifiableList());
     }
 

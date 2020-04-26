@@ -27,7 +27,7 @@ public class Demeter extends GodPower {
 
         // Per attivare il potere è necessario che il worker possa ancora costruire in una delle celle adiacenti esclusa la cella in cui ha già costruito
         List<Position> secondBuildCells = am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn());
-        secondBuildCells.removeIf(p -> (p.getX()==uim.getChosenRow() && p.getY()==uim.getChosenColumn()));
+        secondBuildCells.removeIf(p -> (p.getPosRow()==uim.getChosenRow() && p.getPosColumn()==uim.getChosenColumn()));
 
         if(!secondBuildCells.isEmpty()) {
             uim.readPower();

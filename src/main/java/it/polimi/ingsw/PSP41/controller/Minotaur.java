@@ -60,8 +60,8 @@ public class Minotaur extends GodPower {
         List<Position> powerCells = new ArrayList<>();
         // Tra le celle occupate mostro quelle per cui sia possibile forzare "indietro" il worker avversario
         for (Position pos: am.getNeighbouringOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
-            deltaRow = board.getCell(pos.getX(), pos.getY()).getWorker().getRow() - currWorker.getRow();
-            deltaColumn = board.getCell(pos.getX(), pos.getY()).getWorker().getColumn() - currWorker.getColumn();
+            deltaRow = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getRow() - currWorker.getRow();
+            deltaColumn = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getColumn() - currWorker.getColumn();
             // Se la cella "dietro" al worker avversario è libera e valida allora aggiungo la posizione del worker avversario alla lista
             // di celle da scegliere per la move del mio worker
             if (0 <= currWorker.getRow() + 2*deltaRow && currWorker.getRow() + 2*deltaRow <= 4 &&

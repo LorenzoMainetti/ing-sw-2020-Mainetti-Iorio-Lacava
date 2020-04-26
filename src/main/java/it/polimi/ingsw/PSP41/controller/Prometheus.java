@@ -28,7 +28,7 @@ public class Prometheus extends GodPower {
         // Se c'è più di una cella ad un livello non più alto, se il potere è attivo faccio build senza porre limitazioni e move allo stesso livello o minore,
         // se il potere non è attivo faccio solo la normale move
         else {
-            if(notHigherCells.size() == 1 && board.getCell(notHigherCells.get(0).getX(), notHigherCells.get(0).getY()).getLevel() ==
+            if(notHigherCells.size() == 1 && board.getCell(notHigherCells.get(0).getPosRow(), notHigherCells.get(0).getPosColumn()).getLevel() ==
                     board.getCell(currWorker.getRow(), currWorker.getColumn()).getLevel()) {
                  // se c'è una sola cella disponibile per costruire, allora è sicuramente la cella di notHigherCells -> move normale
                  if(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()).size() == 1)

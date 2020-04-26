@@ -2,7 +2,7 @@ package it.polimi.ingsw.PSP41.controller;
 
 import it.polimi.ingsw.PSP41.ViewObserver;
 import it.polimi.ingsw.PSP41.model.Position;
-import it.polimi.ingsw.PSP41.view.CLI;
+import it.polimi.ingsw.PSP41.server.VirtualView;
 
 import java.util.List;
 
@@ -11,47 +11,27 @@ import java.util.List;
  */
 public class UserInputManager implements ViewObserver {
 
-    private final CLI theView;
+    private final VirtualView virtualView;
     private boolean chosenWorker;
     private boolean power;
     private int chosenRow;
     private int chosenColumn;
     private String direction;
-    private String nickname;
-    private int playersNumber;
 
-    public UserInputManager(CLI theView) {
-        this.theView = theView;
-        theView.addObserver(this);
+    public UserInputManager(VirtualView virtualView) {
+        this.virtualView = virtualView;
+        virtualView.addObserver(this);
         chosenWorker = false;
         power = false;
         chosenRow = -1;
         chosenColumn = -1;
         direction = null;
-        nickname = null;
-        playersNumber = 0;
     }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    @Override
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public int getPlayersNumber() { return playersNumber; }
-
-    @Override
-    public void updatePlayersNumber(int number) {
-        playersNumber = number;
-    }
-
 
     public boolean isChosenWorker() { return chosenWorker; }
 
-    public void readChosenWorker() { theView.askWorker(); }
+    //TODO inserire nickname del player come input
+    public void readChosenWorker() { virtualView.askWorker(); }
 
     @Override
     public void updateWorker(boolean chosenWorker) {
@@ -61,7 +41,7 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isPower() { return power; }
 
-    public void readPower() { theView.askPowerActivation(); }
+    public void readPower() { virtualView.askPowerActivation(); }
 
     @Override
     public void updatePower(boolean power) {
@@ -76,13 +56,6 @@ public class UserInputManager implements ViewObserver {
         return chosenColumn;
     }
 
-    @Override
-    public void updatePosition(Position position) {
-        chosenRow = position.getX();
-        chosenColumn = position.getY();
-    }
-
-
     /**
      * Tells the View to display valid options (moves/builds) and, after being notified
      * with the user input direction, convert it back to row and column
@@ -91,7 +64,7 @@ public class UserInputManager implements ViewObserver {
      * @param column current Worker's column
      */
     public void readChosenDirection(List<Position> positions, int row, int column) {
-        theView.displayOptions(positions, row, column);
+        virtualView.displayOptions(positions, row, column);
         switch(direction) {
         case "N":
             chosenRow = row - 1;

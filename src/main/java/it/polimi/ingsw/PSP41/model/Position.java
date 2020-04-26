@@ -1,19 +1,19 @@
 package it.polimi.ingsw.PSP41.model;
 
 public class Position {
-    private final int x;
-    private final int y;
+    private final int posRow;
+    private final int posColumn;
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Position(int row, int column) {
+        this.posRow = row;
+        this.posColumn = column;
     }
 
-    public int getX() {
-        return x;
+    public int getPosRow() {
+        return posRow;
     }
 
-    public int getY() {
-        return y;
+    public int getPosColumn() {
+        return posColumn;
     }
 }

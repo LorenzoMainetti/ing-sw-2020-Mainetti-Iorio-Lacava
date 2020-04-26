@@ -1,7 +1,5 @@
 package it.polimi.ingsw.PSP41;
 
-import it.polimi.ingsw.PSP41.model.Position;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,8 @@ public class ViewObservable {
             observers.remove(observer);
         }
     }
-
+/*
+    // non serve più (lo faccio in lobby)
     public void notifyNickname(String nickname){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -28,6 +27,7 @@ public class ViewObservable {
         }
     }
 
+    // non serve più (lo faccio in lobby)
     public void notifyPlayersNumber(int numbers){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -36,6 +36,7 @@ public class ViewObservable {
         }
     }
 
+    // non serve più (lo faccio in lobby)
     public void notifyPosition(Position position){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -43,7 +44,8 @@ public class ViewObservable {
             }
         }
     }
-
+*/
+    // serve per la scelta del worker
     public void notifyWorker(boolean chosenWorker){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -52,6 +54,7 @@ public class ViewObservable {
         }
     }
 
+    // serve per la scelta del potere
     public void notifyPower(boolean power){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -60,6 +63,7 @@ public class ViewObservable {
         }
     }
 
+    // serve per la scelta della cella in cui muoversi/costruire
     public void notifyDirection(String direction){
         synchronized (observers) {
             for(ViewObserver observer : observers){
