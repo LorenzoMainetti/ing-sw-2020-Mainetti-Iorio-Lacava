@@ -12,28 +12,28 @@ public class Artemis extends GodPower {
         this.uim = uim;
     }
 
-    // Normale gestione worker attivi ereditata da GodPower
+    // Normal management of active workers, inherited from GodPower
 
     /**
-     * Your Move: Your Worker may move one additional time, but not back to its initial space
+     * Your Move: Your Worker may move one additional time, but not back to its initial position
      * @param board current board state
      */
     @Override
     public void moveBehaviour(Board board) {
 
-        // Salvo posizione iniziale worker nel caso si voglia attivare il potere
+        // Saving the initial position of the worker in case the player wants to activate the power
         int startRow = currWorker.getRow();
         int startColumn = currWorker.getColumn();
 
-        // Se potere non è attivo, turno normale
+        // If the power isn't active, normal turn
         super.moveBehaviour(board);
 
         List<Position> secondMoveCells = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
-        secondMoveCells.removeIf(p -> (p.getPosRow()==startRow && p.getPosColumn()==startColumn));
-        // Per attivare il potere è necessario che il worker si possa muovere in una delle celle adiacenti esclusa quella di partenza
+        secondMoveCells.removeIf(p -> (p.getX()==startRow && p.getY()==startColumn));
+        // To activate the power it is necessary that the worker is able to move in one of the adjacent cells except from the one it has started from
         if(!secondMoveCells.isEmpty()) {
             uim.readPower();
-            // Se potere attivo, faccio la seconda move escludendo la casella iniziale dalle possibili celle di arrivo
+            // If the power is active, make the second move excluding the starting cell from the cells available to move to
             if (uim.isPower()) {
                 uim.readChosenDirection(secondMoveCells, currWorker.getRow(), currWorker.getColumn());
                 int chosenRow = uim.getChosenRow();
@@ -44,6 +44,11 @@ public class Artemis extends GodPower {
         }
     }
 
-    // Normale build ereditata da GodPower
+    // Normal build inherited from GodPower
+
+    @Override
+    public String toString() {
+        return ("Your Worker may move one additional time, but not back to its initial space.");
+    }
 
 }

@@ -20,13 +20,13 @@ public class Minotaur extends GodPower {
      */
     @Override
     public void activeWorkers(Board board) {
-        // Controllo che i worker possano muoversi in una cella libera e/o in una occupata
+        // Check to see if the workers can move in a free cell and/or in an occupied one
         if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getNeighbouringOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
                 am.getNeighbouringOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
             player.setStuck(true);
-            //detach worker dalle celle corrispondenti
+            // Detach worker form corresponding cells
             board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
             board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
         }
@@ -58,12 +58,12 @@ public class Minotaur extends GodPower {
         int deltaRow;
         int deltaColumn;
         List<Position> powerCells = new ArrayList<>();
-        // Tra le celle occupate mostro quelle per cui sia possibile forzare "indietro" il worker avversario
+        // I show which cells between the occupied ones are eligible to force "back" the opponent's worker
         for (Position pos: am.getNeighbouringOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
-            deltaRow = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getRow() - currWorker.getRow();
-            deltaColumn = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getColumn() - currWorker.getColumn();
-            // Se la cella "dietro" al worker avversario è libera e valida allora aggiungo la posizione del worker avversario alla lista
-            // di celle da scegliere per la move del mio worker
+            deltaRow = board.getCell(pos.getX(), pos.getY()).getWorker().getRow() - currWorker.getRow();
+            deltaColumn = board.getCell(pos.getX(), pos.getY()).getWorker().getColumn() - currWorker.getColumn();
+            // If the cell "back" to the opponent's worker is free and valid I add the opponent's worker to the list
+            // of cells to choose from for my worker's move
             if (0 <= currWorker.getRow() + 2*deltaRow && currWorker.getRow() + 2*deltaRow <= 4 &&
                 0 <= currWorker.getColumn() + 2*deltaColumn && currWorker.getColumn() + 2*deltaColumn <= 4 &&
                 !board.getCell(currWorker.getRow() + 2*deltaRow, currWorker.getColumn() + 2*deltaColumn).isOccupied() &&
@@ -74,10 +74,10 @@ public class Minotaur extends GodPower {
 
         int chosenRow;
         int chosenColumn;
-        // Per poter attivare il potere, la lista di celle occupate per cui sia possibile forzare "indietro" il worker avversario non deve essere vuota
+        // To be able to activate the power, the list of occupied cells for which it is possible to force "back" the opponent's worker can't be empty
         if (!powerCells.isEmpty()) {
             uim.readPower();
-            // Se il potere è attivo, sposto i due worker
+            // If the power is active, I move the two workers
             if (uim.isPower()) {
                 uim.readChosenDirection(powerCells, currWorker.getRow(), currWorker.getColumn());
                 chosenRow = uim.getChosenRow();
@@ -85,21 +85,26 @@ public class Minotaur extends GodPower {
                 Worker opponentWorker = board.getCell(chosenRow, chosenColumn).getWorker();
                 deltaRow = chosenRow - currWorker.getRow();
                 deltaColumn = uim.getChosenColumn() - currWorker.getColumn();
-                // Move del worker avversario "indietro" di una cella
+                // Move of the opponent's worker "back" of one cell
                 player.move(opponentWorker, board, chosenRow + deltaRow, chosenColumn + deltaColumn);
                 checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-                // Move del mio worker nella cella prima occupata dal worker avversario
+                // Move of my worker into the first cell occupied by the opponent's worker
                 player.move(currWorker, board, chosenRow, chosenColumn);
             }
-            // Se il potere non è attivo faccio una move normale
+            // If the power isn't active the move is going to be normal
             else
                 super.moveBehaviour(board);
         }
-        // Se la lista di celle occupate per cui sia possibile forzare "indietro" il worker avversario è vuota, faccio una move normale
+        // If the list of occupied cells for which it is possible to force "back" the opponent's worker is empty, the move is going to be normal
         else
             super.moveBehaviour(board);
     }
 
-    // Normale build ereditata da GodPower
+    // Normal build inherited from GodPower
+
+    @Override
+    public String toString() {
+        return ("Your Worker may move into an opponent Worker's space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.");
+    }
 
 }

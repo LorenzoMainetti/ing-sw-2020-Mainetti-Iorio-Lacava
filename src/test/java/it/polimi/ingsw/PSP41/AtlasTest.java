@@ -9,6 +9,7 @@ import it.polimi.ingsw.PSP41.model.ActionManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,13 +17,14 @@ import org.junit.Test;
 /**
  * Unit test for Atlas GodPower.
  */
-/*
-public class AtlasTest {
-    GodPower godPower;
+
+/*public class AtlasTest {
+    Atlas godPower;
     Board board;
     Player player;
     ActionManager actionManager;
     UserInputManager inputManager;
+    CLI theView;
 
     @Before
     public void setup() {
@@ -31,8 +33,9 @@ public class AtlasTest {
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
         actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Atlas(player, actionManager, inputManager);
+        theView = new CLI();
+        inputManager = new UserInputManager(theView);
+        godPower = new Atlas(player, inputManager);
     }
 
     @Test
@@ -45,8 +48,8 @@ public class AtlasTest {
 
     @Test
     public void activePower_buildBehaviour() {
-        inputManager.setPower(true);
-        GodPower atlas = new Atlas(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower atlas = new Atlas(player, inputManager);
         atlas.activeWorkers(board);
         atlas.buildBehaviour(board);
 

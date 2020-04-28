@@ -14,18 +14,18 @@ public class Apollo extends GodPower {
 
     /**
      * Management of the worker choice at the start of a turn aware of all the possible moves Apollo implies: the player can only choose workers that
-     * are able to move, if both workers are blocked the player lose the game
+     * are able to move, if both workers are blocked the player loses the game
      * @param board current board state
      */
     @Override
     public void activeWorkers(Board board) {
-        // Controllo che i worker possano muoversi in una cella libera e/o in una occupata valida
+        // Check if workers can move in a fee cell and/or in a valid occupied one
         if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
            am.getActiveOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
            am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
            am.getActiveOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
             player.setStuck(true);
-            //detach worker dalle celle corrispondenti
+            // Detach workers from their cells
             board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
             board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
         }
@@ -53,27 +53,27 @@ public class Apollo extends GodPower {
     @Override
     public void moveBehaviour(Board board) {
 
-        // Per poter attivare il potere, i worker avversari in celle adiacenti devono avere possibilità di fare una build (celle valide)
+        // To be able to activate the power, the opponent's workers in adjacent cells need to have the possibility to build
         List<Position> validOccupiedCells = am.getActiveOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
         List<Position> validMoves = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
 
-        // Se nessuna cella adiacente occupata è valida ed è possibile fare almeno una move normale, sicuramente il potere non potrà essere attivato
+        // If no adjacent occupied cell is valid and it is possible to make at least one one normal move, the power is not going to be able to be activated
         if (validOccupiedCells.isEmpty())
             uim.updatePower(false);
 
-        // Se esiste almeno una cella adiacente occupata valida e non ci sono move normali disponibili, sicuramente il potere dovrà essere attivato
+        // If there is at least one valid adjacent occupied cell and there aren't normal moves available, the power has to be activated
         else {
             if (validMoves.isEmpty())
                 uim.updatePower(true);
 
-            // Se esiste almeno una cella adiacente valida occupata ed è possibile fare almeno una move normale, chiedo se attivare il potere
+            // If there is at least one valid adjacent occupied cell and it is possible to make at least one normal move, ask the player if he wants to activate the power
             else
                 uim.readPower();
         }
 
         int chosenColumn;
         int chosenRow;
-        // Se il potere è attivo, mostro tutte le celle adiacenti valide occupate
+        // If the power is active, show the adjacent occupied valid cells
         if (uim.isPower()) {
             uim.readChosenDirection(validOccupiedCells, currWorker.getRow(), currWorker.getColumn());
             chosenRow = uim.getChosenRow();
@@ -84,11 +84,16 @@ public class Apollo extends GodPower {
 
 
         }
-        // Se il potere non è attivo, move normale
+        // If the power isn't active, make a normal move
         else
             super.moveBehaviour(board);
     }
 
-    // Normale build ereditata da GodPower
+    // Normal build inherited from GodPower
+
+    @Override
+    public String toString() {
+        return ("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated");
+    }
 
 }

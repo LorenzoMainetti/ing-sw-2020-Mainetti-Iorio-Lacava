@@ -19,26 +19,26 @@ public class Prometheus extends GodPower {
     @Override
     public void moveBehaviour(Board board) {
 
-        // Per poter attivare il potere, la lista di celle adiacenti ad un livello pari o inferiore a quello del worker non deve essere vuota
+        // To be able to activate the power, the list of adjacent cells at the same or a lower lever than the worker's one can't be empty
         List<Position> notHigherCells = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), true);
 
-        // Non è possibile attivare il potere se la lista è vuota oppure se l'unica cella in cui si può costruire è ad un livello UGUALE a quello del worker
+        // It is not possible to activate the power if the list is empty or if the only cell it can be built in is at the same level of the worker's one
         if(notHigherCells.isEmpty())
             super.moveBehaviour(board);
-        // Se c'è più di una cella ad un livello non più alto, se il potere è attivo faccio build senza porre limitazioni e move allo stesso livello o minore,
-        // se il potere non è attivo faccio solo la normale move
+        // If there are more than one cell at the same level, if the power active I build with no limits and move at the same or at a lower level,
+        // if the power isn't active I make a normal move
         else {
             if(notHigherCells.size() == 1 && board.getCell(notHigherCells.get(0).getPosRow(), notHigherCells.get(0).getPosColumn()).getLevel() ==
                     board.getCell(currWorker.getRow(), currWorker.getColumn()).getLevel()) {
-                 // se c'è una sola cella disponibile per costruire, allora è sicuramente la cella di notHigherCells -> move normale
+                 // If there is only a cell available to build in, then it is for sure the cell of notHigherCells -> normal move
                  if(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()).size() == 1)
                         super.moveBehaviour(board);
-                 // Se c'è una sola cella ad un livello non più alto del worker ma le celle dove costruire sono più di una, se il potere è attivo non devo
-                 // permettere la costruzione sulla cella ad un livello non più alto
+                 // If there is only one cell at a not higher level of the worker but the cells to build in are more that one, if the power is active I can't
+                 // allow the built on a cell not at a higher level
                  else{
                      uim.readPower();
-                     // Se il potere è attivo faccio build e move, ma non devo permettere la costruzione nella cella ad un livello uguale a quello del worker,
-                     // se il potere non è attivo faccio solo una move normale
+                     // If the power is active I build and move, but I can't allow the construction inside the cell at the same level of the worker,
+                     // if the power isn't active I make a normal move
                      if (uim.isPower()) {
                          List<Position> buildCells = am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn());
                          buildCells.remove(notHigherCells.get(0));
@@ -73,6 +73,11 @@ public class Prometheus extends GodPower {
     }
 
 
-    // Normale build ereditata da GodPower
+    // Normal build inherited from GodPower
+
+    @Override
+    public String toString() {
+        return ("If your Worker does not move up, it may build both before and after moving.");
+    }
 
 }

@@ -21,6 +21,7 @@ public class Board implements Cloneable {
         return grid;
     }
 
+
     /**
      * Getter for a Cell in the Board
      * @param row of the wanted Cell

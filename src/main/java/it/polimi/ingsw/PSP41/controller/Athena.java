@@ -35,8 +35,8 @@ public class Athena extends GodPower {
         uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
         chosenRow = uim.getChosenRow();
         chosenColumn = uim.getChosenColumn();
-        // Se mi muovo verso l'alto, attivo la variabile statica athenaPower per impedire che i giocatori possano muoversi verso l'alto (all'inizio del
-        // mio prossimo turno, quando chiamo activeWorkers, porrò athenaPower falsa)
+        // If I move up, I activate the static variable athenaPower so that other players can't move up (from the start of
+        // my next turn, when I call activeWorkers, I'll set athenaPower as false)
         if (board.getCell(chosenRow, chosenColumn).getLevel() > board.getCell(currWorker.getRow(), currWorker.getColumn()).getLevel()) {
             athenaPower = true;
         }
@@ -44,6 +44,11 @@ public class Athena extends GodPower {
         player.move(currWorker, board, chosenRow, chosenColumn);
     }
 
-    // Normale build ereditata da GodPower
+    // Normal build inherited from GodPower
+
+    @Override
+    public String toString() {
+        return ("If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn.");
+    }
 
 }

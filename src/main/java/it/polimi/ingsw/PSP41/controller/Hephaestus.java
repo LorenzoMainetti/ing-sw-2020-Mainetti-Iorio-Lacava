@@ -12,9 +12,9 @@ public class Hephaestus extends GodPower {
         this.uim = uim;
     }
 
-    // Normale gestione worker attivi ereditata da GodPower
+    // Normal management of active workers inherited from GodPower
 
-    // Normale move ereditata da GodPower
+    // Normal move inherited from GodPower
 
     /**
      * Your Build: Your Worker may build one additional block (not dome) on top of your first block
@@ -25,7 +25,7 @@ public class Hephaestus extends GodPower {
 
         super.buildBehaviour(board);
 
-        // Posso fare la seconda build nella stessa cella solo se non devo costruire una dome
+        // I can make a second build in the same cell only if I don't have to build a dome
         if (board.getCell(uim.getChosenRow(), uim.getChosenColumn()).getLevel() < 3) {
             uim.readPower();
             if (uim.isPower()) {
@@ -34,4 +34,8 @@ public class Hephaestus extends GodPower {
         }
     }
 
+    @Override
+    public String toString() {
+        return ("Your Worker may build one additional block (not dome) on top of your first block.");
+    }
 }

@@ -3,7 +3,7 @@ package it.polimi.ingsw.PSP41.controller;
 import it.polimi.ingsw.PSP41.model.Player;
 import it.polimi.ingsw.PSP41.model.ActionManager;
 
-//alternativa: questa è un interfaccia e faccio una concreteFactory per God
+// Alternative: this is an interface where a concreteFactory is made for each God
 public class GodPowerFactory {
 
     public GodPower createGodPower(String godName, Player owner, UserInputManager uim) {
@@ -35,6 +35,21 @@ public class GodPowerFactory {
 
             case "Prometheus":
                 return new Prometheus(owner, uim);
+
+            case "Hestia":
+                return new Hestia(owner, uim);
+
+            case "Zeus":
+                return new Zeus(owner, uim);
+
+            case "Triton":
+                return new Triton(owner, uim);
+
+            case "Poseidon":
+                return new Poseidon(owner, uim);
+
+            case "Ares":
+                return new Ares(owner, uim);
 
             default:
                 return null;

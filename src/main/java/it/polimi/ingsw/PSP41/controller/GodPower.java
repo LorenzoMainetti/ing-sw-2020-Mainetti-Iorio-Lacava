@@ -11,7 +11,6 @@ public abstract class GodPower {
     UserInputManager uim;
     Worker currWorker;
 
-
     public Player getPlayer() {
         return player;
     }
@@ -21,8 +20,8 @@ public abstract class GodPower {
     }
 
 
-    // Non permetto ad un giocatore di fare una mossa "autobloccante" (che non gli permettere di concludere il suo turno), ma gli permetto di fare una
-    // mossa che lo blocchi per il turno successivo
+    // The player isn't going to be able to make an auto-blocking move, but he can make a move
+    // that blocks him for the next turn
 
     /**
      * Normal management of the worker choice at the start of a turn: the player can only choose workers that are able to move,
@@ -30,13 +29,13 @@ public abstract class GodPower {
      * @param board current board state
      */
     public void activeWorkers(Board board) {
-        // Gestione in caso di mancanza di celle disponibili per un worker: (nella classe che gestisce lo scorrere dei
-        // turni) prima di chiamare behavior controllo le mosse disponibili per i worker in modo tale da fornire al player
-        // solo quello/i che può/possono muoversi. Nel caso nessun worker si possa muovere, il player è dichiarato sconfitto
+        // Worker management in case no cells are available: (inside the class that manages the turns)
+        // before calling behaviour it is necessary to check the available moves so that the player
+        // knows which are the workers that are able to move. In case none of them is able to move, the player is beaten
         if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
             player.setStuck(true);
-            //detach worker dalle celle corrispondenti
+            // Detach worker from the cells
             board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
             board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
         }
@@ -60,7 +59,7 @@ public abstract class GodPower {
      * @param board game board
      */
     public void moveBehaviour(Board board) {
-        //Normale comportamento della move di un worker
+        // Normal move behaviour
         uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
         int chosenRow = uim.getChosenRow();
         int chosenColumn = uim.getChosenColumn();
@@ -72,9 +71,9 @@ public abstract class GodPower {
      * Normal build behaviour of a god power chosen by the player
      * @param board current board state
      */
-    // Non è necessario nessun controllo generale sulla build perchè con una normale move un worker può semore costruire nella cella da cui è partito
+    // It is not necessary to check the build because after a normal move the worker can always build in the cell it has moved from
     public void buildBehaviour(Board board) {
-        //Normale comportamento della build
+        // Normal behaviour of a worker's builds
         uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
         player.build(board, uim.getChosenRow(), uim.getChosenColumn());
     }

@@ -12,11 +12,11 @@ public class Pan extends GodPower {
         this.uim = uim;
     }
 
-    // Normale gestione worker attivi ereditata da GodPower
+    // Normal management of active workers inherited from GodPower
 
-    // Normale move ereditata da GodPower
+    // Normal move inherited from GodPower
 
-    // Normale build ereditata da GodPower
+    // Normal build inherited from GodPower
 
 
     /**
@@ -30,4 +30,10 @@ public class Pan extends GodPower {
             player.setWinner(true);
         }
     }
+
+    @Override
+    public String toString() {
+        return ("You also win if your Worker moves down two or more levels.");
+    }
+
 }

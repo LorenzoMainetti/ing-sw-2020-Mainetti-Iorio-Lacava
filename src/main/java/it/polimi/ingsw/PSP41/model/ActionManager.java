@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//ritornare lista di posizioni invece che lista di celle
 
 public class ActionManager {
 
@@ -36,7 +35,7 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
+     * @param notHigher reports the method has to return all valid moves or just the ones on a same/lower level
      * @return list of the Positions where it is allowed to move in
      */
     public List<Position> getValidMoves(Board board, int row, int column, boolean notHigher) {
@@ -66,6 +65,22 @@ public class ActionManager {
     }
 
     /**
+     * Find all the valid Positions where the Worker, in the specified position, can remove a block
+     * @param board current board state
+     * @param row current Worker's row
+     * @param column current Worker's column
+     * @return list of the Positions where it is allowed to remove block
+     */
+    public List<Position> getValidRemovableBlocks(Board board, int row, int column) {
+        return getNeighbouringCells(row, column).
+                stream().
+                filter(p -> !board.getCell(p.getX(), p.getY()).isDome()).
+                filter(p -> board.getCell(p.getX(), p.getY()).getLevel() != 0).
+                collect(Collectors.toList());
+    }
+
+
+    /**
      * Find all the Positions where are placed Opponent's workers
      * @param board current board state
      * @param row current Worker's row
@@ -73,7 +88,7 @@ public class ActionManager {
      * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Positions where are placed Opponent's workers
      */
-    // Metodo utilizzato per Minotaur
+    // Method used by Minotaur
     public List<Position> getNeighbouringOpponentWorkers(Board board, int row, int column, boolean notHigher) {
         Color currColor = board.getCell(row, column).getWorker().getColor();
         int currLevel = board.getCell(row, column).getLevel();
@@ -86,6 +101,7 @@ public class ActionManager {
                 collect(Collectors.toUnmodifiableList());
     }
 
+
     /**
      * Find all the Positions where are placed Opponent's workers and where is possible to build from
      * @param board current board state
@@ -95,7 +111,7 @@ public class ActionManager {
      * @return list of the Positions
      * where are placed Opponent's workers surrounded by at least one cell where building is possible
      */
-    // Metodo utilizzato per Apollo
+    // Method used by Apollo
     public List<Position> getActiveOpponentWorkers(Board board, int row, int column, boolean notHigher) {
         Color currColor = board.getCell(row, column).getWorker().getColor();
         int currLevel = board.getCell(row, column).getLevel();
@@ -108,6 +124,7 @@ public class ActionManager {
                 filter(p -> !getValidBuilds(board, board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getRow(), board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getColumn()).isEmpty()).
                 collect(Collectors.toUnmodifiableList());
     }
+
 
 }
 

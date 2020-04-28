@@ -21,14 +21,14 @@ public class CLI extends ViewObservable implements ModelObserver {
     //SET UP methods
 
     public void setUpGame() {
-        System.out.println("Welcome to\n" +
+        System.out.println("\n                                      Welcome to\n" +
                 "     _______.     ___      .__   __. .___________.  ______   .______       __  .__   __.  __  \n" +
                 "    /       |    /   \\     |  \\ |  | |           | /  __  \\  |   _  \\     |  | |  \\ |  | |  | \n" +
                 "   |   (----`   /  ^  \\    |   \\|  | `---|  |----`|  |  |  | |  |_)  |    |  | |   \\|  | |  | \n" +
                 "    \\   \\      /  /_\\  \\   |  . `  |     |  |     |  |  |  | |      /     |  | |  . `  | |  | \n" +
                 ".----)   |    /  _____  \\  |  |\\   |     |  |     |  `--'  | |  |\\  \\----.|  | |  |\\   | |  | \n" +
-                "|_______/    /__/     \\__\\ |__| \\__|     |__|      \\______/  | _| `._____||__| |__| \\__| |__| \n" +
-                "                                                                                              Board Game!\n");
+                "|_______/    /__/     \\__\\ |__| \\__|     |__|      \\______/  | _| `._____||__| |__| \\__| |__| \n\n" +
+                "                                      Board Game!\n");
         askNickname();
         askPlayersNumber();
     }
@@ -37,7 +37,7 @@ public class CLI extends ViewObservable implements ModelObserver {
         String nickname;
 
         System.out.println("Enter your nickname: ");
-        //gestisci eventuali errori di formattazione o nomi doppi -> nel controller
+        // Management of eventual format errors or double names -> controller
 
         System.out.print(">>> ");
         nickname = in.nextLine();
@@ -50,6 +50,9 @@ public class CLI extends ViewObservable implements ModelObserver {
         askNickname();
     }
 
+    /**
+     * Ask the first Player the number of Players that are going to play (2 or 3) and get the input
+     */
     public void askPlayersNumber() {
         int players = -1;
         boolean firstError = true;
@@ -73,9 +76,12 @@ public class CLI extends ViewObservable implements ModelObserver {
         notifyPlayersNumber(players);
     }
 
-
-    public void printGodPower(String nickname, String godName) {
-        System.out.println("\n"+nickname+" your God Power card is: "+ColorCLI.ANSI_GREEN+godName.toUpperCase()+ColorCLI.RESET+"\n");
+    /**
+     * Print the God Power assigned to a Player
+     */
+    public void printGodPower(String nickname, String godName, String godPower) {
+        System.out.println("\n"+ColorCLI.ANSI_RED+nickname+ColorCLI.RESET+", your God Power card is: "+ColorCLI.ANSI_GREEN+godName.toUpperCase());
+        System.out.println(godPower+ColorCLI.RESET+"\n");
     }
 
 
@@ -87,6 +93,10 @@ public class CLI extends ViewObservable implements ModelObserver {
         notifyPosition(new Position(row, column));
     }
 
+
+    /**
+     * Ask row to the Player and get the input
+     */
     private int askRow() {
         int row = -1;
         boolean firstError = true;
@@ -111,6 +121,9 @@ public class CLI extends ViewObservable implements ModelObserver {
     }
 
 
+    /**
+     * Ask column to the Player and get the input
+     */
     private int askColumn() {
         int column = -1;
         boolean firstError = true;
@@ -145,6 +158,10 @@ public class CLI extends ViewObservable implements ModelObserver {
         System.out.println("It's your turn "+ColorCLI.ANSI_GREEN+nickname+ColorCLI.RESET+"!");
     }
 
+
+    /**
+     * Ask the Player if he wants to use Worker 1 or 2 and get the input
+     */
     public void askWorker() {
         int chosenWorker = -1;
         boolean firstError = true;
@@ -171,6 +188,10 @@ public class CLI extends ViewObservable implements ModelObserver {
             notifyWorker(false);
     }
 
+
+    /**
+     * Ask the Player if he wants to activate the God Power and get the input
+     */
     public void askPowerActivation() {
         boolean activate = false;
         String answer = null;
@@ -189,6 +210,27 @@ public class CLI extends ViewObservable implements ModelObserver {
         notifyPower(activate);
     }
 
+    /**
+     * Ask the Player if he wants to keep building and get the input (method used by Poseidon)
+     */
+    public boolean askToKeepBuilding() {
+        boolean build = false;
+        String answer = null;
+        System.out.println("Do you want to build again? Type yes or no.");
+
+        do {
+            final String currentAnswer = in.nextLine();
+            if (!currentAnswer.equalsIgnoreCase("yes") && !currentAnswer.equalsIgnoreCase("no"))
+                System.out.println("Invalid answer. Please try again\n");
+            else
+                answer = currentAnswer;
+        } while(answer == null);
+
+        if(answer.equalsIgnoreCase("yes")) build = true;
+
+        return build;
+    }
+
     public void MovePhase() {
         System.out.println("Where do you want to "+ ColorCLI.ANSI_GREEN+"MOVE"+ColorCLI.RESET+"? ");
     }
@@ -201,8 +243,8 @@ public class CLI extends ViewObservable implements ModelObserver {
         System.out.println("Your turn is over.\n");
     }
 
-    public void looser(String looser) {
-        System.out.println(looser.toUpperCase()+" your workers are both stuck. You have lost.\n");
+    public void loser(String loser) {
+        System.out.println(loser.toUpperCase()+" your workers are both stuck. You have lost.\n");
     }
 
     public void endGame(String winner) {
@@ -224,87 +266,103 @@ public class CLI extends ViewObservable implements ModelObserver {
      * @return matrix containing the board ready to be printed
      */
     private static CellCLI[][] buildBoard(Board board) {
-        CellCLI[][] boardCells = new CellCLI[16][6];
+        CellCLI[][] boardCells = new CellCLI[17][7];
 
-        for(int i = 0; i < 16; ++i) {
-            for (int j = 0; j < 6; ++j) {
+        for(int i = 0; i < 17; ++i) {
+            for (int j = 0; j < 7; ++j) {
                 boardCells[i][j] = new CellCLI();
             }
         }
-        boardCells[0][0].setString("┌-------");
-        boardCells[0][1].setString("┬-------");
-        boardCells[0][2].setString("┬-------");
-        boardCells[0][3].setString("┬-------");
-        boardCells[0][4].setString("┬-------");
-        boardCells[0][5].setString("┐       ");
 
-        for(int x = 1; x < 16; x += 3) {
-            for(int y = 0; y < 6; y++) {
+        boardCells[0][0].setString("        ");
+        for(int i = 1; i < boardCells[16].length-1; i++) {
+                boardCells[0][i].setString("   C" + (i - 1) + "   ");
+        }
+
+        for(int i = 0; i < boardCells.length-2; i += 3) {
+            boardCells[i+2][0].setString("   R"+ (i/3) + "   ");
+        }
+
+
+        boardCells[1][1].setString("┌-------");
+        boardCells[1][2].setString("┬-------");
+        boardCells[1][3].setString("┬-------");
+        boardCells[1][4].setString("┬-------");
+        boardCells[1][5].setString("┬-------");
+        boardCells[1][6].setString("┐       ");
+
+        for(int x = 2; x < 17; x += 3) {
+            for(int y = 1; y < 7; y++) {
                 boardCells[x][y].setString("│       ");
             }
         }
 
-        for(int x = 3; x < 16; x += 3) {
-            boardCells[x][0].setString("├-------");
+        for(int x = 4; x < 17; x += 3) {
+            boardCells[x][1].setString("├-------");
         }
 
-        for(int x = 3; x < 16; x += 3) {
-            for(int y = 1; y < 5; y++)
+        for(int x = 4; x < 17; x += 3) {
+            for(int y = 2; y < 7; y++)
             boardCells[x][y].setString("┼-------");
         }
 
-        for(int x = 3; x < 16; x += 3) {
-            boardCells[x][5].setString("┤       ");
+        for(int x = 4; x < 17; x += 3) {
+            boardCells[x][6].setString("┤       ");
         }
 
-        boardCells[15][0].setString("└-------");
-        boardCells[15][1].setString("┴-------");
-        boardCells[15][2].setString("┴-------");
-        boardCells[15][3].setString("┴-------");
-        boardCells[15][4].setString("┴-------");
-        boardCells[15][5].setString("┘       ");
+        boardCells[16][1].setString("└-------");
+        boardCells[16][2].setString("┴-------");
+        boardCells[16][3].setString("┴-------");
+        boardCells[16][4].setString("┴-------");
+        boardCells[16][5].setString("┴-------");
+        boardCells[16][6].setString("┘       ");
 
         for(int i = 0; i < 5; ++i) {
             for(int j = 0; j < 5; ++j) {
 
-                //se è una dome metto il simbolo apposta
+                int level = board.getCell(i, j).getLevel();
+
                 if (board.getCell(i, j).isDome()) {
-                    boardCells[i * 3 + 1][j].setString("│   ☓   ");
-                    //boardCells[i * 3 + 2][j].setString("│   4   ");
+                    if(level != 0){
+                        boardCells[i*3 + 3][j+1].setString("│ X   " + level + " ");
+                        boardCells[i*3 + 3][j+2].setString("│       ");
+                    }
+                    else {
+                        boardCells[i*3 + 3][j+1].setString("│ X     ");
+                        boardCells[i*3 + 3][j+2].setString("│       ");
+                    }
+
                 } else {
                     if (board.getCell(i, j).isOccupied()) {
-                        //se la cella è occupata da un worker disegno la pedina
                         if(board.getCell(i, j).getWorker().getNumber() == 1){
-                            boardCells[i * 3 + 1][j].setString("│    w1    ");
+                            boardCells[i * 3 + 2][j+1].setString("│    w1    ");
                             //boardCells[i * 3 + 1][j].setString("│    ①    ");
                         }
                         else if(board.getCell(i, j).getWorker().getNumber() == 2) {
-                            boardCells[i * 3 + 1][j].setString("│    w2    ");
+                            boardCells[i * 3 + 2][j+1].setString("│    w2    ");
                             //boardCells[i * 3 + 1][j].setString("│    ②    ");
                         }
 
-                        //coloro la casella del colore del worker
                         switch(board.getCell(i, j).getWorker().getColor()) {
                             case BLUE:
-                                boardCells[i * 3 + 1][j].setColor(ColorCLI.ANSI_BLUE);
+                                boardCells[i * 3 + 2][j+1].setColor(ColorCLI.ANSI_BLUE);
                                 break;
                             case RED:
-                                boardCells[i * 3 + 1][j].setColor(ColorCLI.ANSI_RED);
+                                boardCells[i * 3 + 2][j+1].setColor(ColorCLI.ANSI_RED);
                                 break;
                             case YELLOW:
-                                boardCells[i * 3 + 1][j].setColor(ColorCLI.ANSI_YELLOW);
+                                boardCells[i * 3 + 2][j+1].setColor(ColorCLI.ANSI_YELLOW);
                                 break;
                         }
                     }
 
-                    int level = board.getCell(i, j).getLevel();
                     if(level != 0){
-                        boardCells[i*3 + 2][j].setString("│   " + level + "   ");
-                        boardCells[i*3 + 2][j+1].setString("│       ");
+                        boardCells[i*3 + 3][j+1].setString("│     " + level + " ");
+                        boardCells[i*3 + 3][j+2].setString("│       ");
                     }
                     else {
-                        boardCells[i*3 + 2][j].setString("│       ");
-                        boardCells[i*3 + 2][j+1].setString("│       ");
+                        boardCells[i*3 + 3][j+1].setString("│       ");
+                        boardCells[i*3 + 3][j+2].setString("│       ");
                     }
 
                 }
@@ -317,8 +375,9 @@ public class CLI extends ViewObservable implements ModelObserver {
      * Method to print game board
      * @param board that has to be printed
      */
-    private static void printBoard(Board board) {
+     public static void printBoard(Board board) {
         CellCLI[][] boardCells = buildBoard(board);
+        System.out.println();
 
         for (CellCLI[] boardCell : boardCells) {
             for (CellCLI cellCLI : boardCell) {
@@ -333,16 +392,16 @@ public class CLI extends ViewObservable implements ModelObserver {
                     System.out.print("  ");
                     System.out.print(ColorCLI.RESET);
                 } else {
-                    if (!cellCLI.getString().equals("        ")) {
-                        System.out.print(cellCLI.getString());
-                    }
+                    System.out.print(cellCLI.getString());
                 }
             }
 
             System.out.println();
         }
+         System.out.println();
 
-    }
+     }
+
 
     @Override
     public void updateState(Board board) {
@@ -369,6 +428,9 @@ public class CLI extends ViewObservable implements ModelObserver {
 
                     else if(position.getY() == column-1)
                         directions.add("W");
+
+                    else if(position.getY() == column)
+                        directions.add("CURR");
                 }
                 else if(position.getX() == row-1) {
                     if(position.getY() == column+1)
@@ -391,6 +453,7 @@ public class CLI extends ViewObservable implements ModelObserver {
                     else if(position.getY() == column)
                         directions.add("S");
                 }
+
             }
             for(String direction : directions) {
                 System.out.print(" | "+direction+" | ");

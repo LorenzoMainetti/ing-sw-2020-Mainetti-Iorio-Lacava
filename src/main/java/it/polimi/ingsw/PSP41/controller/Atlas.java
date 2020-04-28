@@ -12,9 +12,9 @@ public class Atlas extends GodPower {
         this.uim = uim;
     }
 
-    // Normale gestione worker attivi ereditata da GodPower
+    // Normal management of active workers inherited from GodPower
 
-    // Normale move ereditata da GodPower
+    // Normal move inherited from GodPower
 
     /**
      * Your Build: Your Worker may build a dome at any level
@@ -24,15 +24,20 @@ public class Atlas extends GodPower {
     public void buildBehaviour(Board board) {
 
         uim.readPower();
-        // Se il potere è attivo, costruisco una dome
+        // If the power is active I build a dome
         if (uim.isPower()) {
             uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
-            board.getCell(uim.getChosenRow(), uim.getChosenColumn()).addLevel();
-            board.getCell(uim.getChosenRow(), uim.getChosenColumn()).setDome(true);
+            player.buildDome(board, uim.getChosenRow(), uim.getChosenColumn());
         }
-        // Se il potere non è attivo, build normale
+        // If the power isn't active, normal build
         else {
             super.buildBehaviour(board);
         }
     }
+
+    @Override
+    public String toString() {
+        return ("Your Worker may build a dome at any level.");
+    }
+
 }

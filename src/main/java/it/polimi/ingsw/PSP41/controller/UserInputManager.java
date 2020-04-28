@@ -2,7 +2,6 @@ package it.polimi.ingsw.PSP41.controller;
 
 import it.polimi.ingsw.PSP41.ViewObserver;
 import it.polimi.ingsw.PSP41.model.Position;
-import it.polimi.ingsw.PSP41.server.VirtualView;
 
 import java.util.List;
 
@@ -66,44 +65,55 @@ public class UserInputManager implements ViewObserver {
     public void readChosenDirection(List<Position> positions, int row, int column) {
         virtualView.displayOptions(positions, row, column);
         switch(direction) {
-        case "N":
-            chosenRow = row - 1;
-            chosenColumn = column;
-            break;
-        case "NE":
-            chosenRow = row - 1;
-            chosenColumn = column + 1;
-            break;
-        case "E":
-            chosenRow = row;
-            chosenColumn = column + 1;
-            break;
-        case "SE":
-            chosenRow = row + 1;
-            chosenColumn = column + 1;
-            break;
-        case "S":
-            chosenRow = row + 1;
-            chosenColumn = column;
-            break;
-        case "SW":
-            chosenRow = row + 1;
-            chosenColumn = column - 1;
-            break;
-        case "W":
-            chosenRow = row;
-            chosenColumn = column - 1;
-            break;
-        case "NW":
-            chosenRow = row - 1;
-            chosenColumn = column - 1;
-            break;
+            case "N":
+                chosenRow = row - 1;
+                chosenColumn = column;
+                break;
+            case "NE":
+                chosenRow = row - 1;
+                chosenColumn = column + 1;
+                break;
+            case "E":
+                chosenRow = row;
+                chosenColumn = column + 1;
+                break;
+            case "SE":
+                chosenRow = row + 1;
+                chosenColumn = column + 1;
+                break;
+            case "S":
+                chosenRow = row + 1;
+                chosenColumn = column;
+                break;
+            case "SW":
+                chosenRow = row + 1;
+                chosenColumn = column - 1;
+                break;
+            case "W":
+                chosenRow = row;
+                chosenColumn = column - 1;
+                break;
+            case "NW":
+                chosenRow = row - 1;
+                chosenColumn = column - 1;
+                break;
+            case "CURR":
+                chosenRow = row;
+                chosenColumn = column;
+                break;
         }
      }
 
     @Override
     public void updateDirection(String direction) {
         this.direction = direction;
+    }
+
+    /**
+     * Method used by Poseidon to ask the player if he wants to keep building
+     */
+    public boolean askBuild() {
+        return theView.askToKeepBuilding();
     }
 
 }

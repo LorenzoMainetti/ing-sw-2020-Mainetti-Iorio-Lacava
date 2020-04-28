@@ -28,7 +28,7 @@ public class TurnHandler {
      */
     public void play() {
         theView.setUpGame();
-        ArrayList<String> godList = new ArrayList<>(Arrays.asList("Apollo", "Artemis", "Athena", "Atlas", "Demeter", "Hephaestus", "Minotaur", "Pan", "Prometheus"));
+        ArrayList<String> godList = new ArrayList<>(Arrays.asList("Apollo", "Artemis", "Athena", "Atlas", "Demeter", "Hephaestus", "Minotaur", "Pan", "Prometheus", "Ares", "Hestia", "Triton", "Poseidon", "Zeus"));
         GodPowerFactory godFactory = new GodPowerFactory();
         ArrayList<GodPower> activeGodList = new ArrayList<>();
         Color color = Color.RED;
@@ -43,19 +43,25 @@ public class TurnHandler {
             playerList.add(new Player(userInputManager.getNickname(), color));
         }
 
-        //timeout -> ask for 2 o 3 players
+        // Timeout -> ask for 2 or 3 players
 
         for(Player player : playerList) {
             Collections.shuffle(godList);
             String godName = godList.get(0);
-            theView.printGodPower(player.getNickname(), godName);
-            godList.remove(0);
-            activeGodList.add(godFactory.createGodPower(godName, player, userInputManager));
+            GodPower godPower = godFactory.createGodPower(godName, player, userInputManager);
 
-            //view osserva i player nel model
+            godList.remove(0);
+            activeGodList.add(godPower);
+
+            theView.printGodPower(player.getNickname(), godName, godPower.toString());
+
+
+            // The view observes the players in the model
             player.addObserver(theView);
             player.getWorker1().addObserver(theView);
             player.getWorker2().addObserver(theView);
+
+            theView.printBoard(board);
 
             boolean illegal = true;
 
@@ -104,7 +110,7 @@ public class TurnHandler {
         theView.startTurn(godPower.getPlayer().getNickname());
         godPower.activeWorkers(board);
         if(godPower.getPlayer().isStuck()) {
-            theView.looser(godPower.getPlayer().getNickname());
+            theView.loser(godPower.getPlayer().getNickname());
             playerList.remove(godPower.getPlayer());
             if (playerList.size() == 1)
                 theView.endGame(playerList.get(0).getNickname());

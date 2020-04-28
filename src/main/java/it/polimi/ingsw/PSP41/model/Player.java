@@ -62,7 +62,6 @@ public class Player extends ModelObservable {
         return Collections.unmodifiableList(workers);
     }*/
 
-    /* Mancano condizioni di vittoria */
 
     public boolean isWinner() {
         return winner;
@@ -89,12 +88,12 @@ public class Player extends ModelObservable {
      */
     public void move(Worker worker, Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException {
         if (row != worker.getRow() || column != worker.getColumn()) {
-            //elimina worker dalla cella in cui si trovava
+            // Delete worker from the cell it is situated
             board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
-            //aggiungi worker alla cella in cui si deve muovere e aggiorna posizione worker
+            // Add worker to the cell it has to move to and update worker's position
             worker.setPosition(board, row, column);
 
-            //notify observers (in setPosition)
+            // Notify observers (in setPosition)
         }
     }
 
@@ -110,15 +109,15 @@ public class Player extends ModelObservable {
             int oldRow = worker.getRow();
             int oldColumn = worker.getColumn();
             Worker opponent = board.getCell(row, column).getWorker();
-            // Elimina worker avversario dalla cella in cui si trova
+            // Delete opponent's worker from the cell it is situated
             board.getCell(row, column).detachWorker();
-            // Move mio worker alla cella in cui si deve muovere
+            // Move my worker to the cell it has to move to
             board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
             worker.setPosition(board, row, column);
-            // Force opponent's worker nella cella prima occupata dal mio worker
+            // Force opponent's worker into the cell that was occupied by mine
             opponent.setPosition(board, oldRow, oldColumn);
 
-            //notify observers in setPosition
+            // Notify observers in setPosition
         }
     }
 
@@ -131,7 +130,32 @@ public class Player extends ModelObservable {
     public void build(Board board, int row, int column) throws IllegalStateException {
         board.getCell(row, column).addLevel();
 
-        //notify observers
+        // Notify observers
+        notify(board.clone());
+    }
+
+    /**
+     * Build a dome at any level
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
+     */
+    public void buildDome(Board board, int row, int column) {
+        board.getCell(row, column).addLevel();
+        board.getCell(row, column).setDome(true);
+
+        notify(board.clone());
+    }
+
+    /**
+     * Remove a level
+     * @param board board state
+     * @param row of the cell the player wants to remove a level from
+     * @param column of the cell the player wants to remove a level from
+     */
+    public void removeLevel(Board board, int row, int column) {
+        board.getCell(row, column).removeLevel();
+
         notify(board.clone());
     }
 
