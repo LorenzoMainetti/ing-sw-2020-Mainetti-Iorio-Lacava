@@ -1,7 +1,6 @@
 package it.polimi.ingsw.PSP41.view;
 
-import it.polimi.ingsw.PSP41.ModelObserver;
-import it.polimi.ingsw.PSP41.ViewObservable;
+import it.polimi.ingsw.PSP41.UiObservable;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Position;
 
@@ -9,7 +8,7 @@ import it.polimi.ingsw.PSP41.model.Position;
 import java.util.*;
 
 
-public class CLI extends ViewObservable implements ModelObserver {
+public class CLI extends UiObservable implements Runnable {
     private Scanner in;
 
 
@@ -29,51 +28,12 @@ public class CLI extends ViewObservable implements ModelObserver {
                 ".----)   |    /  _____  \\  |  |\\   |     |  |     |  `--'  | |  |\\  \\----.|  | |  |\\   | |  | \n" +
                 "|_______/    /__/     \\__\\ |__| \\__|     |__|      \\______/  | _| `._____||__| |__| \\__| |__| \n\n" +
                 "                                      Board Game!\n");
-        askNickname();
-        askPlayersNumber();
-    }
-
-    public void askNickname() {
-        String nickname;
-
-        System.out.println("Enter your nickname: ");
-        // Management of eventual format errors or double names -> controller
-
-        System.out.print(">>> ");
-        nickname = in.nextLine();
-
-        notifyNickname(nickname);
-    }
-
-    public void printError() {
-        System.out.println("This nickname is already taken. Please try again.");
-        askNickname();
     }
 
     /**
      * Ask the first Player the number of Players that are going to play (2 or 3) and get the input
      */
     public void askPlayersNumber() {
-        int players = -1;
-        boolean firstError = true;
-
-        do {
-            System.out.println("Choose the number of players: 2 or 3?");
-            if(in.hasNextInt()) {
-                final int num = in.nextInt();
-                in.nextLine();
-                if (num != 2 && num != 3)
-                    firstError = promptInputError(firstError, "Sorry, we support only a 2 or 3 players game.");
-                else
-                    players = num;
-            }
-            else {
-                in.nextLine();
-                firstError = promptInputError(firstError, "Invalid integer!");
-            }
-        } while(players == -1);
-
-        notifyPlayersNumber(players);
     }
 
     /**
@@ -84,7 +44,7 @@ public class CLI extends ViewObservable implements ModelObserver {
         System.out.println(godPower+ColorCLI.RESET+"\n");
     }
 
-
+/*
     public void askInitialPosition() {
         System.out.println("Choose the initial position for your worker. ");
         int row = askRow();
@@ -92,12 +52,12 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         notifyPosition(new Position(row, column));
     }
-
+*/
 
     /**
      * Ask row to the Player and get the input
      */
-    private int askRow() {
+/*    private int askRow() {
         int row = -1;
         boolean firstError = true;
 
@@ -119,12 +79,12 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         return row;
     }
-
+*/
 
     /**
      * Ask column to the Player and get the input
      */
-    private int askColumn() {
+/*    private int askColumn() {
         int column = -1;
         boolean firstError = true;
 
@@ -146,23 +106,19 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         return column;
     }
-
-    public void positionTaken() {
-        System.out.println("Sorry the selected position is already taken. Please try again.");
-    }
-
+*/
 
     //TURN methods
 
-    public void startTurn(String nickname) {
+/*    public void startTurn(String nickname) {
         System.out.println("It's your turn "+ColorCLI.ANSI_GREEN+nickname+ColorCLI.RESET+"!");
     }
-
+*/
 
     /**
      * Ask the Player if he wants to use Worker 1 or 2 and get the input
      */
-    public void askWorker() {
+/*    public void askWorker() {
         int chosenWorker = -1;
         boolean firstError = true;
 
@@ -187,12 +143,12 @@ public class CLI extends ViewObservable implements ModelObserver {
         else
             notifyWorker(false);
     }
-
+*/
 
     /**
      * Ask the Player if he wants to activate the God Power and get the input
      */
-    public void askPowerActivation() {
+/*    public void askPowerActivation() {
         boolean activate = false;
         String answer = null;
         System.out.println("Do you want to activate your God Power? Type yes or no.");
@@ -209,11 +165,11 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         notifyPower(activate);
     }
-
+*/
     /**
      * Ask the Player if he wants to keep building and get the input (method used by Poseidon)
      */
-    public boolean askToKeepBuilding() {
+/*    public boolean askToKeepBuilding() {
         boolean build = false;
         String answer = null;
         System.out.println("Do you want to build again? Type yes or no.");
@@ -230,7 +186,7 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         return build;
     }
-
+*/
     public void MovePhase() {
         System.out.println("Where do you want to "+ ColorCLI.ANSI_GREEN+"MOVE"+ColorCLI.RESET+"? ");
     }
@@ -265,7 +221,7 @@ public class CLI extends ViewObservable implements ModelObserver {
      * @param board that has to be represented
      * @return matrix containing the board ready to be printed
      */
-    private static CellCLI[][] buildBoard(Board board) {
+    private CellCLI[][] buildBoard(Board board) {
         CellCLI[][] boardCells = new CellCLI[17][7];
 
         for(int i = 0; i < 17; ++i) {
@@ -375,7 +331,7 @@ public class CLI extends ViewObservable implements ModelObserver {
      * Method to print game board
      * @param board that has to be printed
      */
-     public static void printBoard(Board board) {
+     public void printBoard(Board board) {
         CellCLI[][] boardCells = buildBoard(board);
         System.out.println();
 
@@ -402,55 +358,48 @@ public class CLI extends ViewObservable implements ModelObserver {
 
      }
 
-
-    @Override
-    public void updateState(Board board) {
-        printBoard(board);
-    }
-
-
     /**
      * Display available cells to move or build and ask direction
      * @param positions where player can play its action
      * @param row of the current cell
      * @param column of the current cell
      */
-    public void displayOptions(List<Position> positions, int row, int column) {
+/*    public void displayOptions(List<Position> positions, int row, int column) {
         System.out.println("These are the valid directions: ");
 
         List<String> directions = new ArrayList<>();
         if(positions != null) {
             for(Position position : positions)
             {
-                if(position.getX() == row) {
-                    if(position.getY() == column+1)
+                if(position.getPosRow() == row) {
+                    if(position.getPosColumn() == column+1)
                         directions.add("E");
 
-                    else if(position.getY() == column-1)
+                    else if(position.getPosColumn() == column-1)
                         directions.add("W");
 
-                    else if(position.getY() == column)
+                    else if(position.getPosColumn() == column)
                         directions.add("CURR");
                 }
-                else if(position.getX() == row-1) {
-                    if(position.getY() == column+1)
+                else if(position.getPosRow() == row-1) {
+                    if(position.getPosColumn() == column+1)
                         directions.add("NE");
 
-                    else if(position.getY() == column-1)
+                    else if(position.getPosColumn() == column-1)
                         directions.add("NW");
 
-                    else if(position.getY() == column)
+                    else if(position.getPosColumn() == column)
                         directions.add("N");
                 }
 
-                else if(position.getX() == row+1) {
-                    if(position.getY() == column+1)
+                else if(position.getPosRow() == row+1) {
+                    if(position.getPosColumn() == column+1)
                         directions.add("SE");
 
-                    else if(position.getY() == column-1)
+                    else if(position.getPosColumn() == column-1)
                         directions.add("SW");
 
-                    else if(position.getY() == column)
+                    else if(position.getPosColumn() == column)
                         directions.add("S");
                 }
 
@@ -482,7 +431,7 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         notifyDirection(answer);
     }
-
+*/
 
     /**
      * Prompts an input error
@@ -498,6 +447,15 @@ public class CLI extends ViewObservable implements ModelObserver {
 
         System.out.println(errorMessage);
         return false;
+    }
+
+    @Override
+    public void run() {
+        while(true) {
+            //TODO ogni volta che ricevo un input dal client lo notifico al NetworkHandler
+            String fromClient = in.nextLine();
+            notify(fromClient);
+        }
     }
 
 }

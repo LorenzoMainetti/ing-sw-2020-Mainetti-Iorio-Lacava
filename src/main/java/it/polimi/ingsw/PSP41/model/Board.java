@@ -1,11 +1,12 @@
 package it.polimi.ingsw.PSP41.model;
 
+import java.io.Serializable;
 
-//import java.util.Arrays;
+public class Board implements Cloneable, Serializable {
+    private static final long serialVersionUID = -7299950514822114480L;
 
-public class Board implements Cloneable {
     private final Cell[][] grid;
-    private static final int MAX_SIZE = 5;
+    private final int MAX_SIZE = 5;
 
     /**
      * Initialize the Board creating a 5x5 matrix of Cells

@@ -29,7 +29,7 @@ public class Artemis extends GodPower {
         super.moveBehaviour(board);
 
         List<Position> secondMoveCells = am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower);
-        secondMoveCells.removeIf(p -> (p.getX()==startRow && p.getY()==startColumn));
+        secondMoveCells.removeIf(p -> (p.getPosRow()==startRow && p.getPosColumn()==startColumn));
         // To activate the power it is necessary that the worker is able to move in one of the adjacent cells except from the one it has started from
         if(!secondMoveCells.isEmpty()) {
             uim.readPower();

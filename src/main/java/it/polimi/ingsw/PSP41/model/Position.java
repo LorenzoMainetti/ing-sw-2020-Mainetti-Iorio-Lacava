@@ -1,21 +1,21 @@
 package it.polimi.ingsw.PSP41.model;
 
 public class Position {
-    private final int x;
-    private final int y;
+    private final int posRow;
+    private final int posColumn;
     private boolean perimeter = false;
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Position(int posRow, int posColumn) {
+        this.posRow = posRow;
+        this.posColumn = posColumn;
     }
 
-    public int getX() {
-        return x;
+    public int getPosRow() {
+        return posRow;
     }
 
-    public int getY() {
-        return y;
+    public int getPosColumn() {
+        return posColumn;
     }
 
     /**
@@ -23,7 +23,7 @@ public class Position {
      */
     public boolean isPerimeter() {
 
-        if(this.getX() == 0 || this.getY()== 0 || this.getX() == 4 || this.getY() == 4)
+        if(this.getPosRow() == 0 || this.getPosColumn()== 0 || this.getPosRow() == 4 || this.getPosColumn() == 4)
             perimeter = true;
 
             return perimeter;

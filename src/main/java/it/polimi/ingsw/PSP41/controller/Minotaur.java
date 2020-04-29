@@ -60,8 +60,8 @@ public class Minotaur extends GodPower {
         List<Position> powerCells = new ArrayList<>();
         // I show which cells between the occupied ones are eligible to force "back" the opponent's worker
         for (Position pos: am.getNeighbouringOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
-            deltaRow = board.getCell(pos.getX(), pos.getY()).getWorker().getRow() - currWorker.getRow();
-            deltaColumn = board.getCell(pos.getX(), pos.getY()).getWorker().getColumn() - currWorker.getColumn();
+            deltaRow = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getRow() - currWorker.getRow();
+            deltaColumn = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getColumn() - currWorker.getColumn();
             // If the cell "back" to the opponent's worker is free and valid I add the opponent's worker to the list
             // of cells to choose from for my worker's move
             if (0 <= currWorker.getRow() + 2*deltaRow && currWorker.getRow() + 2*deltaRow <= 4 &&

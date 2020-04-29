@@ -2,7 +2,9 @@ package it.polimi.ingsw.PSP41.controller;
 
 import it.polimi.ingsw.PSP41.ViewObserver;
 import it.polimi.ingsw.PSP41.model.Position;
+import it.polimi.ingsw.PSP41.server.VirtualView;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,7 +21,7 @@ public class UserInputManager implements ViewObserver {
 
     public UserInputManager(VirtualView virtualView) {
         this.virtualView = virtualView;
-        virtualView.addObserver(this);
+        this.virtualView.addObserver(this);
         chosenWorker = false;
         power = false;
         chosenRow = -1;
@@ -30,7 +32,7 @@ public class UserInputManager implements ViewObserver {
     public boolean isChosenWorker() { return chosenWorker; }
 
     //TODO inserire nickname del player come input
-    public void readChosenWorker() { virtualView.askWorker(); }
+    public void readChosenWorker() { virtualView.requestWorkerNum(); }
 
     @Override
     public void updateWorker(boolean chosenWorker) {
@@ -40,11 +42,17 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isPower() { return power; }
 
-    public void readPower() { virtualView.askPowerActivation(); }
+    public void readPower() { virtualView.requestActivatePow(); }
 
     @Override
     public void updatePower(boolean power) {
         this.power = power;
+    }
+
+    @Override
+    public void updatePosition(Position position) {
+        chosenRow = position.getPosRow();
+        chosenColumn = position.getPosColumn();
     }
 
     public int getChosenRow() {
@@ -63,7 +71,7 @@ public class UserInputManager implements ViewObserver {
      * @param column current Worker's column
      */
     public void readChosenDirection(List<Position> positions, int row, int column) {
-        virtualView.displayOptions(positions, row, column);
+        //virtualView.displayOptions(nickname, positions, row, column);
         switch(direction) {
             case "N":
                 chosenRow = row - 1;
@@ -112,8 +120,9 @@ public class UserInputManager implements ViewObserver {
     /**
      * Method used by Poseidon to ask the player if he wants to keep building
      */
-    public boolean askBuild() {
-        return theView.askToKeepBuilding();
+/*    public boolean askBuild() {
+        return virtualView.askToKeepBuilding();
     }
+*/
 
 }

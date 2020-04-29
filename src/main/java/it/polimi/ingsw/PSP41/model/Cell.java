@@ -1,8 +1,11 @@
 package it.polimi.ingsw.PSP41.model;
 
+import java.io.Serializable;
 import java.lang.*;
 
-public class Cell {
+public class Cell implements Serializable {
+    private static final long serialVersionUID = -7341850408676706015L;
+
     private int level;
     private boolean dome;
     private boolean occupied;

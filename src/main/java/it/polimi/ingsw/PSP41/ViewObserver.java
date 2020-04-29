@@ -6,9 +6,9 @@ public interface ViewObserver {
 
     /*void updateNickname(String nickname);
 
-    void updatePlayersNumber(int number);
+    void updatePlayersNumber(int number);*/
 
-    void updatePosition(Position position);*/
+    void updatePosition(Position position);
 
     void updateWorker(boolean chosenWorker);
 

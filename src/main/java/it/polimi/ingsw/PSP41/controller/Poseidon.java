@@ -19,7 +19,7 @@ public class Poseidon extends GodPower {
      * End of your turn: If your Worker that hasn't been moved is at ground 0, it can build up to three times
      * @param board current board state
      */
-    @Override
+/*    @Override
     public void buildBehaviour(Board board) {
         Worker otherWorker;
 
@@ -58,5 +58,5 @@ public class Poseidon extends GodPower {
     public String toString() {
         return ("If your unmoved worker is on the ground level, it may build up to three times.");
     }
-
+*/
 }

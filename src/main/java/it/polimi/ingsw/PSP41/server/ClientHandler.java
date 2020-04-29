@@ -11,6 +11,8 @@ public class ClientHandler implements Runnable {
 
     private Socket socket;
     private int position;
+    private boolean active;
+    private boolean connected;
     private ObjectOutputStream socketOut;
     private BufferedReader socketIn;
     private static Lobby lobby = new Lobby();
@@ -27,8 +29,6 @@ public class ClientHandler implements Runnable {
         return socketIn;
     }
 
-    private boolean active = true;
-
     public ClientHandler(Socket socket, int position) {
         this.socket = socket;
         this.position = position;
@@ -42,15 +42,15 @@ public class ClientHandler implements Runnable {
         this.active = active;
     }
 
-    /*private synchronized void send(Object message) {
+    public synchronized void send(Object message) {
         try {
-            out.writeObject(message);
-            out.flush();
-        } catch(IOException e){
+            socketOut.reset();
+            socketOut.writeObject(message);
+            socketOut.flush();
+        } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-
-    }*/
+    }
 
     public synchronized void closeConnection() throws IOException {
         socketOut.writeObject("Connection closed!");
@@ -61,6 +61,7 @@ public class ClientHandler implements Runnable {
         }
         active = false;
     }
+
 /*
     private void close() {
         closeConnection();
@@ -68,24 +69,15 @@ public class ClientHandler implements Runnable {
         server.deregisterConnection(this);
         System.out.println("Done!");
     }
-
-    public void asyncSend(final Object message){
-        new Thread(new Runnable() {
-            public void run() {
-                send(message);
-            }
-        }).start();
-    }
 */
+
     public void run() {
 
         try{
-
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketOut = new ObjectOutputStream(socket.getOutputStream());
 
             // Creazione lobby
-            Lobby lobby = new Lobby();
             if (position == 1) {
                 lobby.setPlayersNumber(this);
             }
@@ -103,33 +95,22 @@ public class ClientHandler implements Runnable {
             }
             else {
                 lobby.setGodLike(this);
-                /*lobby.addPlayer(this Per gestire posizionamento worker: r1, c1, r2, c2??);*/
             }
 
-            // DA IMPLEMENTARE: SELEZIONE POSIZIONE INIZIALE DEI WORKER (DA FARE QUI?)
-
-            socketIn.readLine();
-
-            // Creazione lobby
-            lobby.addPlayer(this /*Per gestire posizionamento worker: r1, c1, r2, c2??*/);
-
-            /*while (Lobby2.godLock == 1) {
-                socketOut.writeObject("Wait for other players to choose their god");
-                wait();
-            }
-            lobby.selectGodPower(this, Lobby2.nickname);*/
-
-            // Ricezione prima risposta del giocatore (da lobby) e successive (dalla view)
-            /*while(isActive()){
-                socketOut.writeObject("Loop");
-                read = socketIn.readLine();
-                // Notifico la removeView del messaggio del giocatore (che lo serializzerà)
-                notify(read);
+            // TODO Gestione disconnessione client
+            /*while(active && connected){
+                if (socket.getInetAddress().isReachable(2000)) {
+                    connected = false;
+                }
             }*/
         } catch (NoSuchElementException | IOException | InterruptedException e) {
             System.err.println("[SERVER] Error!" + e.getMessage());
         } /*finally{
-            close();
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }*/
     }
 }

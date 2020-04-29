@@ -37,8 +37,8 @@ public class ActionManagerTest {
 
         List<Position> test;
         test = actionManager.getValidMoves(board, 0, 0, false);
-        assertEquals(1, test.get(0).getX());
-        assertEquals(0, test.get(0).getY());
+        assertEquals(1, test.get(0).getPosRow());
+        assertEquals(0, test.get(0).getPosColumn());
     }
 
     @Test
@@ -54,10 +54,10 @@ public class ActionManagerTest {
 
         List<Position> test;
         test = actionManager.getValidBuilds(board, 4, 4);
-        assertEquals(3, test.get(0).getX());
-        assertEquals(3, test.get(0).getY());
-        assertEquals(4, test.get(1).getX());
-        assertEquals(3, test.get(1).getY());
+        assertEquals(3, test.get(0).getPosRow());
+        assertEquals(3, test.get(0).getPosColumn());
+        assertEquals(4, test.get(1).getPosRow());
+        assertEquals(3, test.get(1).getPosColumn());
     }
 
     @Test
@@ -73,8 +73,8 @@ public class ActionManagerTest {
 
         List<Position> test;
         test = actionManager.getNeighbouringOpponentWorkers(board, 4, 4, false);
-        assertEquals(3, test.get(0).getX());
-        assertEquals(4, test.get(0).getY());
+        assertEquals(3, test.get(0).getPosRow());
+        assertEquals(4, test.get(0).getPosColumn());
     }
 
     @Test
@@ -93,8 +93,8 @@ public class ActionManagerTest {
 
         List<Position> test;
         test = actionManager.getNeighbouringOpponentWorkers(board, 4, 4, false);
-        assertEquals(3, test.get(0).getX());
-        assertEquals(3, test.get(0).getY());
+        assertEquals(3, test.get(0).getPosRow());
+        assertEquals(3, test.get(0).getPosColumn());
     }
 
     @After

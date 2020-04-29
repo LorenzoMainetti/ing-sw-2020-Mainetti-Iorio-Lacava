@@ -1,44 +1,65 @@
 package it.polimi.ingsw.PSP41.controller;
 
-import it.polimi.ingsw.PSP41.ViewObserver;
+import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.model.Board;
-import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.server.VirtualView;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller class that handles the game logic
  */
-public class Controller implements ViewObserver {
-    private final Board board;
+public class Controller {
+    private Board board;
+    private UserInputManager uim;
     private VirtualView virtualView;
-    List<GodPower> activeGodList;
+    private List<GodPower> activeGodList;
 
-    public Controller(Board board, VirtualView virtualView, List<GodPower> activeGodList) {
+    public Controller(Board board, UserInputManager uim, VirtualView virtualView, List<GodPower> activeGodList) {
         this.board = board;
+        this.uim = uim;
         this.virtualView = virtualView;
         this.activeGodList = activeGodList;
     }
 
-    public void setWorkers() throws IOException {
+    public void setWorkers() {
         for (GodPower godPower : activeGodList) {
-            //da fare con UserInputManager
+
+            virtualView.setCurrPlayer(godPower.getPlayer().getNickname());
+            boolean illegal = true;
+            virtualView.startTurn();
+
             // Posiziono worker 1
-            Position position = virtualView.socketAskInitialPosition(godPower.getPlayer().getNickname(), 1, board);
-            godPower.getPlayer().getWorker1().setPosition(board, position.getPosRow(), position.getPosColumn());
+            while (illegal) {
+                virtualView.requestInitPos();
+                try {
+                    godPower.getPlayer().getWorker1().setPosition(board, uim.getChosenRow(), uim.getChosenColumn());
+                    illegal = false;
+                } catch (IllegalStateException e) {
+                    virtualView.errorTakenPosition();
+                }
+            }
+
+            illegal = true;
 
             // Posiziono worker 2
-            position = virtualView.socketAskInitialPosition(godPower.getPlayer().getNickname(), 2, board);
-            godPower.getPlayer().getWorker2().setPosition(board, position.getPosRow(), position.getPosColumn());
+            while (illegal) {
+                virtualView.requestInitPos();
+                try {
+                    godPower.getPlayer().getWorker2().setPosition(board, uim.getChosenRow(), uim.getChosenColumn());
+                    illegal = false;
+                } catch (IllegalStateException e) {
+                    virtualView.errorTakenPosition();
+                }
+            }
         }
     }
 
     /**
      * setup game and handle turn shifts
      */
-    public void play() throws IOException {
+    public void play() {
 
         outside:
         while(activeGodList.size() > 1) {
@@ -55,43 +76,27 @@ public class Controller implements ViewObserver {
      * @param godPower current player's GodPower
      * @param board current game state
      */
-    private void performTurn(GodPower godPower, Board board) throws IOException {
-        virtualView.startTurn(godPower.getPlayer().getNickname());
-        godPower.activeWorkers(board/*, virtualView*/);
+    private void performTurn(GodPower godPower, Board board) {
+        virtualView.setCurrPlayer(godPower.getPlayer().getNickname());
+        virtualView.startTurn();
+        godPower.activeWorkers(board);
         if(godPower.getPlayer().isStuck()) {
-            // Rimuove (dalla virtual view) sia il client dalla lista di quelli in gioco, sia (nel controller) il god power dalla lista di quelli attivi
-            virtualView.loser(godPower.getPlayer().getNickname());
-            activeGodList.removeIf(god -> god.getPlayer().getNickname().equals(godPower.getPlayer().getNickname()));
+            activeGodList.stream().
+                    filter(godPower1 -> !godPower.getPlayer().isStuck()).
+                    collect(Collectors.toList());
             if (activeGodList.size() == 1)
-                virtualView.endGame(activeGodList.get(0).getPlayer().getNickname());
+                activeGodList.get(0).getPlayer().setWinner(true);
         }
         else {
-            virtualView.MovePhase();
+            virtualView.movePhase();
             godPower.moveBehaviour(board);
-            if(godPower.getPlayer().isWinner())
-                virtualView.endGame(godPower.getPlayer().getNickname());
-            else {
-                virtualView.BuildPhase();
+            if(!godPower.getPlayer().isWinner()) {
+                virtualView.buildPhase();
                 godPower.buildBehaviour(board);
-                virtualView.endTurn(godPower.getPlayer().getNickname());
-               }
+                virtualView.endTurn();
             }
+        }
     }
 
-    //sicuri che servano?
-    @Override
-    public void updateWorker(boolean chosenWorker) {
-
-    }
-
-    @Override
-    public void updatePower(boolean power) {
-
-    }
-
-    @Override
-    public void updateDirection(String direction) {
-
-    }
 
 }

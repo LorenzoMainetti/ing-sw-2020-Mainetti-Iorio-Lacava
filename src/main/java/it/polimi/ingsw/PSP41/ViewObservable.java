@@ -1,5 +1,7 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.Position;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class ViewObservable {
             }
         }
     }
-
+*/
     // non serve più (lo faccio in lobby)
     public void notifyPosition(Position position){
         synchronized (observers) {
@@ -44,7 +46,7 @@ public class ViewObservable {
             }
         }
     }
-*/
+
     // serve per la scelta del worker
     public void notifyWorker(boolean chosenWorker){
         synchronized (observers) {

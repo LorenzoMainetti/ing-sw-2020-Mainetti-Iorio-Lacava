@@ -74,8 +74,8 @@ public class ActionManager {
     public List<Position> getValidRemovableBlocks(Board board, int row, int column) {
         return getNeighbouringCells(row, column).
                 stream().
-                filter(p -> !board.getCell(p.getX(), p.getY()).isDome()).
-                filter(p -> board.getCell(p.getX(), p.getY()).getLevel() != 0).
+                filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isDome()).
+                filter(p -> board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() != 0).
                 collect(Collectors.toList());
     }
 

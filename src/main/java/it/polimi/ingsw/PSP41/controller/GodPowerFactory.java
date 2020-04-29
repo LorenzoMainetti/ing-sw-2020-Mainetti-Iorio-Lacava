@@ -9,46 +9,46 @@ public class GodPowerFactory {
     public GodPower createGodPower(String godName, Player owner, UserInputManager uim) {
 
         switch (godName) {
-            case "Apollo":
+            case "APOLLO":
                 return new Apollo(owner, uim);
 
-            case "Artemis":
+            case "ARTEMIS":
                 return new Artemis(owner, uim);
 
-            case "Athena":
+            case "ATHENA":
                 return new Athena(owner, uim);
 
-            case "Atlas":
+            case "ATLAS":
                 return new Atlas(owner, uim);
 
-            case "Demeter":
+            case "DEMETER":
                 return new Demeter(owner, uim);
 
-            case "Hephaestus":
+            case "HEPHAESTUS":
                 return new Hephaestus(owner, uim);
 
-            case "Minotaur":
+            case "MINOTAUR":
                 return new Minotaur(owner, uim);
 
-            case "Pan":
+            case "PAN":
                 return new Pan(owner, uim);
 
-            case "Prometheus":
+            case "PROMETHEUS":
                 return new Prometheus(owner, uim);
 
-            case "Hestia":
+            case "HESTIA":
                 return new Hestia(owner, uim);
 
-            case "Zeus":
+            case "ZEUS":
                 return new Zeus(owner, uim);
 
-            case "Triton":
+            case "TRITON":
                 return new Triton(owner, uim);
 
-            case "Poseidon":
+            case "POSEIDON":
                 return new Poseidon(owner, uim);
 
-            case "Ares":
+            case "ARES":
                 return new Ares(owner, uim);
 
             default:

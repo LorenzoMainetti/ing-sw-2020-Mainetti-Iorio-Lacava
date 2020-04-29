@@ -4,6 +4,8 @@ package it.polimi.ingsw.PSP41.controller;
 
 import it.polimi.ingsw.PSP41.model.*;
 
+import java.io.IOException;
+
 public abstract class GodPower {
     static boolean athenaPower = false;
     Player player;
@@ -60,7 +62,7 @@ public abstract class GodPower {
      */
     public void moveBehaviour(Board board) {
         // Normal move behaviour
-        uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
+        //uim.readChosenDirection(getPlayer().getNickname(), am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
         int chosenRow = uim.getChosenRow();
         int chosenColumn = uim.getChosenColumn();
         checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
@@ -74,7 +76,7 @@ public abstract class GodPower {
     // It is not necessary to check the build because after a normal move the worker can always build in the cell it has moved from
     public void buildBehaviour(Board board) {
         // Normal behaviour of a worker's builds
-        uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
+        //uim.readChosenDirection(getPlayer().getNickname(), am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
         player.build(board, uim.getChosenRow(), uim.getChosenColumn());
     }
 
