@@ -83,19 +83,11 @@ public class ClientHandler implements Runnable {
             }
             else {
                 socketOut.writeObject("The lobby creator is choosing the number of players...");
-            }
-            // Mentre il primo giocatore non ha scelto il numero di giocatori, aspetto
-            while (Lobby.getPlayersNumber() == 0) {
-                Thread.sleep(1000);
+                lobby.waitPlayersNumber(this);
             }
 
-            if (position > Lobby.getPlayersNumber()) {
-                socketOut.writeObject("The lobby is full!");
-                closeConnection();
-            }
-            else {
-                lobby.setGodLike(this);
-            }
+            lobby.askNickname(this);
+            lobby.setGodLike(this);
 
             // TODO Gestione disconnessione client
             /*while(active && connected){

@@ -2,8 +2,8 @@ package it.polimi.ingsw.PSP41.utils;
 
 public class GameMessage {
 
-    public static String playersNumMessage = "Choose the number of players: 2 or 3?";
-    public static String nicknameMessage = "Enter nickname";
+    public static String playersNumMessage = "You are the first player in the lobby, choose the number of players: 2 or 3?";
+    public static String nicknameMessage = "Enter your nickname";
     public static String initPosMessage = "Choose initial position for your workers";
 
     public static String workerNumMessage = "Choose worker:";
@@ -20,6 +20,7 @@ public class GameMessage {
     public static String godDeckMessage = "APOLLO, ARES, ARTEMIS, ATHENA, ATLAS, DEMETER, HEPHAESTUS, HESTIA, MINOTAUR, PAN, POSEIDON, PROMETHEUS, TRITON, ZEUS";
     public static String infoMessage = "Insert input";
 
+    public static String fullLobby = "The lobby is already full!";
     public static String takenNameMessage = "This nickname is already taken. Please try again.";
     public static String occupiedCellMessage = "The chosen cell is not empty!";
 

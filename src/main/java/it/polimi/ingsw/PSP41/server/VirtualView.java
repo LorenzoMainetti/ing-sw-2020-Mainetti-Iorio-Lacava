@@ -45,8 +45,11 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         currClient.send(playersNumMessage);
         try {
             String message = currClient.getSocketIn().readLine();
-            int playersNum = Integer.parseInt(message);
-            notifyPlayersNumber(playersNum);
+            while (!message.equals("2") && !message.equals("3")) {
+                currClient.getSocketOut().writeObject("Invalid input, select a 2 or 3 players game");
+                message = currClient.getSocketIn().readLine();
+            }
+            notifyPlayersNumber(Integer.parseInt(message));
 
         } catch (IOException e) {
             e.printStackTrace();
