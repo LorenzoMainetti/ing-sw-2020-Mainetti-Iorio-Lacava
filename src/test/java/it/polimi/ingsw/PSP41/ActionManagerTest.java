@@ -61,7 +61,7 @@ public class ActionManagerTest {
     }
 
     @Test
-    public void testGetNeighbouringOpponentWorkers() {
+    public void testGetOpponentWorkers() {
         c = board.getCell(4, 4);
         Cell c1 = board.getCell(3, 3);
         Cell c2 = board.getCell(3, 4);
@@ -72,7 +72,7 @@ public class ActionManagerTest {
         c2.attachWorker(oppWorker);
 
         List<Position> test;
-        test = actionManager.getNeighbouringOpponentWorkers(board, 4, 4, false);
+        test = actionManager.getOpponentWorkers(board, 4, 4, false);
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(4, test.get(0).getPosColumn());
     }
@@ -92,7 +92,7 @@ public class ActionManagerTest {
 
 
         List<Position> test;
-        test = actionManager.getNeighbouringOpponentWorkers(board, 4, 4, false);
+        test = actionManager.getActiveOpponentWorkers(board, 4, 4, false);
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(3, test.get(0).getPosColumn());
     }

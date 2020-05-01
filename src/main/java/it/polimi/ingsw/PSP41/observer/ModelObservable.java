@@ -1,4 +1,4 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.observer;
 
 import it.polimi.ingsw.PSP41.model.Board;
 
@@ -20,10 +20,26 @@ public class ModelObservable {
         }
     }
 
-    public void notify(Board board){
+    public void notifyBoard(Board board){
         synchronized (observers) {
             for(ModelObserver observer : observers){
                 observer.updateState(board);
+            }
+        }
+    }
+
+    public void notifyWinner(String winner){
+        synchronized (observers) {
+            for(ModelObserver observer : observers){
+                observer.updateWinner(winner);
+            }
+        }
+    }
+
+    public void notifyLoser(String loser){
+        synchronized (observers) {
+            for(ModelObserver observer : observers){
+                observer.updateLoser(loser);
             }
         }
     }

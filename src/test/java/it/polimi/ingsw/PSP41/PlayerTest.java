@@ -74,28 +74,6 @@ public class PlayerTest {
     }
 
     @Test
-    public void testSwap() {
-        Worker opponent = new Worker(Color.BLUE, 1);
-        opponent.setPosition(board, 0, 2);
-        try {
-            player.swap(player.getWorker1(), board, 0, 2);
-        }
-        catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("Invalid position.", ex.getMessage());
-        }
-        catch (IllegalStateException ex) {
-            assertEquals("Position taken.", ex.getMessage());
-        }
-        finally {
-            assertSame(opponent, board.getCell(0, 3).getWorker());
-            assertEquals(0, player.getWorker1().getRow());
-            assertEquals(2, player.getWorker1().getColumn());
-            assertTrue(board.getCell(0, 2).isOccupied());
-        }
-
-    }
-
-    @Test
     public void buildTest() {
         player.build(board, 0, 3);
         assertEquals(1, board.getCell(0, 3).getLevel());

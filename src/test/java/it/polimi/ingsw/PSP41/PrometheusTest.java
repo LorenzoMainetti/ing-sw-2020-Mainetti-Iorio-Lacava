@@ -3,10 +3,10 @@ package it.polimi.ingsw.PSP41;
 import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.controller.Prometheus;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.ActionManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,12 +16,11 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit test for Prometheus GodPower.
  */
-/*
-public class PrometheusTest {
+
+public class PrometheusTest { /*
     GodPower godPower;
     Board board;
     Player player;
-    ActionManager actionManager;
     UserInputManager inputManager;
 
     @Before
@@ -30,9 +29,8 @@ public class PrometheusTest {
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
-        actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Prometheus(player, actionManager, inputManager);
+        inputManager = new UserInputManager(new CLI());
+        godPower = new Prometheus(player, inputManager);
     }
 
     @Test
@@ -92,9 +90,8 @@ public class PrometheusTest {
         board.getCell(1, 1).addLevel();
         board.getCell(1, 3).addLevel();
 
-        inputManager.setPower(true);
-        inputManager.setAdditionalPos(1, 2);
-        GodPower prometheus = new Prometheus(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower prometheus = new Prometheus(player, inputManager);
         prometheus.activeWorkers(board);
         prometheus.moveBehaviour(board);
 
@@ -115,9 +112,8 @@ public class PrometheusTest {
 
     @Test
     public void activePower_moveBehaviour_activated() {
-        inputManager.setPower(true);
-        inputManager.setAdditionalPos(1, 1);
-        GodPower prometheus = new Prometheus(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower prometheus = new Prometheus(player, inputManager);
         prometheus.activeWorkers(board);
         prometheus.moveBehaviour(board);
 
@@ -125,5 +121,5 @@ public class PrometheusTest {
         assertEquals(1, prometheus.getPlayer().getWorker1().getRow());
         assertEquals(1, prometheus.getPlayer().getWorker1().getColumn());
     }
-
-}*/
+*/
+}

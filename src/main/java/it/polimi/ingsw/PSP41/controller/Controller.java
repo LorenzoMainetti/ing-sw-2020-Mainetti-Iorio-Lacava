@@ -1,17 +1,16 @@
 package it.polimi.ingsw.PSP41.controller;
 
-import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.model.Worker;
 import it.polimi.ingsw.PSP41.server.VirtualView;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controller class that handles the game logic
  */
 public class Controller {
-    private Board board;
+    private final Board board;
     private UserInputManager uim;
     private VirtualView virtualView;
     private List<GodPower> activeGodList;
@@ -23,36 +22,20 @@ public class Controller {
         this.activeGodList = activeGodList;
     }
 
+    /**
+     * Set Worker initial Positions for each player
+     */
     public void setWorkers() {
         for (GodPower godPower : activeGodList) {
-
             virtualView.setCurrPlayer(godPower.getPlayer().getNickname());
-            boolean illegal = true;
             virtualView.startTurn();
 
-            // Posiziono worker 1
-            while (illegal) {
-                virtualView.requestInitPos();
-                try {
-                    godPower.getPlayer().getWorker1().setPosition(board, uim.getChosenRow(), uim.getChosenColumn());
-                    illegal = false;
-                } catch (IllegalStateException e) {
-                    virtualView.errorTakenPosition();
-                }
-            }
+            // set position worker 1
+            checkWorkerPos(godPower.getPlayer().getWorker1());
 
-            illegal = true;
+            // set position worker 2
+            checkWorkerPos(godPower.getPlayer().getWorker2());
 
-            // Posiziono worker 2
-            while (illegal) {
-                virtualView.requestInitPos();
-                try {
-                    godPower.getPlayer().getWorker2().setPosition(board, uim.getChosenRow(), uim.getChosenColumn());
-                    illegal = false;
-                } catch (IllegalStateException e) {
-                    virtualView.errorTakenPosition();
-                }
-            }
         }
     }
 
@@ -76,24 +59,47 @@ public class Controller {
      * @param godPower current player's GodPower
      * @param board current game state
      */
+    //TODO gestire rimozione player/client
     private void performTurn(GodPower godPower, Board board) {
+
         virtualView.setCurrPlayer(godPower.getPlayer().getNickname());
         virtualView.startTurn();
         godPower.activeWorkers(board);
-        if(godPower.getPlayer().isStuck()) {
-            activeGodList.stream().
-                    filter(godPower1 -> !godPower.getPlayer().isStuck()).
-                    collect(Collectors.toList());
-            if (activeGodList.size() == 1)
-                activeGodList.get(0).getPlayer().setWinner(true);
-        }
-        else {
+
+        boolean isStuck = godPower.getPlayer().isStuck();
+
+        activeGodList.removeIf(godPower1 -> godPower1.getPlayer().isStuck());
+        if(activeGodList.size() == 1)
+            activeGodList.get(0).getPlayer().setWinner(true);
+
+        if(!isStuck) {
             virtualView.movePhase();
             godPower.moveBehaviour(board);
+
             if(!godPower.getPlayer().isWinner()) {
                 virtualView.buildPhase();
                 godPower.buildBehaviour(board);
-                virtualView.endTurn();
+            }
+        }
+        virtualView.endTurn();
+    }
+
+    /**
+     * Set a Worker initial Position and handle any possible exception
+     * @param worker worker to be set
+     */
+    private void checkWorkerPos(Worker worker) {
+        boolean illegal = true;
+
+        while (illegal) {
+
+            virtualView.requestInitPos();
+
+            try {
+                worker.setPosition(board, uim.getChosenRow(), uim.getChosenColumn());
+                illegal = false;
+            } catch (IllegalStateException e) {
+                virtualView.errorTakenPosition();
             }
         }
     }

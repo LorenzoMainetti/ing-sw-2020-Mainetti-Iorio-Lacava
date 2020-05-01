@@ -53,7 +53,6 @@ public class Cell implements Serializable {
     public void removeLevel() throws IllegalStateException {
         if (level > 0)
             level--;
-            //notify obs
         else
             throw new IllegalStateException("There are no levels to remove.");
     }

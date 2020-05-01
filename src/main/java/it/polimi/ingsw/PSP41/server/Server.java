@@ -28,6 +28,7 @@ public class Server {
         this.serverSocket = new ServerSocket(PORT);
     }*/
 
+    //TODO rendere questo metodo run e fare ServerApp con il main
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
         int clients = 0;

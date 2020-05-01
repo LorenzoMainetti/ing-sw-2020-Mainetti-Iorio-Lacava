@@ -5,6 +5,7 @@ import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.controller.Minotaur;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.*;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,12 +14,11 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit test for Minotaur GodPower.
  */
-/*
-public class MinotaurTest {
+
+public class MinotaurTest { /*
     GodPower godPower;
     Board board;
     Player player;
-    ActionManager actionManager;
     UserInputManager inputManager;
     Worker opponent;
 
@@ -28,9 +28,8 @@ public class MinotaurTest {
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
-        actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Minotaur(player, actionManager, inputManager);
+        inputManager = new UserInputManager(new CLI());
+        godPower = new Minotaur(player, inputManager);
     }
 
     @Test
@@ -50,8 +49,8 @@ public class MinotaurTest {
         opponent.setPosition(board, 0, 1);
         board.getCell(0,0).addLevel();
         board.getCell(0,0).addLevel();
-        inputManager.setPower(true);
-        GodPower minotaur = new Minotaur(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower minotaur = new Minotaur(player, inputManager);
         minotaur.activeWorkers(board);
         minotaur.moveBehaviour(board);
 
@@ -66,8 +65,8 @@ public class MinotaurTest {
         opponent = new Worker(Color.BLUE, 1);
         opponent.setPosition(board, 0, 3);
         board.getCell(0,4).setDome(true);
-        inputManager.setPower(true);
-        GodPower minotaur = new Minotaur(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower minotaur = new Minotaur(player, inputManager);
         minotaur.activeWorkers(board);
         minotaur.moveBehaviour(board);
 
@@ -76,5 +75,5 @@ public class MinotaurTest {
         assertEquals(0, opponent.getRow());
         assertEquals(3, opponent.getColumn());
     }
-
-}*/
+*/
+}

@@ -1,13 +1,14 @@
 package it.polimi.ingsw.PSP41.model;
 
-import it.polimi.ingsw.PSP41.ModelObservable;
+
+import it.polimi.ingsw.PSP41.observer.ModelObservable;
 
 import java.io.Serializable;
 
 
 public class Worker extends ModelObservable implements Serializable {
-    private static final long serialVersionUID = -3733473510084905679L;
 
+    private static final long serialVersionUID = -3733473510084905679L;
     private final Color color;
     private final int number;
     private int row;
@@ -42,7 +43,7 @@ public class Worker extends ModelObservable implements Serializable {
      * @param row of the worker position
      * @param column of the worker position
      */
-    public void setPosition(Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException {
+    public void setPosition(Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException  {
         if(board.getCell(row, column).isOccupied())
             throw new IllegalStateException("Position taken.");
         else if (!board.inBound(row, column))
@@ -52,7 +53,7 @@ public class Worker extends ModelObservable implements Serializable {
             this.column = column;
             board.getCell(row, column).attachWorker(this);
 
-            notify(board/*.clone()*/);
+            notifyBoard(board.clone());
         }
     }
 

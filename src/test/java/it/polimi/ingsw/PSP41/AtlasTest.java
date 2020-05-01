@@ -18,7 +18,8 @@ import org.junit.Test;
  * Unit test for Atlas GodPower.
  */
 
-/*public class AtlasTest {
+public class AtlasTest {
+    /*
     Atlas godPower;
     Board board;
     Player player;
@@ -56,7 +57,7 @@ import org.junit.Test;
         assertEquals(1, board.getCell(0, 1).getLevel());
         assertTrue(board.getCell(0, 1).isDome());
     }
-
-}*/
+*/
+}
 
 

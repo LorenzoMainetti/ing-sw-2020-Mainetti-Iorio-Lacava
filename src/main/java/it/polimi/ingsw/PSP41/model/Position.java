@@ -1,6 +1,9 @@
 package it.polimi.ingsw.PSP41.model;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
+    private static final long serialVersionUID = -7205220472160839606L;
     private final int posRow;
     private final int posColumn;
     private boolean perimeter = false;

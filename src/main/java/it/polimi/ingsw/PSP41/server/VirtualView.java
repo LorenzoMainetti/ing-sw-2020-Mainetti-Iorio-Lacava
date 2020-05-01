@@ -1,17 +1,20 @@
 package it.polimi.ingsw.PSP41.server;
 
 import it.polimi.ingsw.PSP41.model.Position;
-import it.polimi.ingsw.PSP41.ModelObserver;
-import it.polimi.ingsw.PSP41.ViewObservable;
+import it.polimi.ingsw.PSP41.observer.ModelObserver;
+import it.polimi.ingsw.PSP41.observer.ViewObservable;
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.utils.PositionMessage;
 
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static it.polimi.ingsw.PSP41.GameMessage.*;
+import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
+//TODO VirtualView e RemoteView implementano la stessa interfaccia View
 public class VirtualView extends ViewObservable implements ModelObserver {
+
     private Map<String, ClientHandler> clients = new ConcurrentHashMap<>();
     String currPlayer;
 
@@ -26,10 +29,11 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     //TODO:  deserialize messages from Clients and notify inputs to UIM
 
-    /*public void requestNickname(ClientHandler currClient) {
+    public void requestNickname(ClientHandler currClient) {
+        currClient.send(nicknameMessage);
         try {
             String nickname = currClient.getSocketIn().readLine();
-            //notifyNickname(nickname);
+            notifyNickname(nickname);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,34 +42,24 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     public void requestPlayersNum(ClientHandler currClient) {
         //send a message that when received by the client trigger askPlayersNumber method in CLI
-        currClient.asyncSend(playersNumMessage);
+        currClient.send(playersNumMessage);
         try {
             String message = currClient.getSocketIn().readLine();
             int playersNum = Integer.parseInt(message);
-            //notifyPlayersNumber(playersNum);
+            notifyPlayersNumber(playersNum);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     public void requestInitPos() {
-        //MODIFICHE TEMP PER TESTING
-        //posso mandarlo a tutti i clients
-        //clients.get(currPlayer).asyncSend(initPosMessage);
+
+        clients.get(currPlayer).send(initPosMessage);
         try {
-            //clients.get(currPlayer).getSocketOut().writeObject("Turn start!");
-            //clients.get(currPlayer).getSocketOut().writeObject("ROW: ");
-            clients.get(currPlayer).send("Row: ");
-            String row = clients.get(currPlayer).getSocketIn().readLine();
-            //clients.get(currPlayer).getSocketOut().writeObject("COL: ");
-            clients.get(currPlayer).send("Col: ");
-            String col = clients.get(currPlayer).getSocketIn().readLine();
-
-            notifyPosition(new Position(Integer.parseInt(row), Integer.parseInt(col)));
-
-            //int initPos = Integer.parseInt(message);
-            //notifyPosition(new Position(initPos / 10, initPos % 10));
+            String message = clients.get(currPlayer).getSocketIn().readLine();
+            int initPos = Integer.parseInt(message);
+            notifyPosition(new Position(initPos / 10, initPos % 10));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,9 +88,9 @@ public class VirtualView extends ViewObservable implements ModelObserver {
             e.printStackTrace();
         }
     }
-/*
+
     public void requestPosition(PositionMessage positionMessage) {
-        clients.get(currPlayer).asyncSend(positionMessage);
+        clients.get(currPlayer).send(positionMessage);
         try {
             String message = clients.get(currPlayer).getSocketIn().readLine();
             int initPos = Integer.parseInt(message);
@@ -106,7 +100,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
             e.printStackTrace();
         }
     }
-*/
+
 
     //TODO:  serialize Strings and Objects into messages to be sent to Clients
     //OBSERVER
@@ -147,10 +141,16 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
 
     //SET UP
+
+    public void requestInfo(ClientHandler currClient) {
+        currClient.send(infoMessage);
+    }
+
     public void sendGodName(String godName) {
         clients.get(currPlayer).send(godName);
         //send a message that when received by the client trigger printGodPower method in CLI
     }
+
 
 
     //TURN:
@@ -178,20 +178,13 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     //HANDLE ERRORS:
 
-    /*public void errorTakenNickname(String nickName) {
-        if(clients.containsKey(nickName))
-            try {
-            clients.get(nickName).getSocketOut().writeObject(takenNameMessage);
-                clients.get(nickName).getSocketOut().flush();
-            } catch(IOException e){
-                System.err.println(e.getMessage());
-            }
-        //send an error message that when received by the client trigger nicknameTaken method in CLI
-    }*/
+    public void errorTakenNickname(ClientHandler currClient) {
+        currClient.send(takenNameMessage);
+        requestNickname(currClient);
+    }
 
     public void errorTakenPosition() {
         clients.get(currPlayer).send(occupiedCellMessage);
-        //send an error message that when received by the client trigger positionTaken method in CLI
     }
 
 }

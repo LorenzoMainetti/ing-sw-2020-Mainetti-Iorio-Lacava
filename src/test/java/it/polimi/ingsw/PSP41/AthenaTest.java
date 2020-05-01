@@ -4,10 +4,10 @@ package it.polimi.ingsw.PSP41;
 import it.polimi.ingsw.PSP41.controller.Athena;
 import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.ActionManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,12 +17,11 @@ import static org.junit.Assert.*;
 /**
  * Unit test for Athena GodPower.
  */
-/*
-public class AthenaTest {
+
+public class AthenaTest { /*
     GodPower godPower;
     Board board;
     Player player;
-    ActionManager actionManager;
     UserInputManager inputManager;
 
     @Before
@@ -31,9 +30,8 @@ public class AthenaTest {
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
-        actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Athena(player, actionManager, inputManager);
+        inputManager = new UserInputManager(new CLI());
+        godPower = new Athena(player, inputManager);
     }
 
     @Test
@@ -56,5 +54,5 @@ public class AthenaTest {
         assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
         assertTrue(GodPower.getAthenaPower());
     }
-
-}*/
+*/
+}

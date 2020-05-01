@@ -21,6 +21,7 @@ public class Triton extends GodPower {
      * Your Move: If your Worker moves into a perimeter space, it may move again
      * @param board current board state
      */
+    //TODO mettere un while, tritone può continuare a muoversi fintanto che è sul perimetro
     @Override
     public void moveBehaviour(Board board) {
         // If the power isn't active, normal turn

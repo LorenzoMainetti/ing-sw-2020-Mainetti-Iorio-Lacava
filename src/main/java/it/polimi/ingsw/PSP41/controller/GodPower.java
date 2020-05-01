@@ -1,10 +1,7 @@
 package it.polimi.ingsw.PSP41.controller;
 
-//import java.util.List;
 
 import it.polimi.ingsw.PSP41.model.*;
-
-import java.io.IOException;
 
 public abstract class GodPower {
     static boolean athenaPower = false;
@@ -13,13 +10,14 @@ public abstract class GodPower {
     UserInputManager uim;
     Worker currWorker;
 
+
     public Player getPlayer() {
         return player;
     }
 
-    public static boolean getAthenaPower() {
+    /*public static boolean getAthenaPower() {
         return athenaPower;
-    }
+    }*/
 
 
     // The player isn't going to be able to make an auto-blocking move, but he can make a move
@@ -27,19 +25,20 @@ public abstract class GodPower {
 
     /**
      * Normal management of the worker choice at the start of a turn: the player can only choose workers that are able to move,
-     * if both workers are blocked the player lose the game
+     * if both workers are blocked the player loses the game
      * @param board current board state
      */
     public void activeWorkers(Board board) {
         // Worker management in case no cells are available: (inside the class that manages the turns)
         // before calling behaviour it is necessary to check the available moves so that the player
         // knows which are the workers that are able to move. In case none of them is able to move, the player is beaten
+
         if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            player.setStuck(true);
             // Detach worker from the cells
             board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
             board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
+            player.setStuck(true, board);
         }
         else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
             currWorker = player.getWorker2();
@@ -61,8 +60,7 @@ public abstract class GodPower {
      * @param board game board
      */
     public void moveBehaviour(Board board) {
-        // Normal move behaviour
-        //uim.readChosenDirection(getPlayer().getNickname(), am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
+        uim.readChosenDirection(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower), currWorker.getRow(), currWorker.getColumn());
         int chosenRow = uim.getChosenRow();
         int chosenColumn = uim.getChosenColumn();
         checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
@@ -75,8 +73,7 @@ public abstract class GodPower {
      */
     // It is not necessary to check the build because after a normal move the worker can always build in the cell it has moved from
     public void buildBehaviour(Board board) {
-        // Normal behaviour of a worker's builds
-        //uim.readChosenDirection(getPlayer().getNickname(), am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
+        uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
         player.build(board, uim.getChosenRow(), uim.getChosenColumn());
     }
 
@@ -85,7 +82,7 @@ public abstract class GodPower {
      * @param startCell worker present cell
      * @param endCell worker future cell
      */
-    public void checkWinCondition(Cell startCell, Cell endCell) {
+    void checkWinCondition(Cell startCell, Cell endCell) {
         if (startCell.getLevel() == 2 && endCell.getLevel() == 3) {
             player.setWinner(true);
         }

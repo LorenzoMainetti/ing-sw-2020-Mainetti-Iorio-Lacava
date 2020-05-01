@@ -8,6 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class Client {
 
+    //TODO rendere questo metodo run e fare ClientApp con il main
     public static void main(String[] args) {
 
         boolean connected = true;

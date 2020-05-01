@@ -5,24 +5,27 @@ import static org.junit.Assert.*;
 import it.polimi.ingsw.PSP41.controller.Artemis;
 import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.ActionManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 
 /**
  * Unit test for Artemis GodPower.
  */
-/*
-public class ArtemisTest {
+
+public class ArtemisTest { /*
     GodPower godPower;
     Board board;
     Player player;
-    ActionManager actionManager;
     UserInputManager inputManager;
+    InputStream inputTest;
 
     @Before
     public void setup() {
@@ -30,9 +33,10 @@ public class ArtemisTest {
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
-        actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Artemis(player, actionManager, inputManager);
+        inputManager = new UserInputManager(new CLI());
+        godPower = new Artemis(player, inputManager);
+
+        //inputTest = System.in;
     }
 
     @Test
@@ -44,7 +48,7 @@ public class ArtemisTest {
         board.getCell(1, 3).setDome(true);
 
         godPower.activeWorkers(board);
-        //assertFalse(godPower.whichWorker());
+        assertEquals(2, player.getWorker2().getNumber());
     }
 
     @Test
@@ -54,17 +58,24 @@ public class ArtemisTest {
         board.getCell(3, 4).setDome(true);
 
         godPower.activeWorkers(board);
-        //assertSame(godPower.getPlayer().getWorker1(), godPower.getCurrWorker());
+        assertEquals(1, player.getWorker1().getNumber());
     }
 
     @Test
     public void userChoice_activeWorkers() {
+        String input = "2";
+        inputTest = new ByteArrayInputStream(input.getBytes());
+        System.setIn(inputTest);
+
         godPower.activeWorkers(board);
-        //assertSame(godPower.getPlayer().getWorker1(), godPower.getCurrWorker());
+        assertEquals(2, player.getWorker1().getNumber());
     }
 
     @Test
     public void notActivePower_moveBehaviour() {
+        String input = "1";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
         godPower.activeWorkers(board);
         godPower.moveBehaviour(board);
 
@@ -74,9 +85,8 @@ public class ArtemisTest {
 
     @Test
     public void activePower_moveBehaviour() {
-        inputManager.setPower(true);
-        inputManager.setAdditionalPos(1, 0);
-        GodPower artemis = new Artemis(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower artemis = new Artemis(player, inputManager);
         artemis.activeWorkers(board);
         artemis.moveBehaviour(board);
 
@@ -105,6 +115,6 @@ public class ArtemisTest {
 
         assertTrue(godPower.getPlayer().isWinner());
     }
+*/
 
-
-}*/
+}

@@ -6,6 +6,7 @@ import it.polimi.ingsw.PSP41.controller.Apollo;
 import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.*;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,12 +14,11 @@ import org.junit.Test;
 /**
  * Unit test for Apollo GodPower.
  */
-/*
-public class ApolloTest {
+
+public class ApolloTest { /*
     GodPower godPower;
     Board board;
     Player player;
-    ActionManager actionManager;
     UserInputManager inputManager;
     Worker opponent;
 
@@ -28,9 +28,8 @@ public class ApolloTest {
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
-        actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Apollo(player, actionManager, inputManager);
+        inputManager = new UserInputManager(new CLI());
+        godPower = new Apollo(player, inputManager);
     }
 
     @Test
@@ -42,6 +41,7 @@ public class ApolloTest {
         board.getCell(1, 3).setDome(true);
 
         godPower.activeWorkers(board);
+        assertEquals(2, player.getWorker2().getNumber());
     }
 
     @Test
@@ -51,6 +51,7 @@ public class ApolloTest {
         board.getCell(3, 4).setDome(true);
 
         godPower.activeWorkers(board);
+        assertEquals(1, player.getWorker1().getNumber());
     }
 
     @Test
@@ -62,12 +63,13 @@ public class ApolloTest {
         assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
     }
 
+
     @Test
     public void activePower_moveBehaviour() {
         opponent = new Worker(Color.BLUE, 1);
         opponent.setPosition(board, 0, 1);
-        inputManager.setPower(true);
-        GodPower apollo = new Apollo(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower apollo = new Apollo(player, inputManager);
         apollo.activeWorkers(board);
         apollo.moveBehaviour(board);
 
@@ -98,7 +100,7 @@ public class ApolloTest {
 
         assertTrue(godPower.getPlayer().isWinner());
     }
-
+*/
 
 }
-*/
+

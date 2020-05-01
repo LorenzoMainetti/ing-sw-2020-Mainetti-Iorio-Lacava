@@ -1,8 +1,9 @@
 package it.polimi.ingsw.PSP41.client;
 
-import it.polimi.ingsw.PSP41.ModelObservable;
-import it.polimi.ingsw.PSP41.UiObserver;
+import it.polimi.ingsw.PSP41.model.Position;
+import it.polimi.ingsw.PSP41.observer.UiObserver;
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.utils.PositionMessage;
 import it.polimi.ingsw.PSP41.view.CLI;
 
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.NoSuchElementException;
+
+import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 public class NetworkHandler implements Runnable, UiObserver {
 
@@ -53,17 +56,37 @@ public class NetworkHandler implements Runnable, UiObserver {
 
     public void manageInputFromServer(Object inputObject) {
         if (inputObject instanceof String) {
-            if (inputObject.equals("Turn start!") ||
-                    inputObject.equals("You are the first player in the lobby, choose the number of players")) {
+            if (inputObject.equals(startTurnMessage)) {
                 myTurn = true;
+                cli.printMessage((String) inputObject);
             }
-            if (inputObject.equals("End turn") || inputObject.equals("Wait for the players to join...")) {
+            else if (inputObject.equals(endTurnMessage) || inputObject.equals("Wait for the players to join...")) {
                 myTurn = false;
+                cli.printMessage((String) inputObject);
             }
-            System.out.println((String)inputObject);
+            else if(inputObject.equals(playersNumMessage))
+                cli.askPlayersNumber();
+            else if (inputObject.equals(initPosMessage))
+                cli.askInitialPosition();
+            else if(inputObject.equals(nicknameMessage))
+                cli.askNickname();
+            else if (inputObject.equals(infoMessage))
+                cli.askClient();
+            else if(inputObject.equals(workerNumMessage))
+                cli.askWorker();
+            else if(inputObject.equals(activatePowMessage))
+                cli.askPowerActivation();
+            else
+                cli.printMessage((String) inputObject);
+
         }
         else if (inputObject instanceof Board) {
             cli.printBoard((Board) inputObject);
+        }
+
+        else if (inputObject instanceof PositionMessage) {
+            PositionMessage message = (PositionMessage) inputObject;
+            cli.displayOptions(message.getValidPos(), message.getInitialPos().getPosRow(), message.getInitialPos().getPosColumn());
         }
 
         else {

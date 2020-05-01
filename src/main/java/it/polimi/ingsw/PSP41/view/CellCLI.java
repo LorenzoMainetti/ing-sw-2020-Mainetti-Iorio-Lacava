@@ -22,6 +22,7 @@ public class CellCLI {
         return color;
     }
 
+
     public void setString(String string) {
         this.string = string;
     }

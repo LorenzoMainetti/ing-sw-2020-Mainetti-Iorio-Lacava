@@ -1,4 +1,4 @@
-package it.polimi.ingsw.PSP41;
+package it.polimi.ingsw.PSP41.observer;
 
 public interface UiObserver {
 

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.PSP41.view;
 
-import it.polimi.ingsw.PSP41.UiObservable;
-import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Position;
+import it.polimi.ingsw.PSP41.observer.UiObservable;
+import it.polimi.ingsw.PSP41.model.Board;
 
 
 import java.util.*;
@@ -34,6 +34,42 @@ public class CLI extends UiObservable implements Runnable {
      * Ask the first Player the number of Players that are going to play (2 or 3) and get the input
      */
     public void askPlayersNumber() {
+        int players = -1;
+        boolean firstError = true;
+        do {
+            System.out.println("You are the first player in the lobby, Choose the number of players: 2 or 3?");
+            if(in.hasNextInt()) {
+                final int num = in.nextInt();
+                in.nextLine();
+                if (num != 2 && num != 3)
+                    firstError = promptInputError(firstError, "Sorry, we support only a 2 or 3 players game.");
+                else
+                    players = num;
+            }
+            else {
+                in.nextLine();
+                firstError = promptInputError(firstError, "Invalid integer!");
+            }
+        } while(players == -1);
+
+        notify(Integer.toString(players));
+    }
+
+    public void askNickname() {
+        String nickname;
+
+        System.out.println("Enter your nickname: ");
+        //gestisci eventuali errori di formattazione o nomi doppi -> nel controller
+
+        System.out.print(">>> ");
+        nickname = in.nextLine();
+
+        notify(nickname);
+    }
+
+
+    public void askClient() {
+        notify(in.nextLine());
     }
 
     /**
@@ -44,20 +80,22 @@ public class CLI extends UiObservable implements Runnable {
         System.out.println(godPower+ColorCLI.RESET+"\n");
     }
 
-/*
+
     public void askInitialPosition() {
         System.out.println("Choose the initial position for your worker. ");
         int row = askRow();
         int column = askColumn();
 
-        notifyPosition(new Position(row, column));
+        String pos = Integer.toString(row)+Integer.toString(column);
+
+        notify(pos);
     }
-*/
+
 
     /**
      * Ask row to the Player and get the input
      */
-/*    private int askRow() {
+    private int askRow() {
         int row = -1;
         boolean firstError = true;
 
@@ -79,12 +117,12 @@ public class CLI extends UiObservable implements Runnable {
 
         return row;
     }
-*/
+
 
     /**
      * Ask column to the Player and get the input
      */
-/*    private int askColumn() {
+    private int askColumn() {
         int column = -1;
         boolean firstError = true;
 
@@ -106,7 +144,7 @@ public class CLI extends UiObservable implements Runnable {
 
         return column;
     }
-*/
+
 
     //TURN methods
 
@@ -118,7 +156,7 @@ public class CLI extends UiObservable implements Runnable {
     /**
      * Ask the Player if he wants to use Worker 1 or 2 and get the input
      */
-/*    public void askWorker() {
+    public void askWorker() {
         int chosenWorker = -1;
         boolean firstError = true;
 
@@ -138,18 +176,14 @@ public class CLI extends UiObservable implements Runnable {
             }
         } while(chosenWorker == -1);
 
-        if(chosenWorker == 1)
-            notifyWorker(true);
-        else
-            notifyWorker(false);
+        notify(Integer.toString(chosenWorker));
     }
-*/
+
 
     /**
      * Ask the Player if he wants to activate the God Power and get the input
      */
-/*    public void askPowerActivation() {
-        boolean activate = false;
+    public void askPowerActivation() {
         String answer = null;
         System.out.println("Do you want to activate your God Power? Type yes or no.");
 
@@ -161,11 +195,9 @@ public class CLI extends UiObservable implements Runnable {
                 answer = currentAnswer;
         } while(answer == null);
 
-        if(answer.equalsIgnoreCase("yes")) activate = true;
-
-        notifyPower(activate);
+        notify(answer);
     }
-*/
+
     /**
      * Ask the Player if he wants to keep building and get the input (method used by Poseidon)
      */
@@ -364,74 +396,111 @@ public class CLI extends UiObservable implements Runnable {
      * @param row of the current cell
      * @param column of the current cell
      */
-/*    public void displayOptions(List<Position> positions, int row, int column) {
-        System.out.println("These are the valid directions: ");
+    //TODO spezzare in chiede e ricevi
+   public void displayOptions(List<Position> positions, int row, int column) {
+       System.out.println("These are the valid directions: ");
 
-        List<String> directions = new ArrayList<>();
-        if(positions != null) {
-            for(Position position : positions)
-            {
-                if(position.getPosRow() == row) {
-                    if(position.getPosColumn() == column+1)
-                        directions.add("E");
+       List<String> directions = new ArrayList<>();
+       if (positions != null) {
+           for (Position position : positions) {
+               if (position.getPosRow() == row) {
+                   if (position.getPosColumn() == column + 1)
+                       directions.add("E");
 
-                    else if(position.getPosColumn() == column-1)
-                        directions.add("W");
+                   else if (position.getPosColumn() == column - 1)
+                       directions.add("W");
+               } else if (position.getPosRow() == row - 1) {
+                   if (position.getPosColumn() == column + 1)
+                       directions.add("NE");
 
-                    else if(position.getPosColumn() == column)
-                        directions.add("CURR");
-                }
-                else if(position.getPosRow() == row-1) {
-                    if(position.getPosColumn() == column+1)
-                        directions.add("NE");
+                   else if (position.getPosColumn() == column - 1)
+                       directions.add("NW");
 
-                    else if(position.getPosColumn() == column-1)
-                        directions.add("NW");
+                   else if (position.getPosColumn() == column)
+                       directions.add("N");
+               } else if (position.getPosRow() == row + 1) {
+                   if (position.getPosColumn() == column + 1)
+                       directions.add("SE");
 
-                    else if(position.getPosColumn() == column)
-                        directions.add("N");
-                }
+                   else if (position.getPosColumn() == column - 1)
+                       directions.add("SW");
 
-                else if(position.getPosRow() == row+1) {
-                    if(position.getPosColumn() == column+1)
-                        directions.add("SE");
+                   else if (position.getPosColumn() == column)
+                       directions.add("S");
+               }
+           }
+           for (String direction : directions) {
+               System.out.print(" | " + direction + " | ");
+           }
+           System.out.println("\n");
+       } else {
+           System.out.println("No moves available.\n");
+       }
+       askDirection(directions, row, column);
+   }
 
-                    else if(position.getPosColumn() == column-1)
-                        directions.add("SW");
+    /**
+     *
+     */
+   private void askDirection(List<String> directions, int row, int column) {
 
-                    else if(position.getPosColumn() == column)
-                        directions.add("S");
-                }
-
-            }
-            for(String direction : directions) {
-                System.out.print(" | "+direction+" | ");
-            }
-            System.out.println("\n");
-        }
-        else {
-            System.out.println("No moves available.\n");
-        }
-
-        String answer = null;
-        boolean firstError = true;
+    String answer = null;
+    boolean firstError = true;
 
         do {
-            System.out.print("Choose one:  ");
-            if(in.hasNextLine()) {
-                final String curr = in.nextLine().toUpperCase();
+        System.out.print("Choose one:  ");
+        if(in.hasNextLine()) {
+            final String curr = in.nextLine().toUpperCase();
 
-                if (!directions.contains(curr))
-                    firstError = promptInputError(firstError, "Invalid direction!");
-                else
-                    answer = curr;
-            }
+            if (!directions.contains(curr))
+                firstError = promptInputError(firstError, "Invalid direction!");
+            else
+                answer = curr;
+        }
 
-        } while(answer == null);
+    } while(answer == null);
 
-        notifyDirection(answer);
+    int chosenRow = -1;
+    int chosenColumn = -1;
+
+        switch(answer) {
+        case "N":
+            chosenRow = row - 1;
+            chosenColumn = column;
+            break;
+        case "NE":
+            chosenRow = row - 1;
+            chosenColumn = column + 1;
+            break;
+        case "E":
+            chosenRow = row;
+            chosenColumn = column + 1;
+            break;
+        case "SE":
+            chosenRow = row + 1;
+            chosenColumn = column + 1;
+            break;
+        case "S":
+            chosenRow = row + 1;
+            chosenColumn = column;
+            break;
+        case "SW":
+            chosenRow = row + 1;
+            chosenColumn = column - 1;
+            break;
+        case "W":
+            chosenRow = row;
+            chosenColumn = column - 1;
+            break;
+        case "NW":
+            chosenRow = row - 1;
+            chosenColumn = column - 1;
+            break;
     }
-*/
+
+    notify(Integer.toString(chosenRow)+Integer.toString(chosenColumn));
+}
+
 
     /**
      * Prompts an input error
@@ -449,13 +518,18 @@ public class CLI extends UiObservable implements Runnable {
         return false;
     }
 
+    public void printMessage(String message) {
+        System.out.println(message);
+    }
+
     @Override
     public void run() {
-        while(true) {
+        setUpGame();
+        /*while(true) {
             //TODO ogni volta che ricevo un input dal client lo notifico al NetworkHandler
             String fromClient = in.nextLine();
             notify(fromClient);
-        }
+        }*/
     }
 
 }

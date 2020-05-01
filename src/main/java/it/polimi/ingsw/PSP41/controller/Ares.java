@@ -23,9 +23,7 @@ public class Ares extends GodPower {
     public void buildBehaviour(Board board) {
         Worker otherWorker;
 
-        // Normal behaviour of a worker's builds
-        uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
-        player.build(board, uim.getChosenRow(), uim.getChosenColumn());
+        super.buildBehaviour(board);
 
         if(uim.isChosenWorker())
             otherWorker = player.getWorker2();

@@ -22,21 +22,21 @@ public class Minotaur extends GodPower {
     public void activeWorkers(Board board) {
         // Check to see if the workers can move in a free cell and/or in an occupied one
         if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
-                am.getNeighbouringOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
+                am.getOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
-                am.getNeighbouringOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            player.setStuck(true);
+                am.getOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
             // Detach worker form corresponding cells
             board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
             board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
+            player.setStuck(true, board);
         }
         else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
-                am.getNeighbouringOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
+                am.getOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
             currWorker = player.getWorker2();
         }
 
         else if(am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
-                am.getNeighbouringOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
+                am.getOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
             currWorker = player.getWorker1();
         }
 
@@ -59,7 +59,7 @@ public class Minotaur extends GodPower {
         int deltaColumn;
         List<Position> powerCells = new ArrayList<>();
         // I show which cells between the occupied ones are eligible to force "back" the opponent's worker
-        for (Position pos: am.getNeighbouringOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
+        for (Position pos: am.getOpponentWorkers(board, currWorker.getRow(), currWorker.getColumn(), athenaPower)) {
             deltaRow = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getRow() - currWorker.getRow();
             deltaColumn = board.getCell(pos.getPosRow(), pos.getPosColumn()).getWorker().getColumn() - currWorker.getColumn();
             // If the cell "back" to the opponent's worker is free and valid I add the opponent's worker to the list
@@ -76,7 +76,10 @@ public class Minotaur extends GodPower {
         int chosenColumn;
         // To be able to activate the power, the list of occupied cells for which it is possible to force "back" the opponent's worker can't be empty
         if (!powerCells.isEmpty()) {
-            uim.readPower();
+            if(am.getValidMoves(board, currWorker.getRow(), currWorker.getColumn(), athenaPower).isEmpty())
+                uim.updatePower(true);
+            else
+                uim.readPower();
             // If the power is active, I move the two workers
             if (uim.isPower()) {
                 uim.readChosenDirection(powerCells, currWorker.getRow(), currWorker.getColumn());

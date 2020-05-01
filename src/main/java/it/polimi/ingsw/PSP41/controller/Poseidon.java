@@ -19,9 +19,10 @@ public class Poseidon extends GodPower {
      * End of your turn: If your Worker that hasn't been moved is at ground 0, it can build up to three times
      * @param board current board state
      */
-/*    @Override
+    //TODO devo aggiornare otherBuildCell dopo ogni build (potrebbe aver costruito una dome)
+    @Override
     public void buildBehaviour(Board board) {
-        Worker otherWorker;
+        /*Worker otherWorker;
 
         // Normal behaviour of a worker's builds
         uim.readChosenDirection(am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn()), currWorker.getRow(), currWorker.getColumn());
@@ -51,12 +52,12 @@ public class Poseidon extends GodPower {
                      }
                  }
             }
-        }
+        } */
     }
 
     @Override
     public String toString() {
         return ("If your unmoved worker is on the ground level, it may build up to three times.");
     }
-*/
+
 }

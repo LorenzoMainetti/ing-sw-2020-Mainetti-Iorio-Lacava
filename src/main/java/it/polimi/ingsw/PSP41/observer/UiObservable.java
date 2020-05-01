@@ -1,6 +1,4 @@
-package it.polimi.ingsw.PSP41;
-
-import it.polimi.ingsw.PSP41.model.Board;
+package it.polimi.ingsw.PSP41.observer;
 
 import java.util.ArrayList;
 import java.util.List;

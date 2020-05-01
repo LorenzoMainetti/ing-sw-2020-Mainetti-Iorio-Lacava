@@ -31,7 +31,7 @@ public class Hestia extends GodPower {
 
         // To activate the power it is necessary that the worker could still build in an adjacent cell except from the ones on the perimeter
         List<Position> secondBuildCells = am.getValidBuilds(board, currWorker.getRow(), currWorker.getColumn());
-        secondBuildCells.removeIf(p -> (p.isPerimeter()));
+        secondBuildCells.removeIf(Position::isPerimeter);
 
         if(!secondBuildCells.isEmpty()) {
             uim.readPower();

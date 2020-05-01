@@ -7,14 +7,14 @@ import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
-import it.polimi.ingsw.PSP41.server.ClientHandler;
-import it.polimi.ingsw.PSP41.server.VirtualView;
 
-import java.io.EOFException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import static it.polimi.ingsw.PSP41.GameMessage.godDeck;
+import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 public class Lobby {
     private Board board = new Board();
@@ -23,7 +23,7 @@ public class Lobby {
     private static List<ClientHandler> clients = new ArrayList<>();
     private static int playersNumber = 0;
     private static List<String> playersName = new ArrayList<>();
-    private final List<String> gameGods = Arrays.asList("APOLLO", "ARTEMIS", "ATHENA", "ATLAS", "DEMETER", "HEPHAESTUS", "MINOTAUR", "PAN", "PROMETHEUS");
+    private final List<String> gameGods = Arrays.asList("APOLLO", "ARES", "ARTEMIS", "ATHENA", "ATLAS", "DEMETER", "HEPHAESTUS", "HESTIA", "MINOTAUR", "PAN", "POSEIDON", "PROMETHEUS", "TRITON", "ZEUS");
     private static List<String> chosenGods = new ArrayList<>();
     private static List<Player> players = new ArrayList<>();
     private static List<GodPower> gods = new ArrayList<>();
@@ -36,12 +36,11 @@ public class Lobby {
 
     public void setPlayersNumber(ClientHandler client) throws IOException {
 
-        client.getSocketOut().writeObject("You are the first player in the lobby, choose the number of players");
-        String read = client.getSocketIn().readLine();
-        System.out.println(read);
-        playersNumber = Integer.parseInt(read);
+        client.getSocketOut().writeObject(startTurnMessage);
+        virtualView.requestPlayersNum(client);
+        playersNumber = userInputManager.getPlayersNumber();
         System.out.println("[SERVER] The game will have " + playersNumber + " players");
-        client.getSocketOut().writeObject("End turn");
+        client.getSocketOut().writeObject(endTurnMessage);
 
     }
 
@@ -80,14 +79,14 @@ public class Lobby {
 
         synchronized (countLock) {
 
-            client.getSocketOut().writeObject("Turn start!");
+            client.getSocketOut().writeObject(startTurnMessage);
 
-            client.getSocketOut().writeObject("What is your name?");
-            String nickname = client.getSocketIn().readLine();
+            virtualView.requestNickname(client);
+            String nickname = userInputManager.getNickname();
 
             while (playersName.contains(nickname)) {
-                client.getSocketOut().writeObject(nickname + " is already taken, please select a different name");
-                nickname = client.getSocketIn().readLine();
+                virtualView.errorTakenNickname(client);
+                nickname = userInputManager.getNickname();
             }
 
             // Se il nome è valido, il client viene aggiunto alla lista di giocatori connessi (nella virtual view)
@@ -134,13 +133,15 @@ public class Lobby {
                     clientHandler.getSocketOut().writeObject(nickname + " is the most godlike! " + nickname + " is the challenger!");
                 }
                 client.getSocketOut().writeObject("Choose " + playersNumber + " gods from the ones available");
-                client.getSocketOut().writeObject(godDeck);
+                client.getSocketOut().writeObject(godDeckMessage);
 
                 String selectedGod;
                 for (int i = 0; i < playersNumber; i++) {
+                    virtualView.requestInfo(client);
                     selectedGod = client.getSocketIn().readLine().toUpperCase();
                     while (!gameGods.contains(selectedGod) || chosenGods.contains(selectedGod)) {
                         client.getSocketOut().writeObject("Invalid god name, choose gods from the ones available");
+                        virtualView.requestInfo(client);
                         selectedGod = client.getSocketIn().readLine().toUpperCase();
                     }
                     System.out.println("[SERVER] " + selectedGod + " chosen");
@@ -149,12 +150,13 @@ public class Lobby {
                 client.getSocketOut().writeObject("Wait for other players to choose their God");
             }
 
-            // Selezione god power da quelli scelti dal challenger (il challenger sceglie per primo)
+            // Selezione god power da quelli scelti dal challenger (il challenger sceglie per ultimo)
             if(playersName.size() != 1) {
                 client.getSocketOut().writeObject("Choose a god power from the ones chosen by the challenger:");
                 for (String chosenGod : chosenGods) {
                     client.getSocketOut().writeObject(chosenGod);
                 }
+                virtualView.requestInfo(client);
                 String godName = client.getSocketIn().readLine().toUpperCase();
                 if (godName.equals("OLIMPIA")) {
                     for (ClientHandler clientHandler : clients) {
@@ -168,6 +170,7 @@ public class Lobby {
                         for (String chosenGod : chosenGods) {
                             client.getSocketOut().writeObject(chosenGod);
                         }
+                        virtualView.requestInfo(client);
                         godName = client.getSocketIn().readLine().toUpperCase();
                     }
 
@@ -187,19 +190,17 @@ public class Lobby {
                         }
                     }
 
-                    client.getSocketOut().writeObject("End turn");
+                    client.getSocketOut().writeObject(endTurnMessage);
                 }
             }
 
             if (players.size() == playersNumber) {
-                // Creo controller e lo rendo observer della virtual view
                 //TODO il challenger scegli chi inizia a giocare (anche se stesso)
                 Collections.shuffle(gods);
                 Controller controller = new Controller(board, userInputManager, virtualView, gods);
                 // Inizio la partita: prima faccio scegliere la posizione iniziale dei worker ad ogni giocatore, poi inizio lo svolgimento dei turni
                 controller.setWorkers();
                 controller.play();
-                //Manca altro?
             }
 
         }

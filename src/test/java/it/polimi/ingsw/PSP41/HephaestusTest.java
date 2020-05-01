@@ -3,10 +3,10 @@ package it.polimi.ingsw.PSP41;
 import it.polimi.ingsw.PSP41.controller.GodPower;
 import it.polimi.ingsw.PSP41.controller.Hephaestus;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.ActionManager;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,12 +15,11 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit test for Hephaestus GodPower.
  */
-/*
-public class HephaestusTest {
+
+public class HephaestusTest { /*
     GodPower godPower;
     Board board;
     Player player;
-    ActionManager actionManager;
     UserInputManager inputManager;
 
     @Before
@@ -29,9 +28,8 @@ public class HephaestusTest {
         player = new Player("Olimpia", Color.RED);
         player.getWorker1().setPosition(board, 0, 2);
         player.getWorker2().setPosition(board, 4, 4);
-        actionManager = new ActionManager();
-        inputManager = new UserInputManager(true, false, 0,1);
-        godPower = new Hephaestus(player, actionManager, inputManager);
+        inputManager = new UserInputManager(new CLI());
+        godPower = new Hephaestus(player, inputManager);
     }
 
     @Test
@@ -44,12 +42,12 @@ public class HephaestusTest {
 
     @Test
     public void activePower_buildBehaviour() {
-        inputManager.setPower(true);
-        GodPower hephaestus = new Hephaestus(player, actionManager, inputManager);
+        inputManager.updatePower(true);
+        GodPower hephaestus = new Hephaestus(player, inputManager);
         hephaestus.activeWorkers(board);
         hephaestus.buildBehaviour(board);
 
         assertEquals(2, board.getCell(0, 1).getLevel());
     }
-
-}*/
+*/
+}

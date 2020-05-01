@@ -1,7 +1,6 @@
 package it.polimi.ingsw.PSP41.controller;
 
 import it.polimi.ingsw.PSP41.model.Player;
-import it.polimi.ingsw.PSP41.model.ActionManager;
 
 // Alternative: this is an interface where a concreteFactory is made for each God
 public class GodPowerFactory {

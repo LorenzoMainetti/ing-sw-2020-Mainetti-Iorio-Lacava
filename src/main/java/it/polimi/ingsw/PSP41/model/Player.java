@@ -3,7 +3,7 @@ package it.polimi.ingsw.PSP41.model;
 //import java.util.ArrayList;
 //import java.util.Collections;
 //import java.util.List;
-import it.polimi.ingsw.PSP41.ModelObservable;
+import it.polimi.ingsw.PSP41.observer.ModelObservable;
 
 
 
@@ -69,14 +69,17 @@ public class Player extends ModelObservable {
 
     public void setWinner(boolean winner) {
         this.winner = winner;
+        notifyWinner(this.nickname);
     }
 
     public boolean isStuck() {
         return stuck;
     }
 
-    public void setStuck(boolean stuck) {
+    public void setStuck(boolean stuck, Board board) {
         this.stuck = stuck;
+        notifyLoser(this.nickname);
+        notifyBoard(board.clone());
     }
 
     /**
@@ -90,34 +93,9 @@ public class Player extends ModelObservable {
         if (row != worker.getRow() || column != worker.getColumn()) {
             // Delete worker from the cell it is situated
             board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
+
             // Add worker to the cell it has to move to and update worker's position
             worker.setPosition(board, row, column);
-
-            // Notify observers (in setPosition)
-        }
-    }
-
-    /**
-     * Swap two workers
-     * @param worker that the player wants to swap
-     * @param board board state
-     * @param row selected by the player where the worker will move
-     * @param column selected by the player where the worker will move
-     */
-    public void swap(Worker worker,  Board board, int row, int column) throws IllegalStateException, ArrayIndexOutOfBoundsException{
-        if (row != worker.getRow() || column != worker.getColumn()) {
-            int oldRow = worker.getRow();
-            int oldColumn = worker.getColumn();
-            Worker opponent = board.getCell(row, column).getWorker();
-            // Delete opponent's worker from the cell it is situated
-            board.getCell(row, column).detachWorker();
-            // Move my worker to the cell it has to move to
-            board.getCell(worker.getRow(), worker.getColumn()).detachWorker();
-            worker.setPosition(board, row, column);
-            // Force opponent's worker into the cell that was occupied by mine
-            opponent.setPosition(board, oldRow, oldColumn);
-
-            // Notify observers in setPosition
         }
     }
 
@@ -130,13 +108,12 @@ public class Player extends ModelObservable {
     public void build(Board board, int row, int column) throws IllegalStateException {
         board.getCell(row, column).addLevel();
 
-        // Notify observers
-        notify(board.clone());
+        notifyBoard(board.clone());
     }
 
     /**
      * Build a dome at any level
-     * @param board board state
+     * @param board board board state
      * @param row where the player wants to build
      * @param column where the player wants to build
      */
@@ -144,7 +121,7 @@ public class Player extends ModelObservable {
         board.getCell(row, column).addLevel();
         board.getCell(row, column).setDome(true);
 
-        notify(board.clone());
+        notifyBoard(board.clone());
     }
 
     /**
@@ -156,7 +133,7 @@ public class Player extends ModelObservable {
     public void removeLevel(Board board, int row, int column) {
         board.getCell(row, column).removeLevel();
 
-        notify(board.clone());
+        notifyBoard(board.clone());
     }
 
 }

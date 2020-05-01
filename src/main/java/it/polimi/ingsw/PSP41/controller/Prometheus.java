@@ -12,6 +12,8 @@ public class Prometheus extends GodPower {
         this.uim = uim;
     }
 
+    // Normal management of active workers, inherited from GodPower
+
     /**
      * Your Turn: If your Worker does not move up, it may build both before and after moving
      * @param board current board state

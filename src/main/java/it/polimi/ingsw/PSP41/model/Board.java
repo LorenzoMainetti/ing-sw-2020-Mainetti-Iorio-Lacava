@@ -6,7 +6,7 @@ public class Board implements Cloneable, Serializable {
     private static final long serialVersionUID = -7299950514822114480L;
 
     private final Cell[][] grid;
-    private final int MAX_SIZE = 5;
+    private final static int MAX_SIZE = 5;
 
     /**
      * Initialize the Board creating a 5x5 matrix of Cells
@@ -36,7 +36,8 @@ public class Board implements Cloneable, Serializable {
             throw new ArrayIndexOutOfBoundsException("Invalid position.");
     }
 
-    /*public Position findPosition(Cell target) {
+    /* find a Position given a Cell
+    public Position findPosition(Cell target) {
         for(int i=0; i<MAX_SIZE; i++) {
             for(int j=0; j<MAX_SIZE; j++) {
                 if(grid[i][j].equals(target))

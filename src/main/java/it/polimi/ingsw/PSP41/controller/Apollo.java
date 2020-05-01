@@ -24,10 +24,10 @@ public class Apollo extends GodPower {
            am.getActiveOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
            am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty() &&
            am.getActiveOpponentWorkers(board, player.getWorker2().getRow(), player.getWorker2().getColumn(), athenaPower).isEmpty()) {
-            player.setStuck(true);
             // Detach workers from their cells
             board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
             board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
+            player.setStuck(true, board);
         }
         else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty() &&
                 am.getActiveOpponentWorkers(board, player.getWorker1().getRow(), player.getWorker1().getColumn(), athenaPower).isEmpty()) {
@@ -61,12 +61,12 @@ public class Apollo extends GodPower {
         if (validOccupiedCells.isEmpty())
             uim.updatePower(false);
 
-        // If there is at least one valid adjacent occupied cell and there aren't normal moves available, the power has to be activated
+            // If there is at least one valid adjacent occupied cell and there aren't normal moves available, the power has to be activated
         else {
             if (validMoves.isEmpty())
                 uim.updatePower(true);
 
-            // If there is at least one valid adjacent occupied cell and it is possible to make at least one normal move, ask the player if he wants to activate the power
+                // If there is at least one valid adjacent occupied cell and it is possible to make at least one normal move, ask the player if he wants to activate the power
             else
                 uim.readPower();
         }
@@ -80,8 +80,17 @@ public class Apollo extends GodPower {
             chosenColumn = uim.getChosenColumn();
 
             checkWinCondition(board.getCell(currWorker.getRow(), currWorker.getColumn()), board.getCell(chosenRow, chosenColumn));
-            player.swap(currWorker, board, chosenRow, chosenColumn);
 
+            Worker opponentWorker = board.getCell(chosenRow, chosenColumn).getWorker();
+            int oldRow = currWorker.getRow();
+            int oldColumn = currWorker.getColumn();
+
+            // Delete opponent's worker from the cell it is situated
+            board.getCell(chosenRow, chosenColumn).detachWorker();
+            // Move my worker to the cell it has to move to
+            player.move(currWorker, board, chosenRow, chosenColumn);
+            // Force opponent's worker into the cell that was occupied by mine
+            opponentWorker.setPosition(board, oldRow, oldColumn);
 
         }
         // If the power isn't active, make a normal move
