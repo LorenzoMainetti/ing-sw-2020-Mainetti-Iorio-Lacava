@@ -1,18 +1,5 @@
 package it.polimi.ingsw.PSP41;
 
-import static org.junit.Assert.*;
-
-import it.polimi.ingsw.PSP41.controller.Atlas;
-import it.polimi.ingsw.PSP41.controller.GodPower;
-import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.ActionManager;
-import it.polimi.ingsw.PSP41.model.Board;
-import it.polimi.ingsw.PSP41.model.Color;
-import it.polimi.ingsw.PSP41.model.Player;
-import it.polimi.ingsw.PSP41.view.CLI;
-import org.junit.Before;
-import org.junit.Test;
-
 
 /**
  * Unit test for Atlas GodPower.

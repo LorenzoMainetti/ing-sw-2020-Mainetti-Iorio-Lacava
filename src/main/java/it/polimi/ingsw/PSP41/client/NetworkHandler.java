@@ -1,8 +1,8 @@
 package it.polimi.ingsw.PSP41.client;
 
-import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.UiObserver;
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 import it.polimi.ingsw.PSP41.utils.PositionMessage;
 import it.polimi.ingsw.PSP41.view.CLI;
 
@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
@@ -21,6 +23,7 @@ public class NetworkHandler implements Runnable, UiObserver {
     PrintWriter socketOut;
     private boolean active = true;
     private boolean myTurn = false;
+    List<PlayersInfoMessage> playersInfo = new ArrayList<>();
     // Quando avrò anche la GUI, creerò un'interfaccia UserInterface da far implementare a CLI e GUI
     private CLI cli;
 
@@ -81,12 +84,21 @@ public class NetworkHandler implements Runnable, UiObserver {
 
         }
         else if (inputObject instanceof Board) {
+            for(PlayersInfoMessage message : playersInfo)
+                cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
             cli.printBoard((Board) inputObject);
         }
 
         else if (inputObject instanceof PositionMessage) {
             PositionMessage message = (PositionMessage) inputObject;
             cli.displayOptions(message.getValidPos(), message.getInitialPos().getPosRow(), message.getInitialPos().getPosColumn());
+        }
+
+        else if (inputObject instanceof PlayersInfoMessage) {
+            PlayersInfoMessage message = (PlayersInfoMessage) inputObject;
+            playersInfo.add(message);
+            cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
+
         }
 
         else {

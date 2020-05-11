@@ -36,7 +36,7 @@ public class ActionManagerTest {
         c2.addLevel();
 
         List<Position> test;
-        test = actionManager.getValidMoves(board, 0, 0, false);
+        test = actionManager.getValidMoves(board, 0, 0);
         assertEquals(1, test.get(0).getPosRow());
         assertEquals(0, test.get(0).getPosColumn());
     }
@@ -72,7 +72,7 @@ public class ActionManagerTest {
         c2.attachWorker(oppWorker);
 
         List<Position> test;
-        test = actionManager.getOpponentWorkers(board, 4, 4, false);
+        test = actionManager.getOpponentWorkers(board, 4, 4);
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(4, test.get(0).getPosColumn());
     }
@@ -92,7 +92,7 @@ public class ActionManagerTest {
 
 
         List<Position> test;
-        test = actionManager.getActiveOpponentWorkers(board, 4, 4, false);
+        test = actionManager.getActiveOpponentWorkers(board, 4, 4);
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(3, test.get(0).getPosColumn());
     }

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.PSP41.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -35,18 +35,31 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Positions where it is allowed to move in
      */
-    public List<Position> getValidMoves(Board board, int row, int column, boolean notHigher) {
+    public List<Position> getValidMoves(Board board, int row, int column) {
         int currLevel = board.getCell(row, column).getLevel();
 
         return getNeighbouringCells(row, column).
                 stream().
-                filter(p -> (notHigher ? board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() <= currLevel :
-                        board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
+                filter(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
                 filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isDome()).
                 filter(p -> !board.getCell(p.getPosRow(), p.getPosColumn()).isOccupied()).
+                collect(Collectors.toList());
+    }
+
+    /**
+     * Find all the valid Positions that are on a not higher level than the specified one
+     * @param board current board state
+     * @param row current Worker's row
+     * @param column current Worker's column
+     * @return list of the Positions where it is allowed to move in on a same or lower level
+     */
+    public List<Position> getNotHigherCells(Board board, int row, int column) {
+        return getValidMoves(board, row, column).
+                stream().
+                filter(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() <=
+                        board.getCell(row, column).getLevel())).
                 collect(Collectors.toList());
     }
 
@@ -75,7 +88,7 @@ public class ActionManager {
     public List<Position> getValidRemovableBlocks(Board board, int row, int column) {
         return getValidBuilds(board, row, column).
                 stream().
-                filter(p -> board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() != 0).
+                filter(p -> board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() > 0).
                 collect(Collectors.toUnmodifiableList());
     }
 
@@ -84,18 +97,16 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Positions where are placed Opponent's workers
      */
-    private List<Position> findOpponentWorker(Board board, int row, int column, boolean notHigher) {
+    private List<Position> findOpponentWorker(Board board, int row, int column) {
         Color currColor = board.getCell(row, column).getWorker().getColor();
         int currLevel = board.getCell(row, column).getLevel();
 
         return getNeighbouringCells(row, column).
                 stream().
                 filter(p -> board.getCell(p.getPosRow(), p.getPosColumn()).isOccupied()).
-                filter(p -> (notHigher ? board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() <= currLevel :
-                        board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
+                filter(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() < currLevel + 2)).
                 filter(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getWorker().getColor() != currColor)).
                 collect(Collectors.toList());
     }
@@ -105,11 +116,10 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Positions where are placed Opponent's workers
      */
-    public List<Position> getOpponentWorkers(Board board, int row, int column, boolean notHigher) {
-        return findOpponentWorker(board, row, column, notHigher).
+    public List<Position> getOpponentWorkers(Board board, int row, int column) {
+        return findOpponentWorker(board, row, column).
                 stream().
                 collect(Collectors.toUnmodifiableList());
     }
@@ -119,15 +129,47 @@ public class ActionManager {
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @param notHigher report if to return all valid moves or just the ones on a same/lower level
      * @return list of the Positions
      * where are placed Opponent's workers surrounded by at least one cell where building is possible
      */
-    public List<Position> getActiveOpponentWorkers(Board board, int row, int column, boolean notHigher) {
-        return findOpponentWorker(board, row, column, notHigher).
+    public List<Position> getActiveOpponentWorkers(Board board, int row, int column) {
+        return findOpponentWorker(board, row, column).
                 stream().
                 filter(p -> !getValidBuilds(board, p.getPosRow(), p.getPosColumn()).isEmpty()).
                 collect(Collectors.toUnmodifiableList());
+    }
+
+    /**
+     * Given a Player's worker find the other one
+     * @param board current board state
+     * @param row current Worker's row
+     * @param column current Worker's column
+     * @return Position where it is the other Worker of the same Player
+     */
+    public Position getOtherWorker(Board board, int row, int column) {
+        Color color = board.getCell(row, column).getWorker().getColor();
+
+        List<Position> otherWorker = Arrays.stream(board.getGrid()).
+                flatMap(Arrays::stream).
+                filter(Cell::isOccupied).
+                filter(cell -> cell.getWorker().getColor()==color).
+                filter(cell -> cell.getWorker().getRow()!=row || cell.getWorker().getColumn()!=column).
+                map(cell -> new Position(cell.getWorker().getRow(), cell.getWorker().getColumn())).
+                collect(Collectors.toList());
+
+        return otherWorker.get(0);
+
+
+        /*for(int i=0; i<Board.MAX_SIZE; i++) {
+            for(int j=0; j<Board.MAX_SIZE; j++) {
+                if(board.getCell(i, j).isOccupied()) {
+                    if(board.getCell(i, j).getWorker().getColor() == color && (i!=row || j!=column)) {
+                        return new Position(i, j);
+                    }
+                }
+            }
+        }
+        return null;*/
     }
 
 }

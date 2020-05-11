@@ -1,5 +1,6 @@
 package it.polimi.ingsw.PSP41.view;
 
+import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.model.Board;
@@ -31,7 +32,7 @@ public class CLI extends UiObservable implements Runnable {
     }
 
     /**
-     * Ask the first Player the number of Players that are going to play (2 or 3) and get the input
+     * Ask the first user the number of Players that are going to play (2 or 3) and get the input
      */
     public void askPlayersNumber() {
         int players = -1;
@@ -55,11 +56,14 @@ public class CLI extends UiObservable implements Runnable {
         notify(Integer.toString(players));
     }
 
+    /**
+     * Ask the user his nickname and get the input
+     */
     public void askNickname() {
         String nickname;
 
         System.out.println("Enter your nickname: ");
-        //gestisci eventuali errori di formattazione o nomi doppi -> nel controller
+        //Management of eventual format errors or double names -> controller
 
         System.out.print(">>> ");
         nickname = in.nextLine();
@@ -67,7 +71,9 @@ public class CLI extends UiObservable implements Runnable {
         notify(nickname);
     }
 
-
+    /**
+     * Ask some input to the user and notify it to the NetworkHandler
+     */
     public void askClient() {
         notify(in.nextLine());
     }
@@ -80,7 +86,9 @@ public class CLI extends UiObservable implements Runnable {
         System.out.println(godPower+ColorCLI.RESET+"\n");
     }
 
-
+    /**
+     * Ask the user where he wants to place his workers and get the input
+     */
     public void askInitialPosition() {
         System.out.println("Choose the initial position for your worker. ");
         int row = askRow();
@@ -91,9 +99,8 @@ public class CLI extends UiObservable implements Runnable {
         notify(pos);
     }
 
-
     /**
-     * Ask row to the Player and get the input
+     * Ask row to the user and get the input
      */
     private int askRow() {
         int row = -1;
@@ -118,9 +125,8 @@ public class CLI extends UiObservable implements Runnable {
         return row;
     }
 
-
     /**
-     * Ask column to the Player and get the input
+     * Ask column to the user and get the input
      */
     private int askColumn() {
         int column = -1;
@@ -154,7 +160,7 @@ public class CLI extends UiObservable implements Runnable {
 */
 
     /**
-     * Ask the Player if he wants to use Worker 1 or 2 and get the input
+     * Ask the user if he wants to use Worker 1 or 2 and get the input
      */
     public void askWorker() {
         int chosenWorker = -1;
@@ -181,7 +187,7 @@ public class CLI extends UiObservable implements Runnable {
 
 
     /**
-     * Ask the Player if he wants to activate the God Power and get the input
+     * Ask the user if he wants to activate the God Power and get the input
      */
     public void askPowerActivation() {
         String answer = null;
@@ -198,27 +204,6 @@ public class CLI extends UiObservable implements Runnable {
         notify(answer);
     }
 
-    /**
-     * Ask the Player if he wants to keep building and get the input (method used by Poseidon)
-     */
-/*    public boolean askToKeepBuilding() {
-        boolean build = false;
-        String answer = null;
-        System.out.println("Do you want to build again? Type yes or no.");
-
-        do {
-            final String currentAnswer = in.nextLine();
-            if (!currentAnswer.equalsIgnoreCase("yes") && !currentAnswer.equalsIgnoreCase("no"))
-                System.out.println("Invalid answer. Please try again\n");
-            else
-                answer = currentAnswer;
-        } while(answer == null);
-
-        if(answer.equalsIgnoreCase("yes")) build = true;
-
-        return build;
-    }
-*/
     public void MovePhase() {
         System.out.println("Where do you want to "+ ColorCLI.ANSI_GREEN+"MOVE"+ColorCLI.RESET+"? ");
     }
@@ -239,11 +224,19 @@ public class CLI extends UiObservable implements Runnable {
         System.out.println("Game over! The winner is "+ColorCLI.ANSI_GREEN+ winner.toUpperCase() +ColorCLI.RESET+"!!!\nThanks for playing.");
     }
 
-    /*public void showPlayersInfo(String nickname, String color, String godpower) {
-        System.out.println("Player " + nickname + " info:\n");
-        System.out.println("Color: " + color + "\n");
-        System.out.println("GodPower: " + godpower + "\n");
-    }*/
+    public void showPlayersInfo(String nickname, Color color, String godPower) {
+        switch (color) {
+            case RED:
+                System.out.println(ColorCLI.ANSI_RED+nickname.toUpperCase()+ColorCLI.RESET+" ("+godPower+")");
+                break;
+            case YELLOW:
+                System.out.println(ColorCLI.ANSI_YELLOW+nickname.toUpperCase()+ColorCLI.RESET+" ("+godPower+")");
+                break;
+            case BLUE:
+                System.out.println(ColorCLI.ANSI_BLUE+nickname.toUpperCase()+ColorCLI.RESET+" ("+godPower+")");
+                break;
+        }
+    }
 
 
     //OTHER methods
@@ -352,7 +345,6 @@ public class CLI extends UiObservable implements Runnable {
                         boardCells[i*3 + 3][j+1].setString("│       ");
                         boardCells[i*3 + 3][j+2].setString("│       ");
                     }
-
                 }
             }
         }
@@ -391,12 +383,11 @@ public class CLI extends UiObservable implements Runnable {
      }
 
     /**
-     * Display available cells to move or build and ask direction
+     * Display available cells to move or build
      * @param positions where player can play its action
      * @param row of the current cell
      * @param column of the current cell
      */
-    //TODO spezzare in chiede e ricevi
    public void displayOptions(List<Position> positions, int row, int column) {
        System.out.println("These are the valid directions: ");
 
@@ -409,6 +400,9 @@ public class CLI extends UiObservable implements Runnable {
 
                    else if (position.getPosColumn() == column - 1)
                        directions.add("W");
+
+                   else if(position.getPosColumn() == column)
+                       directions.add("CURR");
                } else if (position.getPosRow() == row - 1) {
                    if (position.getPosColumn() == column + 1)
                        directions.add("NE");
@@ -440,7 +434,10 @@ public class CLI extends UiObservable implements Runnable {
    }
 
     /**
-     *
+     * ask direction
+     * @param directions where player can play its action
+     * @param row of the current cell
+     * @param column of the current cell
      */
    private void askDirection(List<String> directions, int row, int column) {
 
@@ -495,6 +492,10 @@ public class CLI extends UiObservable implements Runnable {
         case "NW":
             chosenRow = row - 1;
             chosenColumn = column - 1;
+            break;
+        case "CURR":
+            chosenRow = row;
+            chosenColumn = column;
             break;
     }
 

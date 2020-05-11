@@ -26,7 +26,7 @@ public class Position implements Serializable {
      */
     public boolean isPerimeter() {
 
-        if(this.getPosRow() == 0 || this.getPosColumn()== 0 || this.getPosRow() == 4 || this.getPosColumn() == 4)
+        if(posRow == 0 || posColumn== 0 || posRow == 4 || posColumn == 4)
             perimeter = true;
 
             return perimeter;

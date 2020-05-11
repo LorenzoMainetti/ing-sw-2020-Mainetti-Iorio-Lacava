@@ -1,9 +1,9 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.godCards.Default;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
-import it.polimi.ingsw.PSP41.model.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class PlayerTest {
     @Before
     public void setup() {
         board = new Board();
-        player = new Player("Olimpia", Color.RED);
+        player = new Player("Olimpia", Color.RED, new Default());
 
         player.getWorker1().setPosition(board, 0, 3);
         player.getWorker2().setPosition(board, 4, 4);

@@ -4,6 +4,7 @@ import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.ModelObserver;
 import it.polimi.ingsw.PSP41.observer.ViewObservable;
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 import it.polimi.ingsw.PSP41.utils.PositionMessage;
 
 import java.io.*;
@@ -45,11 +46,8 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         currClient.send(playersNumMessage);
         try {
             String message = currClient.getSocketIn().readLine();
-            while (!message.equals("2") && !message.equals("3")) {
-                currClient.getSocketOut().writeObject("Invalid input, select a 2 or 3 players game");
-                message = currClient.getSocketIn().readLine();
-            }
-            notifyPlayersNumber(Integer.parseInt(message));
+            int playersNum = Integer.parseInt(message);
+            notifyPlayersNumber(playersNum);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,11 +147,11 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         currClient.send(infoMessage);
     }
 
-    public void sendGodName(String godName) {
-        clients.get(currPlayer).send(godName);
-        //send a message that when received by the client trigger printGodPower method in CLI
+    public void sendPlayersInfo(PlayersInfoMessage message) {
+        for (ClientHandler ch : clients.values()) {
+            ch.send(message);
+        }
     }
-
 
 
     //TURN:
@@ -178,6 +176,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     public void endTurn() {
         clients.get(currPlayer).send(endTurnMessage);
     }
+
 
     //HANDLE ERRORS:
 

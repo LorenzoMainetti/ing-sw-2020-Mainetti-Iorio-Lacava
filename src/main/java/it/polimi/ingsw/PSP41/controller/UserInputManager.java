@@ -51,7 +51,6 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isChosenWorker() { return chosenWorker; }
 
-    public void readChosenWorker() { virtualView.requestWorkerNum(); }
 
     @Override
     public void updateWorker(boolean chosenWorker) {
@@ -61,7 +60,6 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isPower() { return power; }
 
-    public void readPower() { virtualView.requestActivatePow(); }
 
     @Override
     public void updatePower(boolean power) {

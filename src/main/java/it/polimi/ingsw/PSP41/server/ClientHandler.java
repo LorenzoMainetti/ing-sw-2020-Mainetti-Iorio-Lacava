@@ -86,8 +86,9 @@ public class ClientHandler implements Runnable {
                 lobby.waitPlayersNumber(this);
             }
 
-            lobby.askNickname(this);
-            lobby.setGodLike(this);
+            lobby.setNickname(this);
+            lobby.setGodLike();
+            lobby.setGodCard(this);
 
             // TODO Gestione disconnessione client
             /*while(active && connected){
@@ -95,14 +96,8 @@ public class ClientHandler implements Runnable {
                     connected = false;
                 }
             }*/
-        } catch (NoSuchElementException | IOException | InterruptedException e) {
+        } catch (NoSuchElementException | IOException e) {
             System.err.println("[SERVER] Error!" + e.getMessage());
-        } /*finally{
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
+        }
     }
 }

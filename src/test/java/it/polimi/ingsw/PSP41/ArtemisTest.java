@@ -1,20 +1,5 @@
 package it.polimi.ingsw.PSP41;
 
-import static org.junit.Assert.*;
-
-import it.polimi.ingsw.PSP41.controller.Artemis;
-import it.polimi.ingsw.PSP41.controller.GodPower;
-import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.Board;
-import it.polimi.ingsw.PSP41.model.Color;
-import it.polimi.ingsw.PSP41.model.Player;
-import it.polimi.ingsw.PSP41.view.CLI;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 
 /**
  * Unit test for Artemis GodPower.
