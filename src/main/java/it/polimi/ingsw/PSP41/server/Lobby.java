@@ -1,57 +1,53 @@
 package it.polimi.ingsw.PSP41.server;
 
-import it.polimi.ingsw.PSP41.controller.Controller;
 import it.polimi.ingsw.PSP41.model.GodPowerFactory;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.observer.ConnectionObservable;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 
-
-import java.io.IOException;
 import java.util.*;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 // Se mai volessimo fare multipartita, bisogna togliere gli static e creare un'istanza di lobby nel server, assegnandola direttamente ai clienthandler
-public class Lobby {
-    private static final VirtualView virtualView = new VirtualView();
-    private static final UserInputManager userInputManager = new UserInputManager(virtualView);
-    private static Map<String, ClientHandler> clientNames = new HashMap<>();
-    private static Map<String, String> playerGodCard = new HashMap<>();
-    private static List<ClientHandler> clients = new ArrayList<>();
-    private static List<String> playersName = new ArrayList<>();
+public class Lobby extends ConnectionObservable {
+    private final VirtualView virtualView = new VirtualView();
+    private final UserInputManager userInputManager = new UserInputManager(virtualView);
+    private Map<String, ClientHandler> clientNames = new HashMap<>();
+    private Map<String, String> playerGodCard = new HashMap<>();
+    private List<ClientHandler> clients = new ArrayList<>();
+    private List<String> playersName = new ArrayList<>();
     private final List<String> gameGods = Arrays.asList("APOLLO", "ARTEMIS", "ATHENA", "ATLAS", "DEMETER", "HEPHAESTUS", "MINOTAUR", "PAN", "PROMETHEUS", "HESTIA", "ZEUS", "TRITON", "POSEIDON", "ARES");
-    private static final List<String> chosenGods = new ArrayList<>();
-    private static List<Player> activePlayers = new ArrayList<>();
-    private static String challenger;
-    private static int playersNumber = 0;
+    private final List<String> chosenGods = new ArrayList<>();
+    private List<Player> activePlayers = new ArrayList<>();
+    private String challenger;
+    private int playersNumber = -1;
+
+    public int getPlayersNumber() {
+        return playersNumber;
+    }
 
     /**
      * ask and set the number of players to the first connected user
      * @param client current client
-     * @throws IOException if the write on socket did not work
      */
-    public synchronized void setPlayersNumber(ClientHandler client) throws IOException {
-
-        client.getSocketOut().writeObject(startTurnMessage);
+    public synchronized void setPlayersNumber(ClientHandler client) {
+        client.send(startTurnMessage);
         virtualView.requestPlayersNum(client);
         playersNumber = userInputManager.getPlayersNumber();
         notifyAll();
         System.out.println("[SERVER] The game will have " + playersNumber + " players");
-        client.getSocketOut().writeObject(endTurnMessage);
-
+        client.send(endTurnMessage);
     }
 
     /**
      * wait until the first connected user has not choose the playersNumber
      * @param client current client
-     * @throws IOException if the write on socket did not work
      */
-    public synchronized void waitPlayersNumber(ClientHandler client) throws IOException {
-
-        while (playersNumber == 0) {
+    public synchronized void waitPlayersNumber(ClientHandler client) {
+        while (playersNumber == -1) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -60,23 +56,21 @@ public class Lobby {
         }
 
         if (client.getPosition() > playersNumber) {
-            client.getSocketOut().writeObject(fullLobby);
+            client.send(fullLobby);
+            client.setActive(false);
             client.closeConnection();
-        }
-
-        else if (client.getPosition() != 1) {
-            client.getSocketOut().writeObject("The game will have " + playersNumber + " players");
+        } else {
+            client.send("The game will have " + playersNumber + " players");
         }
     }
 
     /**
      * ask and set the current client's nickname
      * @param client current client
-     * @throws IOException if the write on socket did not work
      */
-    public synchronized void setNickname(ClientHandler client) throws IOException {
+    public void setNickname(ClientHandler client) {
 
-        client.getSocketOut().writeObject(startTurnMessage);
+        client.send(startTurnMessage);
 
         virtualView.requestNickname(client);
         String nickname = userInputManager.getNickname();
@@ -94,41 +88,42 @@ public class Lobby {
 
         System.out.println("[SERVER] " + nickname + " registered!");
 
-        if(playersName.size() == playersNumber) {
-            notifyAll();
-        }
-
-        client.getSocketOut().writeObject(endTurnMessage);
+        client.send(endTurnMessage);
 
     }
 
     /**
      * random choice of the challenger from the connected clients
-     * @throws IOException if the write on socket did not work
      */
-    public synchronized void setGodLike() throws IOException {
+    public synchronized void setGodLike(ClientHandler client) {
 
-        //wait for missing players
-        while (playersName.size() != playersNumber) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        // Se non si è collegato il numero di giocatori stabilito, aspetto
+        if (playersName.size() != playersNumber) {
+            client.send("Wait for the players to join...");
+            // TODO timeout
         }
-        //subpart executed only once
-        if (chosenGods.size() == 0) {
-            for (ClientHandler clientHandler : clients) {
-                clientHandler.getSocketOut().writeObject("The lobby is full, the game will start soon...");
-            }
 
-            Collections.shuffle(playersName);
+        else {
+            //subpart executed only once
+            if (chosenGods.size() == 0) {
+                for (ClientHandler clientHandler : clients) {
+                    clientHandler.send("The lobby is full, the game will start soon...");
+                }
 
-            Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
-            for (String key : playersName) {
-                shuffleMap.put(key, clientNames.get(key));
+                Collections.shuffle(playersName);
+
+                Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
+                for (String key : playersName) {
+                    shuffleMap.put(key, clientNames.get(key));
+                }
+
+                setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
+
+                for (String key : shuffleMap.keySet()) {
+                    System.out.println(key);
+                    setGodCard(shuffleMap.get(key));
+                }
             }
-            setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
         }
     }
 
@@ -136,88 +131,74 @@ public class Lobby {
      * ask the challenger to choose the godCards that will be used in the game
      * @param client challenger's client
      * @param name challenger's nickname
-     * @throws IOException if the write on socket did not work
      */
-    private void setChallenger(ClientHandler client, String name) throws IOException {
+    private synchronized void setChallenger(ClientHandler client, String name) {
 
-        client.getSocketOut().writeObject(startTurnMessage);
+        client.send(startTurnMessage);
         challenger = name;
 
         for (ClientHandler clientHandler : clients) {
-            clientHandler.getSocketOut().writeObject(name + " is the most godlike! " + name + " is the challenger!");
+            clientHandler.send(name + " is the most godlike! " + name + " is the challenger!");
         }
-        client.getSocketOut().writeObject("Choose " + playersNumber + " gods from the ones available");
-        client.getSocketOut().writeObject(godDeckMessage);
+        client.send("Choose " + playersNumber + " gods from the ones available");
+        client.send(godDeckMessage);
 
         String selectedGod;
         for (int i = 1; i <= playersNumber; i++) {
-            client.getSocketOut().writeObject("God #" + i + ": ");
-            virtualView.requestInfo(client);
-            selectedGod = client.getSocketIn().readLine().toUpperCase();
+            client.send("God #" + i + ": ");
+            //virtualView.requestInfo(client);
+            selectedGod = client.read().toUpperCase();
             while (!gameGods.contains(selectedGod) || chosenGods.contains(selectedGod)) {
-                client.getSocketOut().writeObject("Invalid god name, choose gods from the ones available");
-                virtualView.requestInfo(client);
-                selectedGod = client.getSocketIn().readLine().toUpperCase();
+                client.send("Invalid god name, choose gods from the ones available");
+                //virtualView.requestInfo(client);
+                selectedGod = client.read().toUpperCase();
             }
             System.out.println("[SERVER] " + selectedGod + " chosen");
             chosenGods.add(selectedGod);
         }
-        client.getSocketOut().writeObject("Wait for other players to choose their God");
-        notifyAll();
-        client.getSocketOut().writeObject(endTurnMessage);
-
+        //client.send("Wait for other players to choose their God...");
+        client.send(endTurnMessage);
     }
 
     /**
      * assign a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
-     * @throws IOException if the write on socket did not work
      */
-    public synchronized void setGodCard(ClientHandler client) throws IOException {
-
+    public synchronized void setGodCard(ClientHandler client) {
         if(!client.equals(clientNames.get(challenger))) {
-            client.getSocketOut().writeObject(startTurnMessage);
+            client.send(startTurnMessage);
             assignGod(client);
-            client.getSocketOut().writeObject(endTurnMessage);
+            client.send(endTurnMessage);
         }
-
-        else {
-            while (chosenGods.size() > 1) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            client.getSocketOut().writeObject(startTurnMessage);
-            playerGodCard.put(challenger, chosenGods.get(0));
-            chosenGods.clear();
-            //the challenger creates the game
-            createGame(client);
-        }
+        else client.send("Wait for other players to choose their God...");
     }
 
     /**
      * ask and set the chosen godCard
      * @param client current client
-     * @throws IOException if the write on socket did not work
      */
-    private void assignGod(ClientHandler client) throws IOException {
+    private synchronized void assignGod(ClientHandler client) {
 
-        client.getSocketOut().writeObject("Choose a god power from the ones chosen by the challenger:");
-        for (String chosenGod : chosenGods) {
-            client.getSocketOut().writeObject(chosenGod);
+        if (chosenGods.size() == clientNames.size()) {
+            for (ClientHandler ch : clients) {
+                if (!ch.equals(client) && !ch.equals(clientNames.get(challenger))) ch.send("Wait for other players to choose their God...");
+            }
         }
-        virtualView.requestInfo(client);
-        String godName = client.getSocketIn().readLine().toUpperCase();
+
+        client.send("Choose a god power from the ones chosen by the challenger:");
+        for (String chosenGod : chosenGods) {
+            client.send(chosenGod);
+        }
+        //virtualView.requestInfo(client);
+        String godName = client.read().toUpperCase();
 
         while (!chosenGods.contains(godName)) {
-            client.getSocketOut().writeObject(godName + " is not valid, please select a different god power from this list:");
+            client.send(godName + " is not valid, please select a different god power from this list:");
             for (String chosenGod : chosenGods) {
-                client.getSocketOut().writeObject(chosenGod);
+                client.send(chosenGod);
             }
-            virtualView.requestInfo(client);
-            godName = client.getSocketIn().readLine().toUpperCase();
+            //virtualView.requestInfo(client);
+            godName = client.read().toUpperCase();
         }
         chosenGods.remove(godName);
 
@@ -228,18 +209,21 @@ public class Lobby {
 
         playerGodCard.put(name, godName);
 
-        if(chosenGods.size()==1)
-            notifyAll();
+        if(chosenGods.size()==1) {
+            playerGodCard.put(challenger, chosenGods.get(0));
+            chosenGods.clear();
+            //the challenger creates the game
+            createGame(clientNames.get(challenger));
+        }
 
     }
 
 
     /**
-     * setup game creating model and controller
+     * setup game creating model and controller, then notifies the server that will start the match
      * @param client current client
-     * @throws IOException if the write on socket did not work
      */
-    private void createGame(ClientHandler client) throws IOException {
+    private void createGame(ClientHandler client) {
 
         GodPowerFactory godFactory = new GodPowerFactory();
         Color color = Color.RED;
@@ -258,15 +242,20 @@ public class Lobby {
         }
 
         //the challenger chooses who starts playing
-        client.getSocketOut().writeObject("Challenger, choose who starts playing!");
-        virtualView.requestInfo(client);
-        String starter = client.getSocketIn().readLine();
-        while (!playersName.contains(starter)) {
-            client.getSocketOut().writeObject("Invalid player, try again");
-            virtualView.requestInfo(client);
-            starter = client.getSocketIn().readLine();
+        client.send(startTurnMessage);
+        client.send("Challenger, choose who starts playing!");
+        //virtualView.requestInfo(client);
+        for (ClientHandler ch : clients) {
+            if (!ch.equals(client)) ch.send("The challenger is choosing the start player...");
         }
-        client.getSocketOut().writeObject(endTurnMessage);
+        String starter = client.read();
+        while (!playersName.contains(starter)) {
+            client.send("Invalid player, try again");
+            //virtualView.requestInfo(client);
+            starter = client.read();
+        }
+
+        client.send(endTurnMessage);
         System.out.println("[SERVER] " + starter + " is the first to play");
 
         List<Player> sortedPlayers = new ArrayList<>();
@@ -285,10 +274,7 @@ public class Lobby {
             }
         }
 
-        Board board = new Board();
-        Controller controller = new Controller(board, userInputManager, virtualView, sortedPlayers);
-        controller.setWorkers();
-        controller.play();
+        notifyServer(userInputManager, virtualView, sortedPlayers);
     }
 
 

@@ -31,9 +31,9 @@ public class CLI extends UiObservable implements Runnable {
                 "                                      Board Game!\n");
     }
 
-    /**
+    /*
      * Ask the first user the number of Players that are going to play (2 or 3) and get the input
-     */
+     *
     public void askPlayersNumber() {
         int players = -1;
         boolean firstError = true;
@@ -58,7 +58,7 @@ public class CLI extends UiObservable implements Runnable {
 
     /**
      * Ask the user his nickname and get the input
-     */
+
     public void askNickname() {
         String nickname;
 
@@ -73,14 +73,14 @@ public class CLI extends UiObservable implements Runnable {
 
     /**
      * Ask some input to the user and notify it to the NetworkHandler
-     */
+
     public void askClient() {
         notify(in.nextLine());
     }
 
     /**
      * Print the God Power assigned to a Player
-     */
+
     public void printGodPower(String nickname, String godName, String godPower) {
         System.out.println("\n"+ColorCLI.ANSI_RED+nickname+ColorCLI.RESET+", your God Power card is: "+ColorCLI.ANSI_GREEN+godName.toUpperCase());
         System.out.println(godPower+ColorCLI.RESET+"\n");
@@ -88,7 +88,7 @@ public class CLI extends UiObservable implements Runnable {
 
     /**
      * Ask the user where he wants to place his workers and get the input
-     */
+
     public void askInitialPosition() {
         System.out.println("Choose the initial position for your worker. ");
         int row = askRow();
@@ -101,7 +101,7 @@ public class CLI extends UiObservable implements Runnable {
 
     /**
      * Ask row to the user and get the input
-     */
+
     private int askRow() {
         int row = -1;
         boolean firstError = true;
@@ -127,7 +127,7 @@ public class CLI extends UiObservable implements Runnable {
 
     /**
      * Ask column to the user and get the input
-     */
+
     private int askColumn() {
         int column = -1;
         boolean firstError = true;
@@ -157,11 +157,11 @@ public class CLI extends UiObservable implements Runnable {
 /*    public void startTurn(String nickname) {
         System.out.println("It's your turn "+ColorCLI.ANSI_GREEN+nickname+ColorCLI.RESET+"!");
     }
-*/
+
 
     /**
      * Ask the user if he wants to use Worker 1 or 2 and get the input
-     */
+
     public void askWorker() {
         int chosenWorker = -1;
         boolean firstError = true;
@@ -188,7 +188,7 @@ public class CLI extends UiObservable implements Runnable {
 
     /**
      * Ask the user if he wants to activate the God Power and get the input
-     */
+
     public void askPowerActivation() {
         String answer = null;
         System.out.println("Do you want to activate your God Power? Type yes or no.");
@@ -223,7 +223,14 @@ public class CLI extends UiObservable implements Runnable {
     public void endGame(String winner) {
         System.out.println("Game over! The winner is "+ColorCLI.ANSI_GREEN+ winner.toUpperCase() +ColorCLI.RESET+"!!!\nThanks for playing.");
     }
+*/
 
+    /**
+     * Prints player and his/her respective god
+     * @param nickname nickname of the player
+     * @param color color of the player
+     * @param godPower god chosen by the player
+     */
     public void showPlayersInfo(String nickname, Color color, String godPower) {
         switch (color) {
             case RED:
@@ -345,6 +352,7 @@ public class CLI extends UiObservable implements Runnable {
                         boardCells[i*3 + 3][j+1].setString("│       ");
                         boardCells[i*3 + 3][j+2].setString("│       ");
                     }
+
                 }
             }
         }
@@ -385,9 +393,21 @@ public class CLI extends UiObservable implements Runnable {
     /**
      * Display available cells to move or build
      * @param positions where player can play its action
+     */
+    public void displayOptions(List<Position> positions) {
+        System.out.println("Valid positions:");
+        for (Position position : positions) {
+            System.out.print("R" + position.getPosRow() + ",C" + position.getPosColumn() + "      ");
+        }
+        System.out.print("\n");
+    }
+
+    /*
+     * Display available cells to move or build and ask direction
+     * @param positions where player can play its action
      * @param row of the current cell
      * @param column of the current cell
-     */
+    //TODO spezzare in chiede e ricevi
    public void displayOptions(List<Position> positions, int row, int column) {
        System.out.println("These are the valid directions: ");
 
@@ -400,7 +420,6 @@ public class CLI extends UiObservable implements Runnable {
 
                    else if (position.getPosColumn() == column - 1)
                        directions.add("W");
-
                    else if(position.getPosColumn() == column)
                        directions.add("CURR");
                } else if (position.getPosRow() == row - 1) {
@@ -432,13 +451,14 @@ public class CLI extends UiObservable implements Runnable {
        }
        askDirection(directions, row, column);
    }
+   */
 
-    /**
+    /*
      * ask direction
      * @param directions where player can play its action
      * @param row of the current cell
      * @param column of the current cell
-     */
+
    private void askDirection(List<String> directions, int row, int column) {
 
     String answer = null;
@@ -500,15 +520,15 @@ public class CLI extends UiObservable implements Runnable {
     }
 
     notify(Integer.toString(chosenRow)+Integer.toString(chosenColumn));
-}
+}*/
 
 
-    /**
+    /*
      * Prompts an input error
      * @param firstError true if it's the first error made
      * @param errorMessage the error message
      * @return false meaning that this isn't the first error
-     */
+
     private boolean promptInputError(boolean firstError, String errorMessage) {
         System.out.print(ColorCLI.CLEAR_LINE);
         if (!firstError) {
@@ -517,8 +537,12 @@ public class CLI extends UiObservable implements Runnable {
 
         System.out.println(errorMessage);
         return false;
-    }
+    }*/
 
+    /**
+     * Generic method to print a message
+     * @param message message to print
+     */
     public void printMessage(String message) {
         System.out.println(message);
     }
@@ -526,11 +550,11 @@ public class CLI extends UiObservable implements Runnable {
     @Override
     public void run() {
         setUpGame();
-        /*while(true) {
-            //TODO ogni volta che ricevo un input dal client lo notifico al NetworkHandler
+        while(true) {
+            // ogni volta che ricevo un input dal client lo notifico al NetworkHandler
             String fromClient = in.nextLine();
             notify(fromClient);
-        }*/
+        }
     }
 
 }

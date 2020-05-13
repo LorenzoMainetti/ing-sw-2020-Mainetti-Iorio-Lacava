@@ -29,6 +29,8 @@ public class Controller {
      * Set Worker initial Positions for each player
      */
     public void setWorkers() {
+        virtualView.emptyBoard(board);
+
         for (Player player : activePlayers) {
             virtualView.setCurrPlayer(player.getNickname());
             virtualView.startTurn();

@@ -1,25 +1,27 @@
-package it.polimi.ingsw.PSP41.client;
+package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.client.NetworkHandler;
 import it.polimi.ingsw.PSP41.view.CLI;
 
 import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
-public class Client {
+public class ClientApp {
 
     //TODO rendere questo metodo run e fare ClientApp con il main
     public static void main(String[] args) {
 
-        boolean connected = true;
         boolean alive = true;
         Scanner scanner = new Scanner(System.in);
+
         System.out.println("IP address of server?");
         String ip = scanner.nextLine();
         System.out.println("Port?");
         String port = scanner.nextLine();
 
         //Open a connection to the server
+        // TODO caso lobby piena
         NetworkHandler networkHandler = new NetworkHandler(ip, port);
 
         System.out.println("CLI or GUI?");
@@ -38,17 +40,5 @@ public class Client {
 
         new Thread(networkHandler).start();
 
-        while (alive) {
-            try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                alive = false;
-                Thread.currentThread().interrupt();
-            }
-            if ((networkHandler.isActive() && !networkHandler.isServerReachable()))
-                alive = false;
-        }
-
-        System.exit(0);
     }
 }

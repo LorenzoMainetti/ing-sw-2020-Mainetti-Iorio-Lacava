@@ -22,7 +22,6 @@ public class NetworkHandler implements Runnable, UiObserver {
     ObjectInputStream socketIn;
     PrintWriter socketOut;
     private boolean active = true;
-    private boolean myTurn = false;
     List<PlayersInfoMessage> playersInfo = new ArrayList<>();
     // Quando avrò anche la GUI, creerò un'interfaccia UserInterface da far implementare a CLI e GUI
     private CLI cli;
@@ -41,46 +40,35 @@ public class NetworkHandler implements Runnable, UiObserver {
         this.cli = cli;
     }
 
-    public boolean isServerReachable() {
-        try {
-            return socket.getInetAddress().isReachable(2000);
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    public synchronized boolean isActive(){
-        return active;
-    }
-
-    public synchronized void setActive(boolean active){
-        this.active = active;
-    }
-
-    public void manageInputFromServer(Object inputObject) {
+    /**
+     * Server messages manager
+     * @param inputObject
+     */
+    public synchronized void manageInputFromServer(Object inputObject) {
         if (inputObject instanceof String) {
-            if (inputObject.equals(startTurnMessage)) {
-                myTurn = true;
+            /*if (inputObject.equals(startTurnMessage)) {
                 cli.printMessage((String) inputObject);
             }
             else if (inputObject.equals(endTurnMessage) || inputObject.equals("Wait for the players to join...")) {
-                myTurn = false;
                 cli.printMessage((String) inputObject);
             }
             else if(inputObject.equals(playersNumMessage))
-                cli.askPlayersNumber();
+                cli.askPlayersNumber(); ok
             else if (inputObject.equals(initPosMessage))
-                cli.askInitialPosition();
+                cli.askInitialPosition(); ok
             else if(inputObject.equals(nicknameMessage))
-                cli.askNickname();
+                cli.askNickname(); ok
             else if (inputObject.equals(infoMessage))
-                cli.askClient();
+                cli.askClient(); ok
             else if(inputObject.equals(workerNumMessage))
-                cli.askWorker();
+                cli.askWorker(); ok
             else if(inputObject.equals(activatePowMessage))
-                cli.askPowerActivation();
-            else
+                cli.askPowerActivation(); ok
+            }
+            else*/
+            if (!inputObject.equals(startTurnMessage) && !inputObject.equals(endTurnMessage)) {
                 cli.printMessage((String) inputObject);
+            }
 
         }
         else if (inputObject instanceof Board) {
@@ -91,7 +79,7 @@ public class NetworkHandler implements Runnable, UiObserver {
 
         else if (inputObject instanceof PositionMessage) {
             PositionMessage message = (PositionMessage) inputObject;
-            cli.displayOptions(message.getValidPos(), message.getInitialPos().getPosRow(), message.getInitialPos().getPosColumn());
+            cli.displayOptions(message.getValidPos());
         }
 
         else if (inputObject instanceof PlayersInfoMessage) {
@@ -120,12 +108,15 @@ public class NetworkHandler implements Runnable, UiObserver {
                 try {
                     Object inputObject = socketIn.readObject();
                     manageInputFromServer(inputObject);
+                    // chiudo socket se ricevo winMessage
+                    if (inputObject.equals(winMessage)) break;
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    cli.printMessage("Connection closed from server side");
+                    break;
                 }
             }
         } catch(NoSuchElementException e) {
-            System.out.println("Connection closed from the client side");
+            System.out.println("Connection closed from client side");
         } finally {
             try {
                 socketIn.close();
@@ -140,18 +131,8 @@ public class NetworkHandler implements Runnable, UiObserver {
 
     @Override
     public void update(String inputLine) {
-        if (inputLine.equals("Quit")) {
-            try {
-                active = false;
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else if (myTurn) {
-            socketOut.println(inputLine);
-            socketOut.flush();
-        }
+        socketOut.println(inputLine);
+        socketOut.flush();
     }
 
 }
