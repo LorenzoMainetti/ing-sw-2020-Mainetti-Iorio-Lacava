@@ -36,8 +36,10 @@ public class Prometheus extends GodPower {
                 List<Position> notHigherCells = am.getNotHigherCells(board, worker.getRow(), worker.getColumn());
 
                 if (notHigherCells.size() == 1 && board.getCell(notHigherCells.get(0).getPosRow(),
-                        notHigherCells.get(0).getPosColumn()).getLevel() == board.getCell(worker.getRow(), worker.getColumn()).getLevel())
-                positions.remove(notHigherCells.get(0));
+                        notHigherCells.get(0).getPosColumn()).getLevel() == board.getCell(worker.getRow(), worker.getColumn()).getLevel()) {
+                    positions.removeIf(p -> (p.getPosRow() == notHigherCells.get(0).getPosRow() &&
+                            p.getPosColumn() == notHigherCells.get(0).getPosColumn()));
+                }
             }
         }
     }

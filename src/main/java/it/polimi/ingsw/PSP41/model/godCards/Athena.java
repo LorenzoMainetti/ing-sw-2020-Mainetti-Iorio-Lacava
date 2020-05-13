@@ -8,6 +8,7 @@ public class Athena extends GodPower {
     private boolean athenaPower = false;
 
     public Athena() {
+        actionable = false;
         affectPhase = TurnPhase.MOVE;
         phases.add(TurnPhase.MOVE);
         phases.add(TurnPhase.BUILD);

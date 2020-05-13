@@ -156,60 +156,75 @@ public class Controller {
      * if both workers are blocked the player can check if his GodPower can be used
      * @param player current Player
      */
-    private Worker standard_ActiveWorkers(Player player) {
+    private void activeWorkers(Player player) {
 
-        if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn()).isEmpty() &&
-                am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn()).isEmpty()) {
-            return null;
-        }
-        else if(am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn()).isEmpty()) {
-            return player.getWorker2();
-        }
-
-        else if(am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn()).isEmpty()) {
-            return player.getWorker1();
+        int w = player.getGodCard().godPowerRequired(board, player);
+        //apply opponents' constraints in this phase too, because a worker might be not selectable after a constraint
+        List<Position> movesW1 = am.getValidMoves(board, player.getWorker1().getRow(), player.getWorker1().getColumn());
+        List<Position> movesW2 = am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn());
+        for(Player p : activePlayers) {
+            if (!p.equals(player) && p.getGodCard().getAffectPhase().equals(TurnPhase.MOVE))
+                p.getGodCard().applyOpponentConstraints(movesW1, board, currWorker);
+                p.getGodCard().applyOpponentConstraints(movesW2, board, currWorker);
         }
 
+        if (movesW1.isEmpty() && movesW2.isEmpty()) {
+
+            if(w == -1) {
+                // Detach worker from the cells
+                board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
+                board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
+                player.setStuck(true, board);
+            }
+            else
+                poweredActiveWorkers(player, w);
+
+        }
+        else if (movesW1.isEmpty()) {
+
+            if(w == -1 || w == 2)
+                currWorker = player.getWorker2();
+            else
+                askWorkerNum(player);
+        }
+        else if (movesW2.isEmpty()) {
+
+            if(w == -1 || w == 1)
+                currWorker = player.getWorker1();
+            else
+                askWorkerNum(player);
+        }
         else {
-            virtualView.requestWorkerNum();
-            if (uim.isChosenWorker()) {
-                return player.getWorker1();
-            }
-            else {
-                return player.getWorker2();
-            }
+           askWorkerNum(player);
         }
     }
 
     /**
      * In some cases, the player has to use the worker that doesn't make him lose
      * @param player current Player
+     * @param w pre calculated return value of getPowerRequired
      */
-    private void activeWorkers(Player player) {
-        currWorker = standard_ActiveWorkers(player);
+    private void poweredActiveWorkers(Player player, int w) {
 
-        if(currWorker == null) {
-            int w = player.getGodCard().godPowerRequired(board, player);
-            if(w == 1)
-                currWorker = player.getWorker1();
-            else if(w == 2)
-                currWorker = player.getWorker2();
-            else if(w == 0) {
-                virtualView.requestWorkerNum();
-                if (uim.isChosenWorker()) {
-                    currWorker = player.getWorker1();
-                }
-                else {
-                    currWorker = player.getWorker2();
-                }
-            }
-            else {
-                // Detach worker from the cells
-                board.getCell(player.getWorker1().getRow(), player.getWorker1().getColumn()).detachWorker();
-                board.getCell(player.getWorker2().getRow(), player.getWorker2().getColumn()).detachWorker();
-                player.setStuck(true, board);
-            }
-        }
+        if(w == 1)
+            currWorker = player.getWorker1();
+        else if(w == 2)
+            currWorker = player.getWorker2();
+        else
+            askWorkerNum(player);
+    }
+
+    /**
+     * tells VirtualView to ask for worker number and set the answer
+     * @param player current Player
+     */
+    private void askWorkerNum(Player player) {
+        virtualView.requestWorkerNum();
+
+        if (uim.isChosenWorker())
+            currWorker = player.getWorker1();
+        else
+            currWorker = player.getWorker2();
     }
 
     /**

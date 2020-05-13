@@ -5,7 +5,8 @@ import it.polimi.ingsw.PSP41.model.*;
 import java.util.List;
 
 public class Demeter extends GodPower {
-    private Position constraint;
+    private int rowConstraint;
+    private int colConstraint;
 
     public Demeter() {
         affectPhase = TurnPhase.BUILD;
@@ -16,14 +17,14 @@ public class Demeter extends GodPower {
     @Override
     public boolean isActionable(Board board, Worker worker) {
         List<Position> pos = am.getValidBuilds(board, worker.getRow(), worker.getColumn());
-        pos.remove(constraint);
+        pos.removeIf(p -> (p.getPosRow()==rowConstraint && p.getPosColumn()==colConstraint));
         return !pos.isEmpty();
     }
 
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase)
-            positions.removeIf(p -> (p.getPosRow()==constraint.getPosRow() && p.getPosColumn()==constraint.getPosColumn()));
+            positions.removeIf(p -> (p.getPosRow()==rowConstraint && p.getPosColumn()==colConstraint));
     }
 
     @Override
@@ -41,7 +42,8 @@ public class Demeter extends GodPower {
 
     @Override
     public void build(Board board, int row, int column) {
-        constraint = new Position(row, column);
+        rowConstraint = row;
+        colConstraint = column;
         super.build(board, row, column);
     }
 

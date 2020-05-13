@@ -5,7 +5,8 @@ import it.polimi.ingsw.PSP41.model.*;
 import java.util.List;
 
 public class Hephaestus extends GodPower {
-    private Position constraint;
+    private int rowConstraint;
+    private int colConstraint;
 
     public Hephaestus() {
         affectPhase = TurnPhase.BUILD;
@@ -15,14 +16,14 @@ public class Hephaestus extends GodPower {
 
     @Override
     public boolean isActionable(Board board, Worker worker) {
-        return board.getCell(constraint.getPosRow(), constraint.getPosColumn()).getLevel() < 3;
+        return board.getCell(rowConstraint, colConstraint).getLevel() < 3;
     }
 
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase) {
             positions.clear();
-            positions.add(constraint);
+            positions.add(new Position(rowConstraint, colConstraint));
         }
     }
 
@@ -41,7 +42,8 @@ public class Hephaestus extends GodPower {
     //TODO mi chiede dove costruire anche se non necessario, potrei chiedergli l'attivazione Before Build e fare +2lev
     @Override
     public void build(Board board, int row, int column) {
-        constraint = new Position(row, column);
+        rowConstraint = row;
+        colConstraint = column;
         super.build(board, row, column);
     }
 

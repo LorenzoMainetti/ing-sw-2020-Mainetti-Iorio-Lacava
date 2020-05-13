@@ -149,7 +149,8 @@ public class ActionManager {
     public Position getOtherWorker(Board board, int row, int column) {
         Color color = board.getCell(row, column).getWorker().getColor();
 
-        List<Position> otherWorker = Arrays.stream(board.getGrid()).
+        List<Position> otherWorker = Arrays.
+                stream(board.getGrid()).
                 flatMap(Arrays::stream).
                 filter(Cell::isOccupied).
                 filter(cell -> cell.getWorker().getColor()==color).

@@ -5,7 +5,8 @@ import it.polimi.ingsw.PSP41.model.*;
 import java.util.List;
 
 public class Artemis extends GodPower {
-    private Position constraint;
+    private int rowConstraint;
+    private int colConstraint;
 
     public Artemis() {
         affectPhase = TurnPhase.MOVE;
@@ -16,14 +17,14 @@ public class Artemis extends GodPower {
     @Override
     public boolean isActionable(Board board, Worker worker) {
         List<Position> pos = am.getValidMoves(board, worker.getRow(), worker.getColumn());
-        pos.remove(constraint);
+        pos.removeIf(p -> (p.getPosRow()==rowConstraint && p.getPosColumn()==colConstraint));
         return !pos.isEmpty();
     }
 
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase)
-            positions.removeIf(p -> (p.getPosRow()==constraint.getPosRow() && p.getPosColumn()==constraint.getPosColumn()));
+            positions.removeIf(p -> (p.getPosRow()==rowConstraint && p.getPosColumn()==colConstraint));
     }
 
     @Override
@@ -41,7 +42,8 @@ public class Artemis extends GodPower {
 
     @Override
     public void move(Worker worker, Board board, int row, int column) {
-        constraint = new Position(worker.getRow(), worker.getColumn());
+        rowConstraint = worker.getRow();
+        colConstraint = worker.getColumn();
         super.move(worker, board, row, column);
     }
 
