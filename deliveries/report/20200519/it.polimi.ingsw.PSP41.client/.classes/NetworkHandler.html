@@ -1,0 +1,221 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NetworkHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.PSP41.client</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NetworkHandler (it.polimi.ingsw.PSP41.client)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NetworkHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 52)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.PSP41.client;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.PSP41.observer.UiObserver;
+<i>4</i>&nbsp;import it.polimi.ingsw.PSP41.model.Board;
+<i>5</i>&nbsp;import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
+<i>6</i>&nbsp;import it.polimi.ingsw.PSP41.utils.PositionMessage;
+<i>7</i>&nbsp;import it.polimi.ingsw.PSP41.view.CLI;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;import java.io.IOException;
+<i>10</i>&nbsp;import java.io.ObjectInputStream;
+<i>11</i>&nbsp;import java.io.PrintWriter;
+<i>12</i>&nbsp;import java.net.Socket;
+<i>13</i>&nbsp;import java.util.ArrayList;
+<i>14</i>&nbsp;import java.util.List;
+<i>15</i>&nbsp;import java.util.NoSuchElementException;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;public class NetworkHandler implements Runnable, UiObserver {
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    Socket socket;
+<i>22</i>&nbsp;    ObjectInputStream socketIn;
+<i>23</i>&nbsp;    PrintWriter socketOut;
+<b class="nc"><i>24</i>&nbsp;    private boolean active = true;</b>
+<b class="nc"><i>25</i>&nbsp;    List&lt;PlayersInfoMessage&gt; playersInfo = new ArrayList&lt;&gt;();</b>
+<i>26</i>&nbsp;    // Quando avrò anche la GUI, creerò un&#39;interfaccia UserInterface da far implementare a CLI e GUI
+<i>27</i>&nbsp;    private CLI cli;
+<i>28</i>&nbsp;
+<b class="nc"><i>29</i>&nbsp;    public NetworkHandler(String ip, String port) {</b>
+<i>30</i>&nbsp;        try {
+<b class="nc"><i>31</i>&nbsp;            socket = new Socket(ip, Integer.parseInt(port));</b>
+<b class="nc"><i>32</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>33</i>&nbsp;            System.out.println(&quot;server unreachable&quot;);</b>
+<i>34</i>&nbsp;            return;
+<b class="nc"><i>35</i>&nbsp;        }</b>
+<b class="nc"><i>36</i>&nbsp;        System.out.println(&quot;Connection established&quot;);</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public void setCli(CLI cli) {
+<b class="nc"><i>40</i>&nbsp;        this.cli = cli;</b>
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * Server messages manager
+<i>45</i>&nbsp;     * @param inputObject
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public synchronized void manageInputFromServer(Object inputObject) {
+<b class="nc"><i>48</i>&nbsp;        if (inputObject instanceof String) {</b>
+<i>49</i>&nbsp;            /*if (inputObject.equals(startTurnMessage)) {
+<i>50</i>&nbsp;                cli.printMessage((String) inputObject);
+<i>51</i>&nbsp;            }
+<i>52</i>&nbsp;            else if (inputObject.equals(endTurnMessage) || inputObject.equals(&quot;Wait for the players to join...&quot;)) {
+<i>53</i>&nbsp;                cli.printMessage((String) inputObject);
+<i>54</i>&nbsp;            }
+<i>55</i>&nbsp;            else if(inputObject.equals(playersNumMessage))
+<i>56</i>&nbsp;                cli.askPlayersNumber(); ok
+<i>57</i>&nbsp;            else if (inputObject.equals(initPosMessage))
+<i>58</i>&nbsp;                cli.askInitialPosition(); ok
+<i>59</i>&nbsp;            else if(inputObject.equals(nicknameMessage))
+<i>60</i>&nbsp;                cli.askNickname(); ok
+<i>61</i>&nbsp;            else if (inputObject.equals(infoMessage))
+<i>62</i>&nbsp;                cli.askClient(); ok
+<i>63</i>&nbsp;            else if(inputObject.equals(workerNumMessage))
+<i>64</i>&nbsp;                cli.askWorker(); ok
+<i>65</i>&nbsp;            else if(inputObject.equals(activatePowMessage))
+<i>66</i>&nbsp;                cli.askPowerActivation(); ok
+<i>67</i>&nbsp;            }
+<i>68</i>&nbsp;            else*/
+<b class="nc"><i>69</i>&nbsp;            if (!inputObject.equals(startTurnMessage) &amp;&amp; !inputObject.equals(endTurnMessage)) {</b>
+<b class="nc"><i>70</i>&nbsp;                cli.printMessage((String) inputObject);</b>
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;        }
+<b class="nc"><i>74</i>&nbsp;        else if (inputObject instanceof Board) {</b>
+<b class="nc"><i>75</i>&nbsp;            for(PlayersInfoMessage message : playersInfo)</b>
+<b class="nc"><i>76</i>&nbsp;                cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());</b>
+<b class="nc"><i>77</i>&nbsp;            cli.printBoard((Board) inputObject);</b>
+<i>78</i>&nbsp;        }
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;        else if (inputObject instanceof PositionMessage) {</b>
+<b class="nc"><i>81</i>&nbsp;            PositionMessage message = (PositionMessage) inputObject;</b>
+<b class="nc"><i>82</i>&nbsp;            cli.displayOptions(message.getValidPos());</b>
+<b class="nc"><i>83</i>&nbsp;        }</b>
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;        else if (inputObject instanceof PlayersInfoMessage) {</b>
+<b class="nc"><i>86</i>&nbsp;            PlayersInfoMessage message = (PlayersInfoMessage) inputObject;</b>
+<b class="nc"><i>87</i>&nbsp;            playersInfo.add(message);</b>
+<b class="nc"><i>88</i>&nbsp;            cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());</b>
+<i>89</i>&nbsp;
+<b class="nc"><i>90</i>&nbsp;        }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;        else {
+<b class="nc"><i>93</i>&nbsp;            throw new IllegalArgumentException();</b>
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public void run() {
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        try {
+<b class="nc"><i>100</i>&nbsp;            socketIn = new ObjectInputStream(socket.getInputStream());</b>
+<b class="nc"><i>101</i>&nbsp;            socketOut = new PrintWriter(socket.getOutputStream(), true);</b>
+<b class="nc"><i>102</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>103</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>104</i>&nbsp;        }</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;        try{
+<b class="nc"><i>107</i>&nbsp;            while (active) {</b>
+<i>108</i>&nbsp;                try {
+<b class="nc"><i>109</i>&nbsp;                    Object inputObject = socketIn.readObject();</b>
+<b class="nc"><i>110</i>&nbsp;                    manageInputFromServer(inputObject);</b>
+<i>111</i>&nbsp;                    // chiudo socket se ricevo winMessage
+<b class="nc"><i>112</i>&nbsp;                    if (inputObject.equals(winMessage)) break;</b>
+<b class="nc"><i>113</i>&nbsp;                } catch (IOException | ClassNotFoundException e) {</b>
+<b class="nc"><i>114</i>&nbsp;                    cli.printMessage(&quot;Connection closed from server side&quot;);</b>
+<b class="nc"><i>115</i>&nbsp;                    break;</b>
+<b class="nc"><i>116</i>&nbsp;                }</b>
+<i>117</i>&nbsp;            }
+<b class="nc"><i>118</i>&nbsp;        } catch(NoSuchElementException e) {</b>
+<b class="nc"><i>119</i>&nbsp;            System.out.println(&quot;Connection closed from client side&quot;);</b>
+<i>120</i>&nbsp;        } finally {
+<b class="nc"><i>121</i>&nbsp;            try {</b>
+<b class="nc"><i>122</i>&nbsp;                socketIn.close();</b>
+<b class="nc"><i>123</i>&nbsp;                socketOut.close();</b>
+<b class="nc"><i>124</i>&nbsp;                socket.close();</b>
+<b class="nc"><i>125</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>126</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>127</i>&nbsp;            }</b>
+<b class="nc"><i>128</i>&nbsp;        }</b>
+<b class="nc"><i>129</i>&nbsp;        System.exit(0);</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    @Override
+<i>133</i>&nbsp;    public void update(String inputLine) {
+<b class="nc"><i>134</i>&nbsp;        socketOut.println(inputLine);</b>
+<b class="nc"><i>135</i>&nbsp;        socketOut.flush();</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-18 18:03</div>
+</div>
+</body>
+</html>

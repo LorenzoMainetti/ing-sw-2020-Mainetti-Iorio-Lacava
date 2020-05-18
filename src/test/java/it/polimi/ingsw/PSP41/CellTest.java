@@ -90,7 +90,6 @@ public class CellTest {
         }
     }
 
-
     @Test
     public void testWorkerMethods() {
         try {

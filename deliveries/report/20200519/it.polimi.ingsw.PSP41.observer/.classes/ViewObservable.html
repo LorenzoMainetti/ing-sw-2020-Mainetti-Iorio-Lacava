@@ -1,0 +1,149 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ViewObservable</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.PSP41.observer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ViewObservable (it.polimi.ingsw.PSP41.observer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ViewObservable</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.PSP41.observer;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.PSP41.model.Position;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.util.ArrayList;
+<i>6</i>&nbsp;import java.util.List;
+<i>7</i>&nbsp;
+<b class="nc"><i>8</i>&nbsp;public class ViewObservable {</b>
+<b class="nc"><i>9</i>&nbsp;    private final List&lt;ViewObserver&gt; observers = new ArrayList&lt;&gt;();</b>
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    public void addObserver(ViewObserver observer){
+<b class="nc"><i>12</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>13</i>&nbsp;            observers.add(observer);</b>
+<b class="nc"><i>14</i>&nbsp;        }</b>
+<i>15</i>&nbsp;    }
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public void removeObserver(ViewObserver observer){
+<b class="nc"><i>18</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>19</i>&nbsp;            observers.remove(observer);</b>
+<b class="nc"><i>20</i>&nbsp;        }</b>
+<i>21</i>&nbsp;    }
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public void notifyNickname(String nickname){
+<b class="nc"><i>24</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>25</i>&nbsp;            for(ViewObserver observer : observers){</b>
+<b class="nc"><i>26</i>&nbsp;                observer.updateNickname(nickname);</b>
+<b class="nc"><i>27</i>&nbsp;            }</b>
+<b class="nc"><i>28</i>&nbsp;        }</b>
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    // non serve più (lo faccio in lobby)
+<i>32</i>&nbsp;    public void notifyPlayersNumber(int numbers){
+<b class="nc"><i>33</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>34</i>&nbsp;            for(ViewObserver observer : observers){</b>
+<b class="nc"><i>35</i>&nbsp;                observer.updatePlayersNumber(numbers);</b>
+<b class="nc"><i>36</i>&nbsp;            }</b>
+<b class="nc"><i>37</i>&nbsp;        }</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public void notifyPosition(Position position){
+<b class="nc"><i>41</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>42</i>&nbsp;            for(ViewObserver observer : observers){</b>
+<b class="nc"><i>43</i>&nbsp;                observer.updatePosition(position);</b>
+<b class="nc"><i>44</i>&nbsp;            }</b>
+<b class="nc"><i>45</i>&nbsp;        }</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    // serve per la scelta del worker
+<i>49</i>&nbsp;    public void notifyWorker(boolean chosenWorker){
+<b class="nc"><i>50</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>51</i>&nbsp;            for(ViewObserver observer : observers){</b>
+<b class="nc"><i>52</i>&nbsp;                observer.updateWorker(chosenWorker);</b>
+<b class="nc"><i>53</i>&nbsp;            }</b>
+<b class="nc"><i>54</i>&nbsp;        }</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    // serve per la scelta del potere
+<i>58</i>&nbsp;    public void notifyPower(boolean power){
+<b class="nc"><i>59</i>&nbsp;        synchronized (observers) {</b>
+<b class="nc"><i>60</i>&nbsp;            for(ViewObserver observer : observers){</b>
+<b class="nc"><i>61</i>&nbsp;                observer.updatePower(power);</b>
+<b class="nc"><i>62</i>&nbsp;            }</b>
+<b class="nc"><i>63</i>&nbsp;        }</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-18 18:03</div>
+</div>
+</body>
+</html>

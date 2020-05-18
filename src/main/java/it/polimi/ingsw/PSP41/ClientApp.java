@@ -5,11 +5,8 @@ import it.polimi.ingsw.PSP41.view.CLI;
 
 import java.util.Scanner;
 
-import static java.lang.Thread.sleep;
-
 public class ClientApp {
 
-    //TODO rendere questo metodo run e fare ClientApp con il main
     public static void main(String[] args) {
 
         boolean alive = true;

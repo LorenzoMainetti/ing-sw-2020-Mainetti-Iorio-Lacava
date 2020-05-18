@@ -1,71 +1,90 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.*;
+import it.polimi.ingsw.PSP41.model.godCards.Minotaur;
+import it.polimi.ingsw.PSP41.model.godCards.GodPower;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for Minotaur GodPower.
  */
-
-public class MinotaurTest { /*
-    GodPower godPower;
+public class MinotaurTest {
     Board board;
-    Player player;
-    UserInputManager inputManager;
     Worker opponent;
+    GodPower godPower;
+    Player player;
+    ActionManager actionManager;
 
     @Before
     public void setup() {
         board = new Board();
-        player = new Player("Olimpia", Color.RED);
-        player.getWorker1().setPosition(board, 0, 2);
-        player.getWorker2().setPosition(board, 4, 4);
-        inputManager = new UserInputManager(new CLI());
-        godPower = new Minotaur(player, inputManager);
+        opponent = new Worker(Color.BLUE, 1);
+        godPower = new Minotaur();
+        player = new Player("Olimpia", Color.RED, godPower);
+        actionManager = new ActionManager();
+        player.getWorker1().setPosition(board, 4, 4);
+        player.getWorker2().setPosition(board, 1, 1);
+        opponent.setPosition(board, 3, 4);
     }
 
     @Test
-    public void notActivePower_moveBehaviour() {
-        opponent = new Worker(Color.BLUE, 1);
-        opponent.setPosition(board, 0, 3);
-        godPower.activeWorkers(board);
-        godPower.moveBehaviour(board);
-
-        assertEquals(0, godPower.getPlayer().getWorker1().getRow());
-        assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
+    public void testIsActionable_True() {
+        assertTrue(godPower.isActionable(board, player.getWorker1()));
     }
 
     @Test
-    public void activePower_moveBehaviour_activated() {
-        opponent = new Worker(Color.BLUE, 1);
-        opponent.setPosition(board, 0, 1);
-        board.getCell(0,0).addLevel();
-        board.getCell(0,0).addLevel();
-        inputManager.updatePower(true);
-        GodPower minotaur = new Minotaur(player, inputManager);
-        minotaur.activeWorkers(board);
-        minotaur.moveBehaviour(board);
-
-        assertEquals(0, minotaur.getPlayer().getWorker1().getRow());
-        assertEquals(1, minotaur.getPlayer().getWorker1().getColumn());
-        assertEquals(0, opponent.getRow());
-        assertEquals(0, opponent.getColumn());
+    public void testIsActionable_False() {
+        board.getCell(2, 4).setDome(true);
+        assertFalse(godPower.isActionable(board, player.getWorker1()));
     }
 
     @Test
-    public void activePower_moveBehaviour_notActivated() {
-        opponent = new Worker(Color.BLUE, 1);
-        opponent.setPosition(board, 0, 3);
-        board.getCell(0,4).setDome(true);
-        inputManager.updatePower(true);
-        GodPower minotaur = new Minotaur(player, inputManager);
-        minotaur.activeWorkers(board);
-        minotaur.moveBehaviour(board);
-
-        assertEquals(0, minotaur.getPlayer().getWorker1().getRow());
-        assertEquals(1, minotaur.getPlayer().getWorker1().getColumn());
-        assertEquals(0, opponent.getRow());
-        assertEquals(3, opponent.getColumn());
+    public void testGodPowerRequired_First() {
+        assertEquals(1, godPower.godPowerRequired(board, player));
     }
-*/
+
+    @Test
+    public void testGodPowerRequired_Second() {
+        player.move(opponent, board, 1, 2);
+        assertEquals(2, godPower.godPowerRequired(board, player));
+    }
+
+    @Test
+    public void testGodPowerRequired_Third() {
+        Worker opp = new Worker(Color.BLUE, 2);
+        opp.setPosition(board, 1, 2);
+        assertEquals(0, godPower.godPowerRequired(board, player));
+    }
+
+    @Test
+    public void testGodPowerRequired_Fourth() {
+        player.move(opponent, board, 0, 4);
+        assertEquals(-1, godPower.godPowerRequired(board, player));
+    }
+
+    @Test
+    public void testApplyEffect() {
+        List<Position> positions = actionManager.getValidMoves(board, 4, 4);
+        godPower.applyEffect(positions, board, player.getWorker1(), TurnPhase.MOVE);
+        assertEquals(3, positions.get(2).getPosRow());
+        assertEquals(4, positions.get(2).getPosColumn());
+    }
+
+    @Test
+    public void testMove() {
+        godPower.move(player.getWorker1(), board, 3, 4);
+        assertFalse(board.getCell(4,4).isOccupied());
+        assertTrue(board.getCell(3,4).isOccupied());
+        assertTrue(board.getCell(2,4).isOccupied());
+        assertEquals(2, opponent.getRow());
+        assertEquals(4, opponent.getColumn());
+        assertEquals(3, player.getWorker1().getRow());
+        assertEquals(4, player.getWorker1().getColumn());
+    }
+
 }

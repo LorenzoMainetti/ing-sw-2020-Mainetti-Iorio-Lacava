@@ -268,7 +268,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     /**
      * Prints empty board
-     * @param board
+     * @param board initial board state
      */
     public void emptyBoard(Board board) {
         for (ClientHandler client : clients.values()) {

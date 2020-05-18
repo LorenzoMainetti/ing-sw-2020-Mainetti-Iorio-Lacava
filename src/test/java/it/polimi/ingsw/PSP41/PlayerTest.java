@@ -1,5 +1,6 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.Cell;
 import it.polimi.ingsw.PSP41.model.godCards.Default;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
@@ -36,48 +37,38 @@ public class PlayerTest {
     }
 
     @Test
+    public void testSetters() {
+        player.setWinner(true);
+        assertTrue(player.isWinner());
+        player.setStuck(true, board);
+        assertTrue(player.isStuck());
+    }
+
+    @Test
     public void testMove() {
-        try {
-            player.move(player.getWorker1(), board, 0, 2);
-        }
-        catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("Invalid position.", ex.getMessage());
-        }
-        catch (IllegalStateException ex) {
-            assertEquals("Position taken.", ex.getMessage());
-        }
-        finally {
-            assertFalse(board.getCell(0, 3).isOccupied());
-            assertEquals(0, player.getWorker1().getRow());
-            assertEquals(2, player.getWorker1().getColumn());
-            assertTrue(board.getCell(0, 2).isOccupied());
-        }
+        player.move(player.getWorker1(), board, 0, 2);
+        assertFalse(board.getCell(0, 3).isOccupied());
+        assertEquals(0, player.getWorker1().getRow());
+        assertEquals(2, player.getWorker1().getColumn());
+        assertTrue(board.getCell(0, 2).isOccupied());
+
     }
 
     @Test
-    public void testMoveException() {
-        try {
-            player.move(player.getWorker1(), board, 4, 4);
-        }
-        catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("Invalid position.", ex.getMessage());
-        }
-        catch (IllegalStateException ex) {
-            assertEquals("Position taken.", ex.getMessage());
-        }
-        finally {
-            assertFalse(board.getCell(0, 3).isOccupied());
-            assertTrue(board.getCell(4, 4).isOccupied());
-            assertEquals(0, player.getWorker1().getRow());
-            assertEquals(3, player.getWorker1().getColumn());
-        }
-    }
-
-    @Test
-    public void buildTest() {
+    public void testBuild() {
         player.build(board, 0, 3);
         assertEquals(1, board.getCell(0, 3).getLevel());
     }
 
+    @Test
+    public void testBuild_withDome() {
+        Cell c = board.getCell(0,3);
+        c.addLevel();
+        c.addLevel();
+        c.addLevel();
+        player.build(board, 0, 3);
+        assertEquals(4, board.getCell(0, 3).getLevel());
+        assertTrue(board.getCell(0, 3).isDome());
+    }
 
 }

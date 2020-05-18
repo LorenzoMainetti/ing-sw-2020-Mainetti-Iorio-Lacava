@@ -20,7 +20,6 @@ public class Athena extends GodPower {
             positions.removeIf(p -> (board.getCell(p.getPosRow(), p.getPosColumn()).getLevel() >
                     board.getCell(worker.getRow(), worker.getColumn()).getLevel()));
         }
-
     }
 
     @Override

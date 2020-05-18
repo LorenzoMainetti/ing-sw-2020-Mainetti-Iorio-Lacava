@@ -106,11 +106,11 @@ public class Server implements Runnable, ConnectionObserver {
                 }
                 else {
                     // Altrimenti da problemi di sincronizzazione
-                    try {
+                    /*try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                     clientHandler.send(fullLobby);
                     clientHandler.setActive(false);
                     clientHandler.closeConnection();

@@ -7,7 +7,7 @@ public class GameMessage {
     public static String initPosMessage = "Choose initial position for your workers";
 
     public static String workerNumMessage = "Choose worker (1 or 2):";
-    public static String activatePowMessage = "Do you want to use your God Power?";
+    public static String activatePowMessage = "Do you want to use your God Power? Type yes or no.";
     public static String moveMessage = "Move phase!";
     public static String buildMessage = "Build phase!";
 

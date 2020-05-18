@@ -24,14 +24,6 @@ public class Zeus extends GodPower {
     }
 
     @Override
-    public boolean checkWinCondition(Cell startCell, Cell endCell) {
-        if(startCell.equals(endCell))
-            return false;
-        else
-            return super.checkWinCondition(startCell, endCell);
-    }
-
-    @Override
     public String toString() {
         return ("Your worker may build a block under itself. You do not win by forcing yourself up to the third level");
     }

@@ -28,15 +28,32 @@ public class ActionManagerTest {
     @Test
     public void testGetValidMoves() {
         c = board.getCell(0, 0);
-        Cell c1 = board.getCell(0, 1);
-        Cell c2 = board.getCell(1, 1);
         c.attachWorker(worker);
+        Cell c1 = board.getCell(0, 1);
         c1.setDome(true);
+        Cell c2 = board.getCell(1, 1);
         c2.addLevel();
         c2.addLevel();
 
         List<Position> test;
         test = actionManager.getValidMoves(board, 0, 0);
+        assertEquals(1, test.size());
+        assertEquals(1, test.get(0).getPosRow());
+        assertEquals(0, test.get(0).getPosColumn());
+    }
+
+    @Test
+    public void testGetNotHigherCells() {
+        c = board.getCell(0, 0);
+        c.attachWorker(worker);
+        Cell c1 = board.getCell(0, 1);
+        c1.setDome(true);
+        Cell c2 = board.getCell(1, 1);
+        c2.addLevel();
+
+        List<Position> test;
+        test = actionManager.getNotHigherCells(board, 0, 0);
+        assertEquals(1, test.size());
         assertEquals(1, test.get(0).getPosRow());
         assertEquals(0, test.get(0).getPosColumn());
     }
@@ -44,16 +61,13 @@ public class ActionManagerTest {
     @Test
     public void testGetValidBuilds() {
         c = board.getCell(4, 4);
-        Cell c1 = board.getCell(3, 4);
         c.attachWorker(worker);
+        Cell c1 = board.getCell(3, 4);
         c1.setDome(true);
-        Cell c2 = board.getCell(0, 0);
-        c2.addLevel();
-        c2.addLevel();
-        c2.addLevel();
 
         List<Position> test;
         test = actionManager.getValidBuilds(board, 4, 4);
+        assertEquals(2, test.size());
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(3, test.get(0).getPosColumn());
         assertEquals(4, test.get(1).getPosRow());
@@ -61,18 +75,36 @@ public class ActionManagerTest {
     }
 
     @Test
+    public void testGetValidRemovableBlocks() {
+        c = board.getCell(4, 4);
+        c.attachWorker(worker);
+        Cell c1 = board.getCell(3, 4);
+        c1.setDome(true);
+        Cell c2 = board.getCell(3, 3);
+        c2.addLevel();
+        c2.addLevel();
+
+        List<Position> test;
+        test = actionManager.getValidRemovableBlocks(board, 4, 4);
+        assertEquals(1, test.size());
+        assertEquals(3, test.get(0).getPosRow());
+        assertEquals(3, test.get(0).getPosColumn());
+    }
+
+    @Test
     public void testGetOpponentWorkers() {
         c = board.getCell(4, 4);
-        Cell c1 = board.getCell(3, 3);
-        Cell c2 = board.getCell(3, 4);
-        Worker myWorker = new Worker(Color.RED, 2);
-        Worker oppWorker = new Worker(Color.BLUE, 1);
         c.attachWorker(worker);
+        Cell c1 = board.getCell(3, 3);
+        Worker myWorker = new Worker(Color.RED, 2);
         c1.attachWorker(myWorker);
+        Cell c2 = board.getCell(3, 4);
+        Worker oppWorker = new Worker(Color.BLUE, 1);
         c2.attachWorker(oppWorker);
 
         List<Position> test;
         test = actionManager.getOpponentWorkers(board, 4, 4);
+        assertEquals(1, test.size());
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(4, test.get(0).getPosColumn());
     }
@@ -80,21 +112,37 @@ public class ActionManagerTest {
     @Test
     public void testGetActiveOpponentWorkers() {
         c = board.getCell(4, 4);
+        c.attachWorker(worker);
         Cell c1 = board.getCell(3, 3);
         Cell c2 = board.getCell(3, 4);
         Worker oppWorker1 = new Worker(Color.BLUE, 1);
         Worker oppWorker2 = new Worker(Color.BLUE, 2);
-        c.attachWorker(worker);
         c1.attachWorker(oppWorker1);
         c2.attachWorker(oppWorker2);
         board.getCell(2, 3).setDome(true);
         board.getCell(2, 4).setDome(true);
-
+        board.getCell(4, 3).setDome(true);
 
         List<Position> test;
         test = actionManager.getActiveOpponentWorkers(board, 4, 4);
+        assertEquals(1, test.size());
         assertEquals(3, test.get(0).getPosRow());
         assertEquals(3, test.get(0).getPosColumn());
+    }
+
+    @Test
+    public void testGetOtherWorker() {
+        c = board.getCell(4, 4);
+        worker.setPosition(board, 4, 4);
+        Worker myOtherWorker = new Worker(Color.RED, 2);
+        myOtherWorker.setPosition(board, 1, 2);
+        Worker oppWorker = new Worker(Color.BLUE, 1);
+        oppWorker.setPosition(board, 0, 0);
+
+        Position test;
+        test = actionManager.getOtherWorker(board, 4, 4);
+        assertEquals(1, test.getPosRow());
+        assertEquals(2, test.getPosColumn());
     }
 
     @After

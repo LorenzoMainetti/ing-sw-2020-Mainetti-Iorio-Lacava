@@ -1,0 +1,163 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Minotaur</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.PSP41.model.godCards</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Minotaur (it.polimi.ingsw.PSP41.model.godCards)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Minotaur</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85,7%
+  </span>
+  <span class="absValue">
+    (6/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97,1%
+  </span>
+  <span class="absValue">
+    (34/ 35)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.PSP41.model.godCards;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.PSP41.model.*;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.util.ArrayList;
+<i>6</i>&nbsp;import java.util.List;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;public class Minotaur extends GodPower {
+<i>9</i>&nbsp;
+<b class="fc"><i>10</i>&nbsp;    public Minotaur() {</b>
+<b class="fc"><i>11</i>&nbsp;        affectPhase = TurnPhase.NONE;</b>
+<b class="fc"><i>12</i>&nbsp;        phases.add(TurnPhase.MOVE);</b>
+<b class="fc"><i>13</i>&nbsp;        phases.add(TurnPhase.BUILD);</b>
+<b class="fc"><i>14</i>&nbsp;    }</b>
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    @Override
+<i>17</i>&nbsp;    public boolean isActionable(Board board, Worker worker) {
+<b class="fc"><i>18</i>&nbsp;        return !am.getOpponentWorkers(board, worker.getRow(), worker.getColumn()).isEmpty() &amp;&amp; !getPowerCells(board, worker).isEmpty();</b>
+<i>19</i>&nbsp;    }
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    @Override
+<i>22</i>&nbsp;    public int godPowerRequired(Board board, Player player) {
+<b class="fc"><i>23</i>&nbsp;        if(!isActionable(board, player.getWorker1()) &amp;&amp; !isActionable(board, player.getWorker2()))</b>
+<b class="fc"><i>24</i>&nbsp;            return -1;</b>
+<i>25</i>&nbsp;        else {
+<b class="fc"><i>26</i>&nbsp;            if (!isActionable(board, player.getWorker1()))</b>
+<b class="fc"><i>27</i>&nbsp;                return 2;</b>
+<b class="fc"><i>28</i>&nbsp;            else if (!isActionable(board, player.getWorker2()))</b>
+<b class="fc"><i>29</i>&nbsp;                return 1;</b>
+<i>30</i>&nbsp;            else
+<b class="fc"><i>31</i>&nbsp;                return 0;</b>
+<i>32</i>&nbsp;        }
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    @Override
+<i>36</i>&nbsp;    public void applyEffect(List&lt;Position&gt; positions, Board board, Worker worker, TurnPhase phase) {
+<b class="fc"><i>37</i>&nbsp;        if(isActionable(board, worker) &amp;&amp; phase==TurnPhase.MOVE) {</b>
+<b class="fc"><i>38</i>&nbsp;            positions.addAll(getPowerCells(board, worker));</b>
+<i>39</i>&nbsp;        }
+<b class="fc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Override
+<i>43</i>&nbsp;    public void move(Worker worker, Board board, int row, int column) {
+<b class="fc"><i>44</i>&nbsp;        if(board.getCell(row, column).isOccupied()) {</b>
+<b class="fc"><i>45</i>&nbsp;            Worker opponentWorker = board.getCell(row, column).getWorker();</b>
+<b class="fc"><i>46</i>&nbsp;            int deltaRow = row - worker.getRow();</b>
+<b class="fc"><i>47</i>&nbsp;            int deltaColumn = column - worker.getColumn();</b>
+<i>48</i>&nbsp;            // Move of the opponent&#39;s worker &quot;back&quot; of one cell
+<b class="fc"><i>49</i>&nbsp;            super.move(opponentWorker, board, row + deltaRow, column + deltaColumn);</b>
+<i>50</i>&nbsp;            // Move of my worker into the first cell occupied by the opponent&#39;s worker
+<i>51</i>&nbsp;        }
+<b class="fc"><i>52</i>&nbsp;        super.move(worker, board, row, column);</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    private List&lt;Position&gt; getPowerCells(Board board, Worker worker) {
+<i>56</i>&nbsp;        int deltaRow;
+<i>57</i>&nbsp;        int deltaColumn;
+<b class="fc"><i>58</i>&nbsp;        List&lt;Position&gt; powerCells = new ArrayList&lt;&gt;();</b>
+<i>59</i>&nbsp;        // I show which cells between the occupied ones are eligible to force &quot;back&quot; the opponent&#39;s worker
+<b class="fc"><i>60</i>&nbsp;        for (Position pos: am.getOpponentWorkers(board, worker.getRow(), worker.getColumn())) {</b>
+<b class="fc"><i>61</i>&nbsp;            deltaRow = pos.getPosRow() - worker.getRow();</b>
+<b class="fc"><i>62</i>&nbsp;            deltaColumn = pos.getPosColumn() - worker.getColumn();</b>
+<i>63</i>&nbsp;            // If the cell &quot;back&quot; to the opponent&#39;s worker is free and valid I add the opponent&#39;s worker to the list
+<i>64</i>&nbsp;            // of cells to choose from for my worker&#39;s move
+<b class="fc"><i>65</i>&nbsp;            if (0 &lt;= worker.getRow() + 2*deltaRow &amp;&amp; worker.getRow() + 2*deltaRow &lt;= 4 &amp;&amp;</b>
+<b class="fc"><i>66</i>&nbsp;                    0 &lt;= worker.getColumn() + 2*deltaColumn &amp;&amp; worker.getColumn() + 2*deltaColumn &lt;= 4 &amp;&amp;</b>
+<b class="fc"><i>67</i>&nbsp;                    !board.getCell(worker.getRow() + 2*deltaRow, worker.getColumn() + 2*deltaColumn).isOccupied() &amp;&amp;</b>
+<b class="fc"><i>68</i>&nbsp;                    !board.getCell(worker.getRow() + 2*deltaRow, worker.getColumn() + 2*deltaColumn).isDome()) {</b>
+<b class="fc"><i>69</i>&nbsp;                powerCells.add(pos);</b>
+<i>70</i>&nbsp;            }
+<b class="fc"><i>71</i>&nbsp;        }</b>
+<b class="fc"><i>72</i>&nbsp;        return powerCells;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    @Override
+<i>76</i>&nbsp;    public String toString() {
+<b class="nc"><i>77</i>&nbsp;        return (&quot;Your Worker may move into an opponent Worker&#39;s space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.&quot;);</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-18 18:03</div>
+</div>
+</body>
+</html>

@@ -1,45 +1,50 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.*;
+import it.polimi.ingsw.PSP41.model.godCards.Athena;
+import it.polimi.ingsw.PSP41.model.godCards.GodPower;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for Athena GodPower.
  */
-
-public class AthenaTest { /*
-    GodPower godPower;
+public class AthenaTest {
     Board board;
+    Worker opponent;
+    GodPower godPower;
     Player player;
-    UserInputManager inputManager;
+    ActionManager actionManager;
 
     @Before
     public void setup() {
         board = new Board();
-        player = new Player("Olimpia", Color.RED);
-        player.getWorker1().setPosition(board, 0, 2);
-        player.getWorker2().setPosition(board, 4, 4);
-        inputManager = new UserInputManager(new CLI());
-        godPower = new Athena(player, inputManager);
+        opponent = new Worker(Color.BLUE, 1);
+        godPower = new Athena();
+        player = new Player("Olimpia", Color.RED, godPower);
+        actionManager = new ActionManager();
+        player.getWorker1().setPosition(board, 4, 4);
+        player.getWorker2().setPosition(board, 1, 1);
+        opponent.setPosition(board, 3, 4);
+        board.getCell(4, 3).addLevel();
+        player.move(player.getWorker1(), board, 4, 3);
     }
 
     @Test
-    public void noActivation_MoveBehaviour() {
-        godPower.activeWorkers(board);
-        godPower.moveBehaviour(board);
-
-        assertEquals(0, godPower.getPlayer().getWorker1().getRow());
-        assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
-        assertFalse(GodPower.getAthenaPower());
+    public void testApplyOpponentConstraints() {
+        board.getCell(2, 3).addLevel();
+        board.getCell(2, 4).addLevel();
+        List<Position> positions = actionManager.getValidMoves(board, 3, 4);
+        godPower.applyOpponentConstraints(positions, board, opponent);
+        assertEquals(2, positions.size());
+        assertEquals(3, positions.get(0).getPosRow());
+        assertEquals(3, positions.get(0).getPosColumn());
+        assertEquals(4, positions.get(1).getPosRow());
+        assertEquals(4, positions.get(1).getPosColumn());
     }
 
-    @Test
-    public void Activation_MoveBehaviour() {
-        board.getCell(0, 1).addLevel();
-        godPower.activeWorkers(board);
-        godPower.moveBehaviour(board);
-
-        assertEquals(0, godPower.getPlayer().getWorker1().getRow());
-        assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
-        assertTrue(GodPower.getAthenaPower());
-    }
-*/
 }

@@ -1,105 +1,72 @@
 package it.polimi.ingsw.PSP41;
 
+import it.polimi.ingsw.PSP41.model.*;
+import it.polimi.ingsw.PSP41.model.godCards.Artemis;
+import it.polimi.ingsw.PSP41.model.godCards.GodPower;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for Artemis GodPower.
  */
-
-public class ArtemisTest { /*
-    GodPower godPower;
+public class ArtemisTest {
     Board board;
+    Worker opponent;
+    GodPower godPower;
     Player player;
-    UserInputManager inputManager;
-    InputStream inputTest;
+    ActionManager actionManager;
 
     @Before
     public void setup() {
         board = new Board();
-        player = new Player("Olimpia", Color.RED);
-        player.getWorker1().setPosition(board, 0, 2);
-        player.getWorker2().setPosition(board, 4, 4);
-        inputManager = new UserInputManager(new CLI());
-        godPower = new Artemis(player, inputManager);
-
-        //inputTest = System.in;
+        opponent = new Worker(Color.BLUE, 1);
+        godPower = new Artemis();
+        player = new Player("Olimpia", Color.RED, godPower);
+        actionManager = new ActionManager();
+        player.getWorker1().setPosition(board, 4, 4);
+        player.getWorker2().setPosition(board, 1, 1);
+        opponent.setPosition(board, 2, 4);
+        player.move(player.getWorker1(), board, 3, 4);
     }
 
     @Test
-    public void onlyWorker2_activeWorkers() {
-        board.getCell(0, 1).setDome(true);
-        board.getCell(0, 3).setDome(true);
-        board.getCell(1, 1).setDome(true);
-        board.getCell(1, 2).setDome(true);
-        board.getCell(1, 3).setDome(true);
-
-        godPower.activeWorkers(board);
-        assertEquals(2, player.getWorker2().getNumber());
+    public void testIsActionable_True() {
+        assertTrue(godPower.isActionable(board, player.getWorker1()));
     }
 
     @Test
-    public void onlyWorker1_activeWorkers() {
+    public void testIsActionable_False() {
+        board.getCell(2, 3).setDome(true);
         board.getCell(3, 3).setDome(true);
         board.getCell(4, 3).setDome(true);
-        board.getCell(3, 4).setDome(true);
-
-        godPower.activeWorkers(board);
-        assertEquals(1, player.getWorker1().getNumber());
+        assertFalse(godPower.isActionable(board, player.getWorker1()));
     }
 
     @Test
-    public void userChoice_activeWorkers() {
-        String input = "2";
-        inputTest = new ByteArrayInputStream(input.getBytes());
-        System.setIn(inputTest);
-
-        godPower.activeWorkers(board);
-        assertEquals(2, player.getWorker1().getNumber());
+    public void testApplyEffect() {
+        godPower.setTriggered(true);
+        board.getCell(2, 3).setDome(true);
+        board.getCell(3, 3).setDome(true);
+        List<Position> positions = actionManager.getValidMoves(board, 3, 4);
+        godPower.applyEffect(positions, board, player.getWorker1(), TurnPhase.MOVE);
+        assertEquals(1, positions.size());
+        assertEquals(4, positions.get(0).getPosRow());
+        assertEquals(3, positions.get(0).getPosColumn());
     }
 
     @Test
-    public void notActivePower_moveBehaviour() {
-        String input = "1";
-        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
-        godPower.activeWorkers(board);
-        godPower.moveBehaviour(board);
-
-        assertEquals(0, godPower.getPlayer().getWorker1().getRow());
-        assertEquals(1, godPower.getPlayer().getWorker1().getColumn());
+    public void testAddPhase() {
+        godPower.setTriggered(true);
+        godPower.addPhase();
+        assertEquals(3, godPower.getPhases().size());
+        assertEquals(TurnPhase.MOVE, godPower.getPhases().get(1));
+        godPower.setTriggered(false);
+        godPower.addPhase();
+        assertEquals(2, godPower.getPhases().size());
     }
-
-    @Test
-    public void activePower_moveBehaviour() {
-        inputManager.updatePower(true);
-        GodPower artemis = new Artemis(player, inputManager);
-        artemis.activeWorkers(board);
-        artemis.moveBehaviour(board);
-
-        assertEquals(1, artemis.getPlayer().getWorker1().getRow());
-        assertEquals(0, artemis.getPlayer().getWorker1().getColumn());
-    }
-
-    @Test
-    public void testBuildBehaviour() {
-        godPower.activeWorkers(board);
-        godPower.buildBehaviour(board);
-
-        assertEquals(1, board.getCell(0, 1).getLevel());
-    }
-
-    @Test
-    public void testCheckWinCondition() {
-        board.getCell(3, 3).addLevel();
-        board.getCell(3, 3).addLevel();
-        board.getCell(3, 3).addLevel();
-
-        board.getCell(2, 3).addLevel();
-        board.getCell(2, 3).addLevel();
-
-        godPower.checkWinCondition(board.getCell(2, 3), board.getCell(3, 3));
-
-        assertTrue(godPower.getPlayer().isWinner());
-    }
-*/
 
 }
