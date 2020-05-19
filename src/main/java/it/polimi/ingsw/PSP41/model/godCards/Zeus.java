@@ -25,7 +25,7 @@ public class Zeus extends GodPower {
 
     @Override
     public String toString() {
-        return ("Your worker may build a block under itself. You do not win by forcing yourself up to the third level");
+        return ("Your worker may build a block under itself. You do not win by forcing yourself up to the third level.");
     }
 
 }

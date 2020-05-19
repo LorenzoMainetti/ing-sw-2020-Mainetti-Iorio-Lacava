@@ -59,7 +59,7 @@ public class Apollo extends GodPower {
 
     @Override
     public String toString() {
-        return ("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated");
+        return ("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated.");
     }
 
 }

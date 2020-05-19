@@ -61,6 +61,7 @@ public class UserInputManager implements ViewObserver {
     public boolean isPower() { return power; }
 
 
+
     @Override
     public void updatePower(boolean power) {
         this.power = power;

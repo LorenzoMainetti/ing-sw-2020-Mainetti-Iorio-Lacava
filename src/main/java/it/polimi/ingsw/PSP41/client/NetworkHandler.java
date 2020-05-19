@@ -30,7 +30,7 @@ public class NetworkHandler implements Runnable, UiObserver {
         try {
             socket = new Socket(ip, Integer.parseInt(port));
         } catch (IOException e) {
-            System.out.println("server unreachable");
+            System.out.println("Server unreachable");
             return;
         }
         System.out.println("Connection established");
@@ -72,6 +72,7 @@ public class NetworkHandler implements Runnable, UiObserver {
 
         }
         else if (inputObject instanceof Board) {
+            System.out.println("\n");
             for(PlayersInfoMessage message : playersInfo)
                 cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
             cli.printBoard((Board) inputObject);

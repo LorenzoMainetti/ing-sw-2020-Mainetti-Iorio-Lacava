@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="413.0" fitWidth="278.0" layoutX="-13.0" layoutY="-12.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@bg_panelSide.png" />
+         </image>
+      </ImageView>
+      <ImageView id="closeButton" fitHeight="26.0" fitWidth="103.0" layoutX="14.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@btn_coral.png" />
+         </image>
+      </ImageView>
+      <ImageView id="selectButton" fitHeight="26.0" fitWidth="118.0" layoutX="132.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@btn_blue.png" />
+         </image>
+      </ImageView>
+      <Label id="godName" alignment="CENTER" layoutX="7.0" layoutY="8.0" prefHeight="43.0" prefWidth="237.0" textAlignment="CENTER">
+         <font>
+            <Font name="Avenir Next Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label id="messageLabel" layoutX="33.0" layoutY="63.0" prefHeight="231.0" prefWidth="185.0" textAlignment="CENTER">
+         <font>
+            <Font name="Avenir Next Bold" size="17.0" />
+         </font></Label>
+      <Text layoutX="-1.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EFFECT:" textAlignment="CENTER" wrappingWidth="256.0000457763672">
+         <font>
+            <Font name="Avenir Book" size="16.0" />
+         </font>
+      </Text>
+      <Text id="selectText" fill="WHITE" layoutX="162.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SELECT" textAlignment="CENTER">
+         <font>
+            <Font name="Avenir Book" size="13.0" />
+         </font>
+      </Text>
+      <Text id="closeText" fill="WHITE" layoutX="44.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLOSE" />
+   </children>
+</Pane>

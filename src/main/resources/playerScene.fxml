@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="725.0" fitWidth="1201.0" layoutY="-5.0">
+         <image>
+            <Image url="@playerScene.png" />
+         </image>
+      </ImageView>
+      <ImageView id="thirdPlayerDrap" fitHeight="129.0" fitWidth="342.0" layoutX="432.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@gameGodFrameName3.png" />
+         </image>
+      </ImageView>
+      <Label id="firstPlayer" alignment="CENTER" layoutX="94.0" layoutY="148.0" prefHeight="51.0" prefWidth="263.0" textFill="WHITE">
+         <font>
+            <Font name="Avenir Next Bold" size="35.0" />
+         </font>
+      </Label>
+      <Label id="secondPlayer" alignment="CENTER" layoutX="846.0" layoutY="148.0" prefHeight="51.0" prefWidth="272.0" textFill="WHITE">
+         <font>
+            <Font name="Avenir Next Bold" size="35.0" />
+         </font>
+      </Label>
+      <Label id="thirdPlayer" alignment="CENTER" layoutX="478.0" layoutY="123.0" prefHeight="59.0" prefWidth="263.0" textFill="WHITE">
+         <font>
+            <Font name="Avenir Next Bold" size="35.0" />
+         </font>
+      </Label>
+      <StackPane id="thirdStack" layoutX="504.0" layoutY="220.0" prefHeight="281.0" prefWidth="170.0">
+         <children>
+            <ImageView id="thirdCard" fitHeight="285.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView id="versusImage" fitHeight="123.0" fitWidth="126.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
+         </children>
+      </StackPane>
+      <StackPane id="secondStack" layoutX="892.0" layoutY="252.0" prefHeight="212.0" prefWidth="122.0">
+         <children>
+            <ImageView id="secondCard" fitHeight="285.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </StackPane>
+      <StackPane id="firstStack" layoutX="132.0" layoutY="252.0" prefHeight="211.0" prefWidth="121.0">
+         <children>
+            <ImageView id="firstCard" fitHeight="285.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </StackPane>
+      <ImageView id="challengerBackground" fitHeight="370.0" fitWidth="658.0" layoutX="262.0" layoutY="423.0" pickOnBounds="true" preserveRatio="true" />
+      <TextField id="challengerTextField" layoutX="474.0" layoutY="602.0" prefHeight="51.0" prefWidth="229.0" promptText="nickname">
+         <font>
+            <Font size="20.0" />
+         </font></TextField>
+      <Text id="challengerText" fill="WHITE" layoutX="362.0" layoutY="578.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="448.1958386970672">
+         <font>
+            <Font name="Avenir Book" size="43.0" />
+         </font>
+      </Text>
+      <ImageView id="playButton" fitHeight="136.0" fitWidth="145.0" layoutX="544.0" layoutY="581.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@button-play-normal.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>
