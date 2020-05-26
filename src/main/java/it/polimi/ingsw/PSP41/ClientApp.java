@@ -9,7 +9,6 @@ public class ClientApp {
 
     public static void main(String[] args) {
 
-        boolean alive = true;
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("IP address of server?");
@@ -17,11 +16,13 @@ public class ClientApp {
         System.out.println("Port?");
         String port = scanner.nextLine();
 
-        //Open a connection to the server
-        // TODO caso lobby piena
-        NetworkHandler networkHandler = new NetworkHandler(ip, port);
+        CLI cli = new CLI();
+        new Thread(cli).start();
 
-        System.out.println("CLI or GUI?");
+        //Open a connection to the server
+        NetworkHandler networkHandler = new NetworkHandler(ip, port, cli);
+
+        /*System.out.println("CLI or GUI?");
         String ui = scanner.nextLine().toUpperCase();
         while (!ui.equals("CLI") && !ui.equals("GUI")) {
             System.out.println("Invalid interface, CLI or GUI?");
@@ -34,6 +35,7 @@ public class ClientApp {
             cli.addObserver(networkHandler);
         }
         //else setto la GUI
+        */
 
         new Thread(networkHandler).start();
 

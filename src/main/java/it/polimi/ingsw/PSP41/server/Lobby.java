@@ -24,43 +24,50 @@ public class Lobby extends ConnectionObservable {
     private List<Player> activePlayers = new ArrayList<>();
     private String challenger;
     private int playersNumber = -1;
+    private final Object lock = new Object();
 
     public int getPlayersNumber() {
         return playersNumber;
     }
 
+    // TODO sistemare i messaggi che mando al client secondo le nuove norme
+
     /**
      * ask and set the number of players to the first connected user
      * @param client current client
      */
-    public synchronized void setPlayersNumber(ClientHandler client) {
-        client.send(startTurnMessage);
-        virtualView.requestPlayersNum(client);
-        playersNumber = userInputManager.getPlayersNumber();
-        notifyAll();
-        System.out.println("[SERVER] The game will have " + playersNumber + " players");
-        client.send(endTurnMessage);
+    public void setPlayersNumber(ClientHandler client) {
+        synchronized (lock) {
+            client.send(startTurnMessage);
+            virtualView.requestPlayersNum(client);
+            playersNumber = userInputManager.getPlayersNumber();
+            lock.notifyAll();
+            System.out.println("[SERVER] The game will have " + playersNumber + " players");
+            client.send(endTurnMessage);
+        }
     }
 
     /**
      * wait until the first connected user has not choose the playersNumber
      * @param client current client
      */
-    public synchronized void waitPlayersNumber(ClientHandler client) {
-        while (playersNumber == -1) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    public void waitPlayersNumber(ClientHandler client) {
+        synchronized (lock) {
+            while (playersNumber == -1) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
 
-        if (client.getPosition() > playersNumber) {
-            client.send(fullLobby);
-            client.setActive(false);
-            client.closeConnection();
-        } else {
-            client.send("The game will have " + playersNumber + " players");
+            if (client.getPosition() > playersNumber) {
+                client.send(fullLobby);
+                client.setActive(false);
+                client.closeConnection();
+            } else {
+                client.send("The game will have " + playersNumber + " players");
+            }
         }
     }
 
@@ -68,7 +75,7 @@ public class Lobby extends ConnectionObservable {
      * ask and set the current client's nickname
      * @param client current client
      */
-    public void setNickname(ClientHandler client) {
+    public synchronized void setNickname(ClientHandler client) {
 
         client.send(startTurnMessage);
 

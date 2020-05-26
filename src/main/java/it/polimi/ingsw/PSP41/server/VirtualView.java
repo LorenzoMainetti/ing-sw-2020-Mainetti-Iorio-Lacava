@@ -4,16 +4,15 @@ import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.ModelObserver;
 import it.polimi.ingsw.PSP41.observer.ViewObservable;
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.utils.PlayerMessage;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 import it.polimi.ingsw.PSP41.utils.PositionMessage;
-import it.polimi.ingsw.PSP41.view.ColorCLI;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
-//TODO VirtualView e RemoteView implementano la stessa interfaccia View
 public class VirtualView extends ViewObservable implements ModelObserver {
 
     private Map<String, ClientHandler> clients = new ConcurrentHashMap<>();
@@ -43,20 +42,22 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     public void errorTakenNickname(ClientHandler currClient) {
         currClient.send(takenNameMessage);
-        requestNickname(currClient);
+        String nickname = currClient.read();
+        notifyNickname(nickname);
     }
 
     /**
      * ask the lobby size
-     * @param currClient player addresse (first player in the lobby)
+     * @param currClient first player in the lobby
      */
     public void requestPlayersNum(ClientHandler currClient) {
         //send a message that when received by the client trigger askPlayersNumber method in CLI
         currClient.send(playersNumMessage);
         String message = currClient.read();
 
+        // Server side check
         while (!message.equals("2") && !message.equals("3")) {
-            currClient.send("Sorry, we support only a 2 or 3 players game.");
+            currClient.send(playersNumMessage);
             message = currClient.read();
         }
 
@@ -69,45 +70,18 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     public void requestInitPos() {
         ClientHandler current = clients.get(currPlayer);
         current.send(initPosMessage);
-        int row = askRow(current);
-        int column = askColumn(current);
-        notifyPosition(new Position(row, column));
+        String message = current.read();
+        int position = Integer.parseInt(message);
+
+        notifyPosition(new Position(position/10, position%10));
     }
 
+    public void errorTakenPosition() {
+        clients.get(currPlayer).send(occupiedCellMessage);
+        String message = clients.get(currPlayer).read();
+        int position = Integer.parseInt(message);
 
-    /**
-     * Ask row and get the input
-     * @param current player addressee
-     * @return chosen row
-     */
-    private int askRow(ClientHandler current) {
-        current.send("Row:");
-        String currentRow = current.read();
-
-        while (Integer.parseInt(currentRow) < 0 || Integer.parseInt(currentRow) > 4) {
-            current.send("Invalid row. Choose a number between 0 and 4:");
-            currentRow = current.read();
-        }
-
-        return Integer.parseInt(currentRow);
-    }
-
-
-    /**
-     * Ask column to the Player and get the input
-     * @param current player addressee
-     * @return chosen column
-     */
-    private int askColumn(ClientHandler current) {
-        current.send("Column:");
-        String currentColumn = current.read();
-
-        while (Integer.parseInt(currentColumn) < 0 || Integer.parseInt(currentColumn) > 4) {
-            current.send("Invalid column. Choose a number between 0 and 4:");
-            currentColumn = current.read();
-        }
-
-        return Integer.parseInt(currentColumn);
+        notifyPosition(new Position(position/10, position%10));
     }
 
     /**
@@ -116,27 +90,27 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     public void requestWorkerNum() {
         clients.get(currPlayer).send(workerNumMessage);
         String chosenWorker = clients.get(currPlayer).read();
-
+        /*
         while (Integer.parseInt(chosenWorker) != 1 && Integer.parseInt(chosenWorker) != 2) {
             clients.get(currPlayer).send("Invalid worker number, choose 1 or 2:");
             chosenWorker = clients.get(currPlayer).read();
         }
-
+        */
         notifyWorker(Integer.parseInt(chosenWorker) == 1);
     }
 
     /**
-     * Ask if the power would be activated
+     * Ask if the god power would be activated
      */
     public void requestActivatePow() {
         clients.get(currPlayer).send(activatePowMessage);
         String power = clients.get(currPlayer).read();
-
+        /*
         while (!power.equals("yes") && !power.equals("no")) {
             clients.get(currPlayer).send("Invalid answer, choose yes or no:");
             power = clients.get(currPlayer).read();
         }
-
+        */
         notifyPower(power.equals("yes"));
     }
 
@@ -147,8 +121,9 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     public void requestPosition(PositionMessage positionMessage) {
         ClientHandler current = clients.get(currPlayer);
         current.send(positionMessage);
-        int row = askRow(current);
-        int column = askColumn(current);
+        String message = current.read();
+        int row = Integer.parseInt(message)/10;
+        int column = Integer.parseInt(message)%10;
         boolean valid = false;
         for (Position position : positionMessage.getValidPos()) {
             if (position.getPosRow() == row && position.getPosColumn() == column) {
@@ -158,10 +133,11 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         }
 
         while (!valid) {
-            current.send("The cell is not valid");
+            current.send(occupiedCellMessage);
             current.send(positionMessage);
-            row = askRow(current);
-            column = askColumn(current);
+            message = current.read();
+            row = Integer.parseInt(message)/10;
+            column = Integer.parseInt(message)%10;
             for (Position position : positionMessage.getValidPos()) {
                 if (position.getPosRow() == row && position.getPosColumn() == column) {
                     valid = true;
@@ -172,15 +148,12 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         notifyPosition(new Position(row, column));
     }
 
-    public void errorTakenPosition() {
-        clients.get(currPlayer).send(occupiedCellMessage);
-    }
 
     //OBSERVER
 
     @Override
     public void updateState(Board board) {
-        //manda sul socket la board serializzata
+        //send serialized board
         for (ClientHandler ch : clients.values()) {
             ch.send(board);
         }
@@ -188,48 +161,27 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     /**
      * Send players a win message with the winner nickname
-     * @param winner winner nickname
+     * @param winner winner player
      */
     @Override
     public void updateWinner(String winner) {
-        //manda sul socket il nome del giocatore vincente. Conoscendo il nickname univoco
-        //posso mandare messaggi personalizzati a ciascun client
-        for (String ch : clients.keySet()) {
-            if(ch.equals(winner)) {
-                clients.get(ch).send(winMessage);
-            }
-            else {
-                clients.get(ch).send("Game over! The winner is " + ColorCLI.ANSI_GREEN + winner.toUpperCase() + ColorCLI.RESET + "!");
-            }
-            clients.get(ch).send("Thanks for playing!");
+        for (ClientHandler ch : clients.values()) {
+            ch.send(new PlayerMessage(winMessage, winner));
         }
-
     }
 
     /**
-     * Notifies players a player who lost
+     * Notifies players the loser player
      * @param loser loser nickname
      */
     @Override
     public void updateLoser(String loser) {
-        //manda sul socket il nome del giocatore perdente. Conoscendo il nickname univoco
-        //posso mandare messaggi personalizzati a ciascun client
-        for (String ch : clients.keySet()) {
-            if(ch.equals(loser)) {
-                clients.get(ch).send(loseMessage);
-                clients.get(loser).setActive(false);
-            }
-            else
-                clients.get(ch).send(loser.toUpperCase()+"'s workers are both stuck. His/Her workers will be removed.\n");
+        for (ClientHandler ch : clients.values()) {
+            ch.send(new PlayerMessage(loseMessage, loser));
         }
-
     }
 
     //SET UP
-
-    public void requestInfo(ClientHandler currClient) {
-        currClient.send(infoMessage);
-    }
 
     /**
      * Send players information
@@ -245,12 +197,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     //TURN:
     public void startTurn() {
         for (ClientHandler ch : clients.values()) {
-            if (clients.get(currPlayer).equals(ch)) {
-                ch.send(startTurnMessage);
-                ch.send("Turn starts!");
-            }
-            else
-                ch.send("It's " + currPlayer + "'s turn!");
+            ch.send(new PlayerMessage(currPlayer, currPlayer));
         }
     }
 
@@ -263,12 +210,12 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     public void endTurn() {
-        clients.get(currPlayer).send(endTurnMessage);
+        clients.get(currPlayer).send(endTurn);
     }
 
     /**
      * Prints empty board
-     * @param board initial board state
+     * @param board empty board
      */
     public void emptyBoard(Board board) {
         for (ClientHandler client : clients.values()) {

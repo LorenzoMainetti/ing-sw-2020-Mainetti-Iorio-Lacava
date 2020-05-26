@@ -14,7 +14,7 @@ import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 public class ClientHandler extends ConnectionObservable implements Runnable {
 
     private Socket socket;
-    private Lobby lobby; // NON FINAL ALTRIMENTI NON FUNZIONA NIENTE
+    private Lobby lobby; //NON FINAL ALTRIMENTI NON FUNZIONA NIENTE, INTELLIJ MENTE
     private int position;
     private boolean active = true;
     private boolean myTurn = false;
@@ -27,10 +27,13 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         return position;
     }
 
-    public ClientHandler(Socket socket, Lobby lobby, int position) {
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public ClientHandler(Socket socket, Lobby lobby) {
         this.socket = socket;
         this.lobby = lobby;
-        this.position = position;
     }
 
     public void setActive(boolean active) {
@@ -47,17 +50,17 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
      */
     public void send(Object message) {
         try {
-            if (message instanceof String) {
-                if (message.equals(startTurnMessage)) {
-                    myTurn = true;
-                }
-                if (message.equals(endTurnMessage)) {
-                    myTurn = false;
-                }
+            if (message.equals(startTurnMessage)) {
+                myTurn = true;
             }
-            socketOut.reset();
-            socketOut.writeObject(message);
-            socketOut.flush();
+            else if (message.equals(endTurnMessage)) {
+                myTurn = false;
+            }
+            else {
+                socketOut.reset();
+                socketOut.writeObject(message);
+                socketOut.flush();
+            }
         } catch (IOException | NullPointerException e) {
             System.err.println("Error in method send #" + position + ": " + e.getMessage());
         }
@@ -85,19 +88,32 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     }
 */
 
+    public void pingToClient() {
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    socketOut.writeObject("");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+    }
+
     /**
-     * Loop read from client: when a message is read, sets answerReady true. If the client is unreachable, notifies the server
+     * Loop read from client: when a message is read, answerReady is set true. If the client is unreachable, server is notified
      */
     public void readFromClient(){
         Thread t = new Thread(() -> {
-            // Altrimenti da problemi di sincronizzazione
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             while (true) {
                 try {
+                    socket.setSoTimeout(5000);
                     String fromClient = socketIn.readLine();
                     if (!fromClient.equals("")) {
                         if (myTurn) {
@@ -147,16 +163,23 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
 
     public void run() {
 
-        try{
+        try {
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketOut = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //new Thread(this::pingToClient).start();
+
+        try {
             if (lobby.getPlayersNumber() == -1 || position <= lobby.getPlayersNumber()) {
                 if (position <= 3) {
                     // Creazione lobby
                     if (position == 1) {
                         lobby.setPlayersNumber(this);
-                    } else {
+                    }
+                    else {
                         send("The lobby creator is choosing the number of players...");
                         lobby.waitPlayersNumber(this);
                     }
@@ -171,7 +194,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                 closeConnection();
             }
 
-        } catch (NoSuchElementException | IOException e) {
+        } catch (NoSuchElementException e) {
             System.err.println("[SERVER] Error!" + e.getMessage());
         }
     }

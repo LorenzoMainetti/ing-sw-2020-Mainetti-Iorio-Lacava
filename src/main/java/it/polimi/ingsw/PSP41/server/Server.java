@@ -21,6 +21,7 @@ public class Server implements Runnable, ConnectionObserver {
     private final int PORT = 9090;
     private final ExecutorService executor = Executors.newFixedThreadPool(64);
     private List<ClientHandler> log = new ArrayList<>();
+    private final Object lock = new Object();
 
     //Deregister client
     public synchronized void deregisterConnection(ClientHandler client) {
@@ -81,7 +82,6 @@ public class Server implements Runnable, ConnectionObserver {
             System.out.println("Socket close");
         }
 
-        boolean fullLog = false;
         Lobby lobby = new Lobby();
         lobby.addObserver(this);
 
@@ -89,32 +89,32 @@ public class Server implements Runnable, ConnectionObserver {
             try {
                 // Creo socket
                 System.out.println("[SERVER] Waiting for client connection...");
+                // TODO rendere thread safe: separo accettazione client da creazione lobby
                 Socket newSocket = serverSocket.accept();
                 System.out.println("[SERVER] Client connected to server");
-                ClientHandler clientHandler = new ClientHandler(newSocket, lobby, log.size() + 1);
-                // Massimo 3 client connessi
-                if (log.size() < 3) {
-                    log.add(clientHandler);
-                    clientHandler.addObserver(this);
-                }
-                executor.submit(clientHandler);
-                if (log.size() <= 3 && !fullLog) {
-                    clientHandler.readFromClient();
-                    if (log.size() == 3) {
-                        fullLog = true;
+                ClientHandler clientHandler = new ClientHandler(newSocket, lobby);
+
+                synchronized (lock) {
+                    clientHandler.setPosition(log.size() + 1);
+                    // Massimo 3 client connessi
+                    if (clientHandler.getPosition() <= 3) {
+                        log.add(clientHandler);
+                        clientHandler.addObserver(this);
                     }
                 }
+
+                executor.submit(clientHandler);
+
+                if (clientHandler.getPosition() <= 3) {
+                    clientHandler.pingToClient();
+                    clientHandler.readFromClient();
+                }
                 else {
-                    // Altrimenti da problemi di sincronizzazione
-                    /*try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }*/
                     clientHandler.send(fullLobby);
                     clientHandler.setActive(false);
                     clientHandler.closeConnection();
                 }
+
             } catch (IOException e) {
                 System.out.println("[SERVER] Restarting server...");
                 return;

@@ -15,14 +15,15 @@ public class GameMessage {
     public static String loseMessage = "Your workers are both stuck. You have lost.";
     public static String spectator = "You are currently spectating the match.";
     public static String startTurnMessage = "start";
+    public static String yourTurn = "It's your turn.";
+    public static String endTurn = "Your turn is over.";
     public static String endTurnMessage = "end";
     public static String wrongTurnMessage = "It is not your turn!";
 
     public static String godDeckMessage = "APOLLO, ARES, ARTEMIS, ATHENA, ATLAS, DEMETER, HEPHAESTUS, HESTIA, MINOTAUR, PAN, POSEIDON, PROMETHEUS, TRITON, ZEUS";
-    public static String infoMessage = "Insert input";
 
     public static String fullLobby = "The lobby is already full!";
     public static String takenNameMessage = "This nickname is already taken. Please try again.";
-    public static String occupiedCellMessage = "The chosen cell is already occupied!";
+    public static String occupiedCellMessage = "The chosen cell is not valid!";
 
 }
