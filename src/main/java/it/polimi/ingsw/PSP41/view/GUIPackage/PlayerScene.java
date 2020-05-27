@@ -55,10 +55,12 @@ public class PlayerScene {
         TextField challengerTextField = (TextField) root.lookup("#challengerTextField");
         ImageView playButton = (ImageView) root.lookup("#playButton");
         ImageView versusImage = (ImageView) root.lookup("#versusImage");
+        ImageView challengerBackground = (ImageView) root.lookup("#challengerBackground");
 
         challengerTextField.setDisable(true);
         challengerTextField.setStyle("-fx-background-color: transparent;");
         versusImage.setMouseTransparent(true);
+        challengerBackground.setMouseTransparent(true);
 
         if(players.size()==2){
             thirdPlayerDrap.setImage(null);
@@ -176,7 +178,6 @@ public class PlayerScene {
             playButton.setImage(null);
             playButton.setMouseTransparent(true);
 
-            ImageView challengerBackground = (ImageView) root.lookup("#challengerBackground");
             challengerBackground.setImage(new Image("/challengerBackground.png"));
 
             Text challengerText = (Text) root.lookup("#challengerText");
@@ -232,7 +233,6 @@ public class PlayerScene {
                 TransitionHandler.toGameScene();
             }
         });
-
 
     }
 

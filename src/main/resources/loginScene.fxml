@@ -15,16 +15,16 @@
             <Image url="@loginScene.png" />
          </image>
       </ImageView>
-      <TextField id="nicknameBox" layoutX="461.0" layoutY="439.0" prefHeight="51.0" prefWidth="241.0" promptText="nickname">
+      <TextField id="nicknameBox" layoutX="436.0" layoutY="440.0" prefHeight="51.0" prefWidth="241.0" promptText="nickname">
          <font>
             <Font size="20.0" />
          </font></TextField>
-      <Text fill="#3765ab" layoutX="432.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your nickname:" textAlignment="CENTER" wrappingWidth="361.97265625">
+      <Text id="nicknameText" fill="#3765ab" layoutX="196.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your nickname:" textAlignment="CENTER" wrappingWidth="789.3319702148438">
          <font>
             <Font name="Avenir Next Bold" size="24.0" />
          </font>
       </Text>
-      <Button id="loginButton" layoutX="714.0" layoutY="445.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="57.0" text="OK">
+      <Button id="loginButton" layoutX="697.0" layoutY="445.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="57.0" text="OK">
          <font>
             <Font size="20.0" />
          </font></Button>

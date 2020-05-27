@@ -13,6 +13,7 @@ public class TransitionHandler {
     private static Scene waitingScene;
     private static Scene cardChoiceScene;
     private static Scene playerScene;
+    private static Scene numberScene;
 
 
     public static void setPrimaryStage(Stage primaryStage) {
@@ -49,6 +50,10 @@ public class TransitionHandler {
         TransitionHandler.playerScene = new Scene(playerScene.getRoot());
     }
 
+    public static void setNumberScene(NumberScene numberscene){
+        TransitionHandler.numberScene = new Scene(numberscene.getRoot());
+    }
+
 
     //go to...
     private static void goTo(Scene scene){
@@ -82,5 +87,7 @@ public class TransitionHandler {
     public static void toGameScene(){
         goTo(gameScene);
     }
+
+    public static void toNumberScene() { goTo(numberScene); }
 
 }

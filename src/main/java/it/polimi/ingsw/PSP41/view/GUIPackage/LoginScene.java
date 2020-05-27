@@ -1,6 +1,6 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-import it.polimi.ingsw.PSP41.observer.UiObservable;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -12,8 +12,10 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 
 
-public class LoginScene extends UiObservable {
+
+public class LoginScene {
     private Pane root;
+    private String nickname;
 
     public LoginScene() {
         try {
@@ -22,27 +24,31 @@ public class LoginScene extends UiObservable {
             e.printStackTrace();
         }
 
+
         Button loginButton = (Button) root.lookup("#loginButton");
         TextField nicknameTextField = (TextField) root.lookup("#nicknameBox");
         nicknameTextField.setText(null);
 
-            loginButton.setOnAction(new EventHandler<ActionEvent>() {
 
-                @Override
-                public void handle(ActionEvent event) {
-                    String nickname = nicknameTextField.getText();
 
-                    if(nickname != null) {
-                        LoginScene.this.notify(nickname);
+        loginButton.setOnAction(new EventHandler<ActionEvent>() {
 
-                        //TODO controllare che il nickname non sia già stato preso
+            @Override
+            public void handle(ActionEvent event) {
+                if (nicknameTextField.getText() != null) {
+                    nickname = nicknameTextField.getText();
+                    //TODO controllare che il nickname non sia già stato preso
 
-                        //TransitionHandler.toGodPowerScene();
-                    }
-                    else
-                        new AlertPopup().display("Please enter a valid nickname.");
-                }
-            });
+                    //TODO andare alla waiting scene
+                    TransitionHandler.toGodPowerScene();
+                } else
+                    new AlertPopup().display("Please enter a valid nickname.");
+            }
+        });
+    }
+
+    public String getNickname(){
+        return nickname;
     }
 
     public Pane getRoot() {
