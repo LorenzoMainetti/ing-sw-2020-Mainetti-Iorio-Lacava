@@ -5,6 +5,8 @@ import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
 import it.polimi.ingsw.PSP41.observer.ConnectionObservable;
+import it.polimi.ingsw.PSP41.utils.ChooseGodMessage;
+import it.polimi.ingsw.PSP41.utils.NameMessage;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 
 import java.util.*;
@@ -22,15 +24,13 @@ public class Lobby extends ConnectionObservable {
     private final List<String> gameGods = Arrays.asList("APOLLO", "ARTEMIS", "ATHENA", "ATLAS", "DEMETER", "HEPHAESTUS", "MINOTAUR", "PAN", "PROMETHEUS", "HESTIA", "ZEUS", "TRITON", "POSEIDON", "ARES");
     private final List<String> chosenGods = new ArrayList<>();
     private List<Player> activePlayers = new ArrayList<>();
+    private final Object lock = new Object();
     private String challenger;
     private int playersNumber = -1;
-    private final Object lock = new Object();
 
     public int getPlayersNumber() {
         return playersNumber;
     }
-
-    // TODO sistemare i messaggi che mando al client secondo le nuove norme
 
     /**
      * ask and set the number of players to the first connected user
@@ -43,6 +43,7 @@ public class Lobby extends ConnectionObservable {
             playersNumber = userInputManager.getPlayersNumber();
             lock.notifyAll();
             System.out.println("[SERVER] The game will have " + playersNumber + " players");
+            client.send(Integer.valueOf(playersNumber));
             client.send(endTurnMessage);
         }
     }
@@ -66,7 +67,7 @@ public class Lobby extends ConnectionObservable {
                 client.setActive(false);
                 client.closeConnection();
             } else {
-                client.send("The game will have " + playersNumber + " players");
+                client.send(Integer.valueOf(playersNumber));
             }
         }
     }
@@ -104,19 +105,15 @@ public class Lobby extends ConnectionObservable {
      */
     public synchronized void setGodLike(ClientHandler client) {
 
-        // Se non si è collegato il numero di giocatori stabilito, aspetto
+        //wait until the right number of players is connected
         if (playersName.size() != playersNumber) {
-            client.send("Wait for the players to join...");
+            client.send(waitMessage);
             // TODO timeout
         }
 
         else {
-            //subpart executed only once
+            //if block executed only once
             if (chosenGods.size() == 0) {
-                for (ClientHandler clientHandler : clients) {
-                    clientHandler.send("The lobby is full, the game will start soon...");
-                }
-
                 Collections.shuffle(playersName);
 
                 Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
@@ -127,7 +124,7 @@ public class Lobby extends ConnectionObservable {
                 setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
 
                 for (String key : shuffleMap.keySet()) {
-                    System.out.println(key);
+                    //System.out.println(key);
                     setGodCard(shuffleMap.get(key));
                 }
             }
@@ -145,25 +142,27 @@ public class Lobby extends ConnectionObservable {
         challenger = name;
 
         for (ClientHandler clientHandler : clients) {
-            clientHandler.send(name + " is the most godlike! " + name + " is the challenger!");
+            clientHandler.send(new NameMessage(godLikeMessage, challenger));
         }
-        client.send("Choose " + playersNumber + " gods from the ones available");
-        client.send(godDeckMessage);
 
-        String selectedGod;
-        for (int i = 1; i <= playersNumber; i++) {
-            client.send("God #" + i + ": ");
-            //virtualView.requestInfo(client);
-            selectedGod = client.read().toUpperCase();
-            while (!gameGods.contains(selectedGod) || chosenGods.contains(selectedGod)) {
-                client.send("Invalid god name, choose gods from the ones available");
-                //virtualView.requestInfo(client);
-                selectedGod = client.read().toUpperCase();
-            }
-            System.out.println("[SERVER] " + selectedGod + " chosen");
-            chosenGods.add(selectedGod);
+        client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
+
+        String s = client.read();
+
+        String[] selectedGods = s.split("/");
+
+        chosenGods.addAll(Arrays.asList(selectedGods));
+
+        for (String chosenGod : chosenGods) {
+            System.out.println("[SERVER] " + chosenGod + " chosen");
         }
-        //client.send("Wait for other players to choose their God...");
+
+        //TODO check server-side (ask if needed)
+        /*for(String god : chosenGods) {
+            if(!gameGods.contains(god) || Collections.frequency(chosenGods, god) > 1)
+
+        }*/
+
         client.send(endTurnMessage);
     }
 
@@ -177,7 +176,7 @@ public class Lobby extends ConnectionObservable {
             assignGod(client);
             client.send(endTurnMessage);
         }
-        else client.send("Wait for other players to choose their God...");
+        else client.send(waitMessage);
     }
 
     /**
@@ -186,27 +185,9 @@ public class Lobby extends ConnectionObservable {
      */
     private synchronized void assignGod(ClientHandler client) {
 
-        if (chosenGods.size() == clientNames.size()) {
-            for (ClientHandler ch : clients) {
-                if (!ch.equals(client) && !ch.equals(clientNames.get(challenger))) ch.send("Wait for other players to choose their God...");
-            }
-        }
-
-        client.send("Choose a god power from the ones chosen by the challenger:");
-        for (String chosenGod : chosenGods) {
-            client.send(chosenGod);
-        }
-        //virtualView.requestInfo(client);
+        //TODO check server-side (ask if needed)
+        client.send(new ChooseGodMessage(yourGodMessage, chosenGods));
         String godName = client.read().toUpperCase();
-
-        while (!chosenGods.contains(godName)) {
-            client.send(godName + " is not valid, please select a different god power from this list:");
-            for (String chosenGod : chosenGods) {
-                client.send(chosenGod);
-            }
-            //virtualView.requestInfo(client);
-            godName = client.read().toUpperCase();
-        }
         chosenGods.remove(godName);
 
         String name = null;
@@ -216,15 +197,15 @@ public class Lobby extends ConnectionObservable {
 
         playerGodCard.put(name, godName);
 
+        client.send(waitMessage);
+
         if(chosenGods.size()==1) {
             playerGodCard.put(challenger, chosenGods.get(0));
             chosenGods.clear();
             //the challenger creates the game
             createGame(clientNames.get(challenger));
         }
-
     }
-
 
     /**
      * setup game creating model and controller, then notifies the server that will start the match
@@ -250,17 +231,14 @@ public class Lobby extends ConnectionObservable {
 
         //the challenger chooses who starts playing
         client.send(startTurnMessage);
-        client.send("Challenger, choose who starts playing!");
-        //virtualView.requestInfo(client);
-        for (ClientHandler ch : clients) {
-            if (!ch.equals(client)) ch.send("The challenger is choosing the start player...");
-        }
+        client.send(chooseStarterMessage);
+
+        /*for (ClientHandler ch : clients) {
+            if (!ch.equals(client)) ch.send(waitMessage);
+        }*/
+
         String starter = client.read();
-        while (!playersName.contains(starter)) {
-            client.send("Invalid player, try again");
-            //virtualView.requestInfo(client);
-            starter = client.read();
-        }
+        //TODO check server-side (ask if needed)
 
         client.send(endTurnMessage);
         System.out.println("[SERVER] " + starter + " is the first to play");

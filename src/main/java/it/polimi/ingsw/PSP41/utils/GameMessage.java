@@ -2,28 +2,31 @@ package it.polimi.ingsw.PSP41.utils;
 
 public class GameMessage {
 
-    public static String playersNumMessage = "You are the first player in the lobby, choose the number of players: 2 or 3?";
-    public static String nicknameMessage = "Enter your nickname:";
-    public static String initPosMessage = "Choose initial position for your workers";
+    public final static String playersNumMessage = "playersNumMessage";
+    public final static String nicknameMessage = "nicknameMessage";
+    public final static String godDeckMessage = "APOLLO, ARES, ARTEMIS, ATHENA, ATLAS, DEMETER, HEPHAESTUS, HESTIA, MINOTAUR, PAN, POSEIDON, PROMETHEUS, TRITON, ZEUS";
+    public final static String gameGodsMessage = "challenger chooses god cards";
+    public final static String yourGodMessage = "select a god card";
+    public final static String chooseStarterMessage = "chooseStarterMessage";
+    public final static String initPosMessage = "initPosMessage";
+    public final static String workerNumMessage = "workerNumMessage";
+    public final static String activatePowMessage = "activatePowMessage ";
 
-    public static String workerNumMessage = "Choose worker (1 or 2):";
-    public static String activatePowMessage = "Do you want to use your God Power? Type yes or no.";
-    public static String moveMessage = "Move phase!";
-    public static String buildMessage = "Build phase!";
+    public final static String fullLobby = "fullLobby";
+    public final static String takenNameMessage = "takenNameMessage";
+    public final static String occupiedCellMessage = "occupiedCellMessage";
+    public final static String wrongCellMessage = "wrongCellMessage";
 
-    public static String winMessage = "Congrats! You are the winner!!!";
-    public static String loseMessage = "Your workers are both stuck. You have lost.";
-    public static String spectator = "You are currently spectating the match.";
-    public static String startTurnMessage = "start";
-    public static String yourTurn = "It's your turn.";
-    public static String endTurn = "Your turn is over.";
-    public static String endTurnMessage = "end";
-    public static String wrongTurnMessage = "It is not your turn!";
-
-    public static String godDeckMessage = "APOLLO, ARES, ARTEMIS, ATHENA, ATLAS, DEMETER, HEPHAESTUS, HESTIA, MINOTAUR, PAN, POSEIDON, PROMETHEUS, TRITON, ZEUS";
-
-    public static String fullLobby = "The lobby is already full!";
-    public static String takenNameMessage = "This nickname is already taken. Please try again.";
-    public static String occupiedCellMessage = "The chosen cell is not valid!";
+    public final static String moveMessage = "Move phase!";
+    public final static String buildMessage = "Build phase!";
+    public final static String waitMessage = "waitMessage";
+    public final static String godLikeMessage = "show challenger";
+    public final static String winMessage = "winMessage";
+    public final static String loseMessage = "loseMessage";
+    public final static String spectator = "You are currently spectating the match.";
+    public final static String startTurnMessage = "start";
+    public final static String endTurnMessage = "end";
+    public final static String endTurn = "Your turn is over.";
+    public final static String wrongTurnMessage = "It is not your turn!";
 
 }

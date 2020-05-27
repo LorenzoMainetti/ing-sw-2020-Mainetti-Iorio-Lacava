@@ -52,6 +52,7 @@ gradle-app.setting
 ##############################
 ## IntelliJ
 ##############################
+.idea
 out/
 .idea/
 .idea/artifacts

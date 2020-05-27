@@ -12,20 +12,25 @@ import java.util.*;
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 
-public class CLI extends UiObservable implements Runnable {
-    private Scanner in;
+public class CLI extends UiObservable implements Runnable, View {
+    private final Scanner in;
     private boolean needAnswer = false;
     private String answer;
     private boolean answerReady = false;
+
+    private int playersNumber = 0;
+    private List<PlayersInfoMessage> playersInfo = new ArrayList<>();
+    private List<String> players = new ArrayList<>();
+
 
 
     public CLI(){
         this.in = new Scanner(System.in);
     }
 
-    public void readInput() {
+    private void readInput() {
         while(true) {
-            // ogni volta che ricevo un input dal client lo notifico al NetworkHandler
+
             if (in.hasNext()) {
                 String fromClient = in.nextLine();
                 if (needAnswer) {
@@ -37,11 +42,10 @@ public class CLI extends UiObservable implements Runnable {
                 }
                 else System.out.println(wrongTurnMessage);
             }
-            //notify(fromClient);
         }
     }
 
-    public String getInput() {
+    private String getInput() {
         needAnswer = true;
         synchronized (this) {
             while (!answerReady) {
@@ -61,7 +65,7 @@ public class CLI extends UiObservable implements Runnable {
 
     //SET UP methods
 
-    public void setUpGame() {
+    private void startGame() {
         System.out.println("\n                                      Welcome to\n" +
                 "     _______.     ___      .__   __. .___________.  ______   .______       __  .__   __.  __  \n" +
                 "    /       |    /   \\     |  \\ |  | |           | /  __  \\  |   _  \\     |  | |  \\ |  | |  | \n" +
@@ -75,6 +79,7 @@ public class CLI extends UiObservable implements Runnable {
     /**
      * Ask the first user connected the number of Players that are going to play (2 or 3) and get the input
      */
+    @Override
     public void askPlayersNumber() {
         System.out.println("You are the first player in the lobby, Choose the number of players (2 or 3)");
         String players = getInput();
@@ -86,9 +91,82 @@ public class CLI extends UiObservable implements Runnable {
         notify(players);
     }
 
+    @Override
+    public void displayPlayersNumber(int number) {
+        playersNumber = number;
+        System.out.println("The game will have " + number + " players");
+    }
+
+    @Override
+    public void askGameGods(List<String> gameGods) {
+        System.out.println("Choose " + playersNumber + " gods from the ones available");
+        System.out.println(godDeckMessage);
+        List<String> chosenGods = new ArrayList<>();
+
+        for (int i = 1; i <= playersNumber; i++) {
+            System.out.println("God #" + i + ": ");
+            String selectedGod = getInput().toUpperCase();
+
+            while (!gameGods.contains(selectedGod) || chosenGods.contains(selectedGod)) {
+                System.out.println("Invalid God Card. Try again.");
+                System.out.println("God #" + i + ": ");
+                selectedGod = getInput().toUpperCase();
+            }
+            chosenGods.add(selectedGod);
+        }
+
+        String s = "";
+        for (int i=0; i<chosenGods.size(); i++) {
+            s = s.concat(chosenGods.get(i));
+            if (i < chosenGods.size()-1)
+                s = s.concat("/");
+        }
+
+        notify(s);
+    }
+
+    @Override
+    public void askGodCard(List<String> gods) {
+        System.out.println("Choose a god power from the ones chosen by the challenger: ");
+        for(String god : gods)
+            System.out.print(god + "  ");
+        System.out.print("\n");
+
+        String chosenGod = getInput().toUpperCase();
+
+        while (!gods.contains(chosenGod)) {
+            System.out.println("Invalid God Card. Try again.");
+            for (String card : gods)
+                System.out.print(card + "  ");
+            System.out.print("\n");
+            chosenGod = getInput().toUpperCase();
+        }
+
+        notify(chosenGod);
+
+    }
+
+    @Override
+    public void askFirstPlayer() {
+        //print legenda
+        for(PlayersInfoMessage message : playersInfo)
+            showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
+
+        System.out.println("Challenger, choose who starts playing!");
+
+        String starter = getInput();
+        while (!players.contains(starter)) {
+            System.out.println("Invalid nickname. Try again.");
+            starter = getInput();
+        }
+
+        notify(starter);
+    }
+
     /**
      * Ask the user his nickname and get the input
      */
+    @Override
     public void askNickname() {
         System.out.print("Enter your nickname: ");
         String nickname = getInput();
@@ -96,25 +174,29 @@ public class CLI extends UiObservable implements Runnable {
         notify(nickname);
     }
 
+    @Override
     public void displayTakenNickname() {
-        System.out.println(takenNameMessage);
+        System.out.println("This nickname is already taken. Please try again.");
         askNickname();
     }
 
     /**
      * Ask the user where his workers want to be placed and get the input
      */
+    @Override
     public void askInitPosition() {
         System.out.println("Choose the initial position for your worker.");
         int row = askRow();
         int column = askColumn();
 
-        int pos = row * 10 + column;
-        notify(Integer.toString(pos));
+        String pos = Integer.toString(row)+Integer.toString(column);
+
+        notify(pos);
     }
 
+    @Override
     public void displayTakenPosition() {
-        System.out.println(occupiedCellMessage);
+        System.out.println("The chosen cell is already occupied!");
         askInitPosition();
     }
 
@@ -124,14 +206,21 @@ public class CLI extends UiObservable implements Runnable {
      */
     private int askRow() {
         System.out.print("Row: ");
-        String currentRow = getInput();
+        int row;
 
-        while (Integer.parseInt(currentRow) < 0 || Integer.parseInt(currentRow) > 4) {
-            System.out.print("Invalid row. Choose a number between 0 and 4: ");
-            currentRow = getInput();
+        while (true) {
+            try {
+                row = Integer.parseInt(getInput());
+                if(row < 0 || row > 4)
+                    System.out.println("Invalid row. Choose a number between 0 and 4: ");
+                else break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid integer. Try again. ");
+                System.out.print("Row: ");
+            }
         }
 
-        return Integer.parseInt(currentRow);
+        return row;
     }
 
     /**
@@ -140,23 +229,51 @@ public class CLI extends UiObservable implements Runnable {
      */
     private int askColumn() {
         System.out.print("Column: ");
-        String currentColumn = getInput();
+        int column;
 
-        while (Integer.parseInt(currentColumn) < 0 || Integer.parseInt(currentColumn) > 4) {
-            System.out.print("Invalid column. Choose a number between 0 and 4: ");
-            currentColumn = getInput();
+        while (true) {
+            try {
+                column = Integer.parseInt(getInput());
+                if(column < 0 || column > 4)
+                    System.out.println("Invalid column. Choose a number between 0 and 4: ");
+                else break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid integer. Try again. ");
+                System.out.print("Column: ");
+            }
         }
 
-        return Integer.parseInt(currentColumn);
+        return column;
     }
 
     //TURN methods
 
     /**
+     * Display available cells to move or build
+     * @param positions where player can play its action
+     */
+    @Override
+    public void askPosition(List<Position> positions) {
+        //TODO client side check
+        System.out.println("Valid positions:");
+        for (Position position : positions) {
+            System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
+        }
+        System.out.println("\n");
+        int row = askRow();
+        int column = askColumn();
+
+        String pos = Integer.toString(row)+Integer.toString(column);
+
+        notify(pos);
+    }
+
+    /**
      * Ask the user if he wants to use Worker 1 or 2 and get the input
      */
+    @Override
     public void askWorker() {
-        System.out.print("Which worker do you want to use? (1 or 2): ");
+        System.out.println("Which worker do you want to use? (1 or 2):");
         String worker = getInput();
         while (!worker.equals("1") && !worker.equals("2")) {
             System.out.println("Invalid worker number. (choose 1 or 2)");
@@ -169,6 +286,7 @@ public class CLI extends UiObservable implements Runnable {
     /**
      * Ask the user if he wants to activate the God Power and get the input
      */
+    @Override
     public void askPowerActivation() {
         System.out.println("Do you want to activate your God Power? (yes or no)");
         String power = getInput();
@@ -180,59 +298,48 @@ public class CLI extends UiObservable implements Runnable {
         notify(power);
     }
 
+    @Override
     public void startMovePhase() {
-        System.out.println("Where do you want to " + ColorCLI.ANSI_GREEN + "MOVE" + ColorCLI.RESET + "?");
+        System.out.println(ColorCLI.ANSI_GREEN+"MOVE"+ColorCLI.RESET+" PHASE");
     }
 
+    @Override
     public void startBuildPhase() {
-        System.out.println("Where do you want to " + ColorCLI.ANSI_GREEN + "BUILD" + ColorCLI.RESET + "?");
+        System.out.println(ColorCLI.ANSI_GREEN+"BUILD"+ColorCLI.RESET+" PHASE");
     }
 
+    private void endGame() {
+        System.out.println("Thanks for playing!");
+        System.out.println("This videogame was made by Ginevra Iorio, Lorenzo Mainetti and Marco Lacava, " +
+                "based on the official boardgame Santorini");
+    }
+
+    @Override
     public void endTurn() {
-        System.out.println(endTurn);
-        System.out.println("\n");
+        System.out.println("Your turn is over.");
+        System.out.println();
     }
 
-    public void displayCurrentPlayer(PlayersInfoMessage player) {
-        switch (player.getPlayerColor()) {
-            case RED:
-                System.out.println("It's " + ColorCLI.ANSI_RED + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "'s turn!");
-                break;
-            case BLUE:
-                System.out.println("It's " + ColorCLI.ANSI_BLUE + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "'s turn!");
-                break;
-            case YELLOW:
-                System.out.println("It's " + ColorCLI.ANSI_YELLOW + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "'s turn!");
-                break;
-        }
+    @Override
+    public void displayChallenger(String name) {
+        System.out.println(ColorCLI.ANSI_GREEN + name.toUpperCase() + ColorCLI.RESET  + " is the most godlike! " + name + " is the challenger!");
     }
 
-    public void displayLoser(PlayersInfoMessage player) {
-        switch (player.getPlayerColor()) {
-            case RED:
-                System.out.println(ColorCLI.ANSI_RED + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "'s are both stuck. " + ColorCLI.ANSI_RED + player.getPlayerName().toUpperCase() + ColorCLI.RESET + " lost.\n");
-                break;
-            case BLUE:
-                System.out.println(ColorCLI.ANSI_BLUE + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "'s are both stuck. " + ColorCLI.ANSI_BLUE + player.getPlayerName().toUpperCase() + ColorCLI.RESET + " lost.\n");
-                break;
-            case YELLOW:
-                System.out.println(ColorCLI.ANSI_YELLOW + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "'s are both stuck. " + ColorCLI.ANSI_YELLOW + player.getPlayerName().toUpperCase() + ColorCLI.RESET + " lost.\n");
-                break;
-        }
+    @Override
+    public void displayCurrentPlayer(String name) {
+        System.out.println("It's " + name.toUpperCase()  + "'s turn!");
     }
 
-    public void displayWinner(PlayersInfoMessage player) {
-        switch (player.getPlayerColor()) {
-            case RED:
-                System.out.println("The winner is " + ColorCLI.ANSI_RED + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "!\nThanks for playing!");
-                break;
-            case BLUE:
-                System.out.println("The winner is " + ColorCLI.ANSI_BLUE + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "!\nThanks for playing!");
-                break;
-            case YELLOW:
-                System.out.println("The winner is " + ColorCLI.ANSI_YELLOW + player.getPlayerName().toUpperCase() + ColorCLI.RESET + "!\nThanks for playing!");
-                break;
-        }
+    @Override
+    public void displayLoser(String name) {
+        System.out.println(ColorCLI.ANSI_GREEN+name.toUpperCase()+ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
+        playersInfo.removeIf(message -> message.getPlayerName().equals(name));
+    }
+
+    @Override
+    public void displayWinner(String name) {
+        System.out.println("Game over! The winner is "+ColorCLI.ANSI_GREEN+ name.toUpperCase() +ColorCLI.RESET+ "!!!");
+        endGame();
     }
 
     /**
@@ -241,7 +348,7 @@ public class CLI extends UiObservable implements Runnable {
      * @param color color of the player
      * @param godPower god chosen by the player
      */
-    public void showPlayersInfo(String nickname, Color color, String godPower) {
+    private void showPlayersInfo(String nickname, Color color, String godPower) {
         switch (color) {
             case RED:
                 System.out.println(ColorCLI.ANSI_RED + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
@@ -253,6 +360,12 @@ public class CLI extends UiObservable implements Runnable {
                 System.out.println(ColorCLI.ANSI_BLUE + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
                 break;
         }
+    }
+
+    @Override
+    public void addPlayersInfo(PlayersInfoMessage message) {
+        playersInfo.add(message);
+        players.add(message.getPlayerName());
     }
 
 
@@ -373,7 +486,13 @@ public class CLI extends UiObservable implements Runnable {
      * Method to print game board
      * @param board that has to be printed
      */
-     public void printBoard(Board board) {
+    @Override
+     public void displayBoard(Board board) {
+         //print legenda
+         System.out.println();
+         for(PlayersInfoMessage message : playersInfo)
+             showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
+
         CellCLI[][] boardCells = buildBoard(board);
         System.out.println();
 
@@ -400,45 +519,24 @@ public class CLI extends UiObservable implements Runnable {
 
      }
 
-    /**
-     * Display available cells to move or build
-     * @param positions where player can play its action
-     */
-    public void displayOptions(List<Position> positions) {
-        System.out.println("Valid positions:");
-        for (Position position : positions) {
-            System.out.print("R" + position.getPosRow() + ",C" + position.getPosColumn() + "      ");
-        }
-        System.out.print("\n");
-        askPosition();
-    }
-
-    /**
-     * Ask the user where he wants to place his workers and get the input
-     */
-    public void askPosition() {
-        int row = askRow();
-        int column = askColumn();
-
-        int pos = row * 10 + column;
-        notify(Integer.toString(pos));
-    }
-
+    @Override
     public void displayNetworkError() {
         System.out.println("Connection closed from server side");
     }
 
-    /*
-     * Generic method to print a message
-     * @param message message to print
-     *
-    public void printMessage(String message) {
-        System.out.println(message);
-    }*/
+    @Override
+    public void displayFullLobby() {
+        System.out.println("The lobby is already full!");
+    }
+
+    @Override
+    public void waiting() {
+        System.out.println("Wait...");
+    }
 
     @Override
     public void run() {
-        setUpGame();
+        startGame();
         readInput();
     }
 

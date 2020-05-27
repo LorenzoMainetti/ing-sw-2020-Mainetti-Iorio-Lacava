@@ -4,7 +4,7 @@ import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.ModelObserver;
 import it.polimi.ingsw.PSP41.observer.ViewObservable;
 import it.polimi.ingsw.PSP41.model.Board;
-import it.polimi.ingsw.PSP41.utils.PlayerMessage;
+import it.polimi.ingsw.PSP41.utils.NameMessage;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 import it.polimi.ingsw.PSP41.utils.PositionMessage;
 
@@ -133,7 +133,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         }
 
         while (!valid) {
-            current.send(occupiedCellMessage);
+            current.send(wrongCellMessage);
             current.send(positionMessage);
             message = current.read();
             row = Integer.parseInt(message)/10;
@@ -166,7 +166,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     @Override
     public void updateWinner(String winner) {
         for (ClientHandler ch : clients.values()) {
-            ch.send(new PlayerMessage(winMessage, winner));
+            ch.send(new NameMessage(winMessage, winner));
         }
     }
 
@@ -177,7 +177,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     @Override
     public void updateLoser(String loser) {
         for (ClientHandler ch : clients.values()) {
-            ch.send(new PlayerMessage(loseMessage, loser));
+            ch.send(new NameMessage(loseMessage, loser));
         }
     }
 
@@ -193,11 +193,12 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         }
     }
 
-
     //TURN:
     public void startTurn() {
         for (ClientHandler ch : clients.values()) {
-            ch.send(new PlayerMessage(currPlayer, currPlayer));
+            if(ch.equals(clients.get(currPlayer)))
+                ch.send(startTurnMessage);
+            ch.send(new NameMessage(currPlayer, currPlayer));
         }
     }
 
@@ -210,6 +211,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     public void endTurn() {
+        clients.get(currPlayer).send(endTurnMessage);
         clients.get(currPlayer).send(endTurn);
     }
 

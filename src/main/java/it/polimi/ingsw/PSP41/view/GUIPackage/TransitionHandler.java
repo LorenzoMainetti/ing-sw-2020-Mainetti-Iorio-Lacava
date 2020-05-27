@@ -29,9 +29,9 @@ public class TransitionHandler {
         TransitionHandler.loginScene = new Scene(loginScene.getRoot());
     }
 
-    public static void setGameScene(GameScene gameScene) {
+    /*public static void setGameScene(GameScene gameScene) {
         TransitionHandler.gameScene = new Scene(gameScene.getRoot());
-    }
+    }*/
 
     public static void setGodPowerScene(GodPowerScene godPowerScene) {
         TransitionHandler.godPowerScene = new Scene(godPowerScene.getRoot());

@@ -37,7 +37,6 @@ public class Controller {
 
             //TODO some advanced gods might affect setup
 
-
             // set position worker 1
             checkWorkerPos(player.getWorker1());
             // set position worker 2

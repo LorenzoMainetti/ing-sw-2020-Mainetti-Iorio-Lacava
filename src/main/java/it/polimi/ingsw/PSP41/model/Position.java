@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class Position implements Serializable {
     private static final long serialVersionUID = -7205220472160839606L;
-    private int posRow;
-    private int posColumn;
+    private final int posRow;
+    private final int posColumn;
     private boolean perimeter = false;
 
     public Position(int posRow, int posColumn) {

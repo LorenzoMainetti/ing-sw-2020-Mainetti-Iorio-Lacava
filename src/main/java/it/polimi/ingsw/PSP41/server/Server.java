@@ -46,7 +46,7 @@ public class Server implements Runnable, ConnectionObserver {
             System.out.println("[SERVER] game starts");
             Board board = new Board();
             Controller controller = new Controller(board, uim, virtualView, sortedPlayers);
-            // Prima faccio scegliere la posizione iniziale dei worker ad ogni giocatore, poi inizio la partita
+            // First let players choose the initial positions for their workers, then start the game
             controller.setWorkers();
             controller.play();
         });
@@ -87,7 +87,7 @@ public class Server implements Runnable, ConnectionObserver {
 
         while(true){
             try {
-                // Creo socket
+                // Create socket
                 System.out.println("[SERVER] Waiting for client connection...");
                 // TODO rendere thread safe: separo accettazione client da creazione lobby
                 Socket newSocket = serverSocket.accept();
@@ -96,7 +96,7 @@ public class Server implements Runnable, ConnectionObserver {
 
                 synchronized (lock) {
                     clientHandler.setPosition(log.size() + 1);
-                    // Massimo 3 client connessi
+                    // Max 3 clients connected
                     if (clientHandler.getPosition() <= 3) {
                         log.add(clientHandler);
                         clientHandler.addObserver(this);

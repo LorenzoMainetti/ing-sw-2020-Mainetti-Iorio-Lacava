@@ -79,15 +79,6 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         }
     }
 
-/*
-    private void close() {
-        closeConnection();
-        System.out.println("Unregistering client...");
-        server.deregisterConnection(this);
-        System.out.println("Done!");
-    }
-*/
-
     public void pingToClient() {
         Thread t = new Thread(() -> {
             while (true) {
@@ -124,6 +115,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                                 notifyAll();
                             }
                         } else {
+                            //TODO messaggi non ricevuti dal client, gestire disconnesione player stuck
                             if (active) {
                                 send(wrongTurnMessage);
                                 System.out.println("[SERVER] Wrong turn message");

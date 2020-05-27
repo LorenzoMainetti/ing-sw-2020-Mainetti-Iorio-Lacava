@@ -1,6 +1,5 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;

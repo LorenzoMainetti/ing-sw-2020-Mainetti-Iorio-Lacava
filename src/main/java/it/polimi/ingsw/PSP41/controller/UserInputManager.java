@@ -41,6 +41,7 @@ public class UserInputManager implements ViewObserver {
         this.nickname = nickname;
     }
 
+
     public int getPlayersNumber() { return playersNumber; }
 
     @Override
@@ -51,7 +52,6 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isChosenWorker() { return chosenWorker; }
 
-
     @Override
     public void updateWorker(boolean chosenWorker) {
         this.chosenWorker = chosenWorker;
@@ -60,12 +60,11 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isPower() { return power; }
 
-
-
     @Override
     public void updatePower(boolean power) {
         this.power = power;
     }
+
 
     public int getChosenRow() {
         return chosenRow;
@@ -81,7 +80,6 @@ public class UserInputManager implements ViewObserver {
         chosenColumn = position.getPosColumn();
     }
 
-
     /**
      * Tells the View to display valid options (moves/builds)
      * @param positions list of valid Positions for moving/building
@@ -89,7 +87,7 @@ public class UserInputManager implements ViewObserver {
      * @param column current Worker's column
      */
     public void readChosenDirection(List<Position> positions, int row, int column) {
-        PositionMessage positionMessage = new PositionMessage(positions, new Position(row, column));
+        PositionMessage positionMessage = new PositionMessage(positions);
         virtualView.requestPosition(positionMessage);
     }
 

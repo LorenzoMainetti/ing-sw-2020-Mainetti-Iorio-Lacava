@@ -3,14 +3,12 @@ package it.polimi.ingsw.PSP41.client;
 import it.polimi.ingsw.PSP41.observer.UiObserver;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.utils.*;
-import it.polimi.ingsw.PSP41.view.CLI;
+import it.polimi.ingsw.PSP41.view.View;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
@@ -20,16 +18,13 @@ public class NetworkHandler implements Runnable, UiObserver {
     Socket socket;
     ObjectInputStream socketIn;
     PrintWriter socketOut;
-    private boolean active = true;
-    List<PlayersInfoMessage> playersInfo = new ArrayList<>();
-    // Quando avrò anche la GUI, creerò un'interfaccia UserInterface da far implementare a CLI e GUI
-    private CLI cli;
+    private View view;
 
-    public NetworkHandler(String ip, String port, CLI cli) {
+    public NetworkHandler(String ip, String port, View view) {
         try {
             socket = new Socket(ip, Integer.parseInt(port));
-            this.cli = cli;
-            cli.addObserver(this);
+            this.view = view;
+
         } catch (IOException e) {
             System.out.println("Server unreachable");
             return;
@@ -37,83 +32,105 @@ public class NetworkHandler implements Runnable, UiObserver {
         System.out.println("Connection established");
     }
 
-    public void setCli(CLI cli) {
-        this.cli = cli;
-    }
-
     /**
      * Server messages manager
      * @param inputObject message from server
      */
-    public synchronized void manageInputFromServer(Object inputObject) {
+    private synchronized void manageInputFromServer(Object inputObject) {
         if (inputObject instanceof String) {
             if (!inputObject.equals("")) {
-                if (inputObject.equals(playersNumMessage)) {
-                    cli.askPlayersNumber();
-                }
-                else if(inputObject.equals(nicknameMessage)) {
-                    cli.askNickname();
-                }
-                else if (inputObject.equals(takenNameMessage)) {
-                    cli.displayTakenNickname();
-                }
-                else if (inputObject.equals(initPosMessage)) {
-                    cli.askInitPosition();
-                }
-                else if (inputObject.equals(occupiedCellMessage)) {
-                    cli.displayTakenPosition();
-                }
-                else if (inputObject.equals(workerNumMessage)) {
-                    cli.askWorker();
-                }
-                else if (inputObject.equals(activatePowMessage)) {
-                    cli.askPowerActivation();
-                }
-                else if (inputObject.equals(moveMessage)) {
-                    cli.startMovePhase();
-                }
-                else if (inputObject.equals(buildMessage)) {
-                    cli.startBuildPhase();
-                }
-                else if (inputObject.equals(endTurn)) {
-                    cli.endTurn();
+                String message = (String) inputObject;
+                switch (message) {
+                    case playersNumMessage:
+                        view.askPlayersNumber();
+                        break;
+                    case nicknameMessage:
+                        view.askNickname();
+                        break;
+                    case takenNameMessage:
+                        view.displayTakenNickname();
+                        break;
+                    case chooseStarterMessage:
+                        view.askFirstPlayer();
+                        break;
+                    case initPosMessage:
+                        view.askInitPosition();
+                        break;
+                    case occupiedCellMessage:
+                        view.displayTakenPosition();
+                        break;
+                    case workerNumMessage:
+                        view.askWorker();
+                        break;
+                    case activatePowMessage:
+                        view.askPowerActivation();
+                        break;
+                    case moveMessage:
+                        view.startMovePhase();
+                        break;
+                    case buildMessage:
+                        view.startBuildPhase();
+                        break;
+                    case endTurn:
+                        view.endTurn();
+                        break;
+                    case waitMessage:
+                        view.waiting();
+                        break;
+                    case fullLobby:
+                        view.displayFullLobby();
+                        break;
                 }
             }
-
         }
 
-        else if (inputObject instanceof PlayerMessage) {
-            for (PlayersInfoMessage info : playersInfo) {
-                if (info.getPlayerName().equals(((PlayerMessage) inputObject).getPlayer())) {
-                    if (((PlayerMessage) inputObject).getType().equals(winMessage)) {
-                        cli.displayWinner(info);
-                    } else if (((PlayerMessage) inputObject).getType().equals(loseMessage)) {
-                        cli.displayLoser(info);
-                    } else {
-                        cli.displayCurrentPlayer(info);
-                    }
+        else if (inputObject instanceof NameMessage) {
+
+            NameMessage message = (NameMessage) inputObject;
+            switch (message.getType()) {
+                case winMessage:
+                    view.displayWinner(message.getName());
                     break;
-                }
+                case loseMessage:
+                    view.displayLoser(message.getName());
+                    break;
+                case godLikeMessage:
+                    view.displayChallenger(message.getName());
+                    break;
+                default:
+                    view.displayCurrentPlayer(message.getName());
+                    break;
+
+            }
+        }
+
+        else if (inputObject instanceof ChooseGodMessage) {
+            ChooseGodMessage message = (ChooseGodMessage) inputObject;
+            switch (message.getType()) {
+                case gameGodsMessage:
+                    view.askGameGods(message.getGodList());
+                    break;
+                case yourGodMessage:
+                    view.askGodCard(message.getGodList());
             }
         }
 
         else if (inputObject instanceof Board) {
-            System.out.println("\n");
-            for(PlayersInfoMessage message : playersInfo) {
-                cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
-            }
-            cli.printBoard((Board) inputObject);
+            view.displayBoard((Board) inputObject);
         }
 
         else if (inputObject instanceof PositionMessage) {
             PositionMessage message = (PositionMessage) inputObject;
-            cli.displayOptions(message.getValidPos());
+            view.askPosition(message.getValidPos());
         }
 
         else if (inputObject instanceof PlayersInfoMessage) {
             PlayersInfoMessage message = (PlayersInfoMessage) inputObject;
-            playersInfo.add(message);
-            cli.showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
+            view.addPlayersInfo(message);
+        }
+
+        else if (inputObject instanceof Integer) {
+            view.displayPlayersNumber((Integer) inputObject);
         }
 
         else {
@@ -147,20 +164,21 @@ public class NetworkHandler implements Runnable, UiObserver {
         new Thread(this::pingToServer).start();
 
         try{
-            while (active) {
+            while (true) {
                 try {
                     socket.setSoTimeout(5000);
                     Object inputObject = socketIn.readObject();
                     manageInputFromServer(inputObject);
-                    // chiudo socket se ricevo winMessage
-                    if (inputObject instanceof PlayerMessage && ((PlayerMessage) inputObject).getType().equals(winMessage)) break;
+                    // close socket if winMessage is received
+                    if (inputObject instanceof NameMessage && ((NameMessage) inputObject).getType().equals(winMessage))
+                        break;
                 } catch (IOException | ClassNotFoundException e) {
-                    cli.displayNetworkError();
+                    view.displayNetworkError();
                     break;
                 }
             }
         } catch(NoSuchElementException e) {
-            cli.displayNetworkError();
+            view.displayNetworkError();
         } finally {
             try {
                 socketIn.close();

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-
+import it.polimi.ingsw.PSP41.observer.UiObservable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +12,8 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 
 
-
-public class LoginScene {
+public class LoginScene extends UiObservable {
     private Pane root;
-    private String nickname;
 
     public LoginScene() {
         try {
@@ -32,13 +30,14 @@ public class LoginScene {
 
                 @Override
                 public void handle(ActionEvent event) {
-                    if(nicknameTextField.getText() != null) {
-                        nickname = nicknameTextField.getText();
+                    String nickname = nicknameTextField.getText();
+
+                    if(nickname != null) {
+                        LoginScene.this.notify(nickname);
 
                         //TODO controllare che il nickname non sia già stato preso
 
-                        //TODO andare alla waiting scene
-                        TransitionHandler.toGodPowerScene();
+                        //TransitionHandler.toGodPowerScene();
                     }
                     else
                         new AlertPopup().display("Please enter a valid nickname.");
@@ -48,10 +47,6 @@ public class LoginScene {
 
     public Pane getRoot() {
         return root;
-    }
-
-    public String getNickname() {
-        return this.nickname;
     }
 
 }

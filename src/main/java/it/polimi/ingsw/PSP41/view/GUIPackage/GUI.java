@@ -1,7 +1,11 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
+import it.polimi.ingsw.PSP41.client.NetworkHandler;
+import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Color;
+import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
+import it.polimi.ingsw.PSP41.view.View;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,17 +18,22 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class GUI extends Application {
+public class GUI extends Application implements View {
     private PlayersInfoMessage info, gine, lore, marco;
+    private int playersNumber = 0;
+    private List<PlayersInfoMessage> playersInfo = new ArrayList<>();
+    private List<String> players = new ArrayList<>();
+    private NetworkHandler networkHandler;
 
 
     @Override
     public void start(Stage primaryStage) {
+
+        networkHandler = new NetworkHandler("127.0.0.1", "9090", this);
+        new Thread(networkHandler).start();
+
         //serve per testare
         info = new PlayersInfoMessage("gine", Color.BLUE, "");
         List<Boolean> list = Arrays.asList(false, true, false, true, false, false, false, true, false, false, false, false, false, false);
@@ -39,8 +48,8 @@ public class GUI extends Application {
         String challenger = "gine";
 
         TransitionHandler.setPrimaryStage(primaryStage);
-        LoginScene loginScene = new LoginScene();
-        TransitionHandler.setLoginScene(loginScene);
+
+        /*TransitionHandler.setLoginScene(loginScene);
         GodPowerScene godPowerScene = new GodPowerScene(2);
         TransitionHandler.setGodPowerScene(godPowerScene);
         WaitingScene waitingScene = new WaitingScene();
@@ -55,7 +64,7 @@ public class GUI extends Application {
 
         //il server deve chiamare updatePlayerChoice
         playerCard.replace("lore", 2);
-        cardChoiceScene.updatePlayerChoice(playerCard);
+        cardChoiceScene.updatePlayerChoice(playerCard);*/
 
         try{
             Pane root = FXMLLoader.load(getClass().getResource("/SantoriniLogo.fxml"));
@@ -82,9 +91,7 @@ public class GUI extends Application {
                 fadeOut.play();
             });
 
-            fadeOut.setOnFinished((e) -> {
-                TransitionHandler.toLoginScene();
-            });
+            //fadeOut.setOnFinished((e) -> TransitionHandler.toLoginScene());
 
         }
         catch (IOException e)
@@ -101,7 +108,7 @@ public class GUI extends Application {
             @Override
             public void handle(WindowEvent event){
                 //TODO gestire disconnessione dopo chiusura finestra
-                System.out.println("Disconnected.");
+                System.out.println("Disconnected."); 
                 Platform.exit();
             }
 
@@ -112,6 +119,129 @@ public class GUI extends Application {
     }
 
 
+    @Override
+    public void askPlayersNumber() {
 
+    }
+
+    @Override
+    public void askNickname() {
+        LoginScene loginScene = new LoginScene();
+        loginScene.addObserver(networkHandler);
+        Platform.runLater(() -> TransitionHandler.setLoginScene(loginScene));
+        Platform.runLater(TransitionHandler::toLoginScene);
+
+    }
+
+    @Override
+    public void askGameGods(List<String> gods) {
+        Platform.runLater(TransitionHandler::toGodPowerScene);
+    }
+
+    @Override
+    public void askGodCard(List<String> gods) {
+
+    }
+
+    @Override
+    public void askFirstPlayer() {
+
+    }
+
+    @Override
+    public void askInitPosition() {
+
+    }
+
+    @Override
+    public void askWorker() {
+
+    }
+
+    @Override
+    public void askPowerActivation() {
+
+    }
+
+    @Override
+    public void askPosition(List<Position> positions) {
+
+    }
+
+    @Override
+    public void displayTakenNickname() {
+
+    }
+
+    @Override
+    public void displayTakenPosition() {
+
+    }
+
+    @Override
+    public void displayNetworkError() {
+
+    }
+
+    @Override
+    public void displayFullLobby() {
+
+    }
+
+    @Override
+    public void waiting() {
+
+    }
+
+    @Override
+    public void displayBoard(Board board) {
+
+    }
+
+    @Override
+    public void addPlayersInfo(PlayersInfoMessage message) {
+        playersInfo.add(message);
+        players.add(message.getPlayerName());
+    }
+
+    @Override
+    public void displayPlayersNumber(int number) {
+        playersNumber = number;
+    }
+
+    @Override
+    public void displayChallenger(String name) {
+
+    }
+
+    @Override
+    public void displayCurrentPlayer(String name) {
+
+    }
+
+    @Override
+    public void displayLoser(String name) {
+
+    }
+
+    @Override
+    public void displayWinner(String name) {
+
+    }
+
+    @Override
+    public void endTurn() {
+
+    }
+
+    @Override
+    public void startMovePhase() {
+
+    }
+
+    @Override
+    public void startBuildPhase() {
+
+    }
 
 }
