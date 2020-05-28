@@ -1,6 +1,7 @@
 package it.polimi.ingsw.PSP41.view.CLIPackage;
 
 import it.polimi.ingsw.PSP41.model.Color;
+import it.polimi.ingsw.PSP41.model.Player;
 import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.model.Board;
@@ -42,7 +43,7 @@ public class CLI extends UiObservable implements Runnable, View {
                         notifyAll();
                     }
                 }
-                else System.out.println(wrongTurnMessage);
+                else displayWrongTurn();
             }
         }
     }
@@ -303,12 +304,12 @@ public class CLI extends UiObservable implements Runnable, View {
 
     @Override
     public void startMovePhase() {
-        System.out.println(ColorCLI.ANSI_GREEN+"MOVE"+ColorCLI.RESET+" PHASE");
+        System.out.println(ColorCLI.ANSI_MAGENTA +"MOVE"+ColorCLI.RESET+" PHASE");
     }
 
     @Override
     public void startBuildPhase() {
-        System.out.println(ColorCLI.ANSI_GREEN+"BUILD"+ColorCLI.RESET+" PHASE");
+        System.out.println(ColorCLI.ANSI_MAGENTA +"BUILD"+ColorCLI.RESET+" PHASE");
     }
 
     private void endGame() {
@@ -323,27 +324,41 @@ public class CLI extends UiObservable implements Runnable, View {
         System.out.println();
     }
 
+    private Color getColorFromName(String nickname) {
+        for (PlayersInfoMessage info : playersInfo) {
+            if (info.getPlayerName().equals(nickname)) {
+                return info.getPlayerColor();
+            }
+        }
+        return Color.MAGENTA;
+    }
+
     @Override
     public void displayChallenger(String name) {
         challenger = name;
-        System.out.println(ColorCLI.ANSI_GREEN + name.toUpperCase() + ColorCLI.RESET  + " is the most godlike! " + name + " is the challenger!");
+        System.out.println(ColorCLI.ANSI_MAGENTA + name.toUpperCase() + ColorCLI.RESET  + " is the most godlike! " + ColorCLI.ANSI_MAGENTA + name.toUpperCase() + ColorCLI.RESET + " is the challenger!");
     }
 
     @Override
     public void displayCurrentPlayer(String name) {
-        System.out.println("It's " + name.toUpperCase()  + "'s turn!");
+        System.out.println("It's " + ColorCLI.colorCLI(getColorFromName(name)) + name.toUpperCase() + ColorCLI.RESET + "'s turn!");
     }
 
     @Override
     public void displayLoser(String name) {
-        System.out.println(ColorCLI.ANSI_GREEN+name.toUpperCase()+ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
+        System.out.println(ColorCLI.colorCLI(getColorFromName(name)) + name.toUpperCase() + ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
         playersInfo.removeIf(message -> message.getPlayerName().equals(name));
     }
 
     @Override
     public void displayWinner(String name) {
-        System.out.println("Game over! The winner is "+ColorCLI.ANSI_GREEN+ name.toUpperCase() + ColorCLI.RESET+ "!!!");
+        System.out.println("Game over! The winner is "+ ColorCLI.colorCLI(getColorFromName(name)) + name.toUpperCase() + ColorCLI.RESET + "!!!");
         endGame();
+    }
+
+    @Override
+    public void displayWrongTurn() {
+        System.out.println(wrongTurnMessage);
     }
 
     /**
@@ -353,17 +368,7 @@ public class CLI extends UiObservable implements Runnable, View {
      * @param godPower god chosen by the player
      */
     private void showPlayersInfo(String nickname, Color color, String godPower) {
-        switch (color) {
-            case RED:
-                System.out.println(ColorCLI.ANSI_RED + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
-                break;
-            case YELLOW:
-                System.out.println(ColorCLI.ANSI_YELLOW + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
-                break;
-            case BLUE:
-                System.out.println(ColorCLI.ANSI_BLUE + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
-                break;
-        }
+        System.out.println(ColorCLI.colorCLI(color) + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
     }
 
     @Override

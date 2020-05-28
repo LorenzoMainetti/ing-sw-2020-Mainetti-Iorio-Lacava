@@ -1,9 +1,5 @@
 package it.polimi.ingsw.PSP41.server;
 
-import it.polimi.ingsw.PSP41.controller.Controller;
-import it.polimi.ingsw.PSP41.controller.UserInputManager;
-import it.polimi.ingsw.PSP41.model.Board;
-import it.polimi.ingsw.PSP41.model.Player;
 import it.polimi.ingsw.PSP41.observer.ConnectionObserver;
 
 import java.io.IOException;
@@ -35,25 +31,6 @@ public class Server implements Runnable, ConnectionObserver {
     }*/
 
     /**
-     * Start a match using resources from the notify of lobby
-     * @param uim UserInputManager class used for inputs handling
-     * @param virtualView virtual view server side
-     * @param sortedPlayers match players list (and associated gods)
-     */
-    @Override
-    public void updateServer(UserInputManager uim, VirtualView virtualView, List<Player> sortedPlayers) {
-        Thread t = new Thread(() -> {
-            System.out.println("[SERVER] game starts");
-            Board board = new Board();
-            Controller controller = new Controller(board, uim, virtualView, sortedPlayers);
-            // First let players choose the initial positions for their workers, then start the game
-            controller.setWorkers();
-            controller.play();
-        });
-        t.start();
-    }
-
-    /**
      * Manages disconnection: if the client disconnected is active, all the clients will be disconnected; else the client disconnected is removed from the server clients log
      * @param client disconnected client
      */
@@ -62,6 +39,7 @@ public class Server implements Runnable, ConnectionObserver {
         if (client.isActive()) {
             for (ClientHandler ch : log) {
                 ch.closeConnection();
+                // TODO chiudere thread clientHandler?
             }
             try {
                 serverSocket.close();
@@ -83,7 +61,6 @@ public class Server implements Runnable, ConnectionObserver {
         }
 
         Lobby lobby = new Lobby();
-        lobby.addObserver(this);
 
         while(true){
             try {

@@ -58,6 +58,8 @@ public interface View {
 
     void displayWinner(String name);
 
+    void displayWrongTurn();
+
     void endTurn();
 
     void startMovePhase();

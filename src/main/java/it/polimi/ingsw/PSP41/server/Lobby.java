@@ -1,10 +1,11 @@
 package it.polimi.ingsw.PSP41.server;
 
+import it.polimi.ingsw.PSP41.controller.Controller;
+import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.GodPowerFactory;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
-import it.polimi.ingsw.PSP41.observer.ConnectionObservable;
 import it.polimi.ingsw.PSP41.utils.ChooseGodMessage;
 import it.polimi.ingsw.PSP41.utils.NameMessage;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
@@ -14,7 +15,7 @@ import java.util.*;
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 // Se mai volessimo fare multipartita, bisogna togliere gli static e creare un'istanza di lobby nel server, assegnandola direttamente ai clienthandler
-public class Lobby extends ConnectionObservable {
+public class Lobby {
     private final VirtualView virtualView = new VirtualView();
     private final UserInputManager userInputManager = new UserInputManager(virtualView);
     private Map<String, ClientHandler> clientNames = new HashMap<>();
@@ -164,7 +165,6 @@ public class Lobby extends ConnectionObservable {
         //TODO check server-side (ask if needed)
         /*for(String god : chosenGods) {
             if(!gameGods.contains(god) || Collections.frequency(chosenGods, god) > 1)
-
         }*/
 
         client.send(endTurnMessage);
@@ -262,8 +262,20 @@ public class Lobby extends ConnectionObservable {
             }
         }
 
-        notifyServer(userInputManager, virtualView, sortedPlayers);
+        startGame(sortedPlayers);
     }
 
+    /**
+     * Start a match using resources from the notify of lobby
+     * @param sortedPlayers match players list (and associated gods)
+     */
+    public void startGame(List<Player> sortedPlayers) {
+        System.out.println("[SERVER] game starts");
+        Board board = new Board();
+        Controller controller = new Controller(board, userInputManager, virtualView, sortedPlayers);
+        // Prima faccio scegliere la posizione iniziale dei worker ad ogni giocatore, poi inizio la partita
+        controller.setWorkers();
+        controller.play();
+    }
 
 }

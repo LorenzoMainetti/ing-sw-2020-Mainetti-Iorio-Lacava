@@ -9,7 +9,7 @@ public class GUIApp {
     public static void main(String[] args) {
 
         GUI gui = new GUI();
-        NetworkHandler networkHandler = new NetworkHandler("127.0.0.1", "9090", gui);
+        //NetworkHandler networkHandler = new NetworkHandler("127.0.0.1", "9090", gui);
 
         Application.launch(GUI.class);
 
@@ -21,7 +21,7 @@ public class GUIApp {
         //add the observers
         //gui.addObserver(networkHandler);
 
-        new Thread(networkHandler).start();
+        //new Thread(networkHandler).start();
 
 
     }

@@ -16,6 +16,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     private Socket socket;
     private Lobby lobby; //NON FINAL ALTRIMENTI NON FUNZIONA NIENTE, INTELLIJ MENTE
     private int position;
+    private boolean connected = true;
     private boolean active = true;
     private boolean myTurn = false;
     private String answer;
@@ -71,6 +72,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
      */
     public synchronized void closeConnection() {
         try {
+            connected = false;
             socket.close();
             System.out.println("Connection closed with client #" + position);
         } catch (IOException e) {
@@ -81,7 +83,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
 
     public void pingToClient() {
         Thread t = new Thread(() -> {
-            while (true) {
+            while (connected) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -117,12 +119,8 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                                 notifyAll();
                             }
                         } else {
-                            if (active) {
-                                send(wrongTurnMessage);
-                                System.out.println("[SERVER] Wrong turn message");
-                            } else {
-                                send(spectator);
-                            }
+                            send(wrongTurnMessage);
+                            System.out.println("[SERVER] Wrong turn message");
                         }
                     }
                 } catch (IOException | NullPointerException e) {

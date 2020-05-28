@@ -24,10 +24,9 @@ public class GameMessage {
     public final static String godLikeMessage = "show challenger";
     public final static String winMessage = "winMessage";
     public final static String loseMessage = "loseMessage";
-    public final static String spectator = "You are currently spectating the match.";
     public final static String startTurnMessage = "start";
     public final static String endTurnMessage = "end";
-    public final static String endTurn = "Your turn is over.";
-    public final static String wrongTurnMessage = "It is not your turn!";
+    public final static String endTurn = "end turn";
+    public final static String wrongTurnMessage = "wrong turn";
 
 }

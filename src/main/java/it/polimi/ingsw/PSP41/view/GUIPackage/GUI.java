@@ -245,6 +245,9 @@ public class GUI extends Application implements View {
     }
 
     @Override
+    public void displayWrongTurn() {}
+
+    @Override
     public void endTurn() {
 
     }
