@@ -96,6 +96,7 @@ public class Lobby extends ConnectionObservable {
 
         System.out.println("[SERVER] " + nickname + " registered!");
 
+        client.send(waitMessage);
         client.send(endTurnMessage);
 
     }
@@ -107,7 +108,7 @@ public class Lobby extends ConnectionObservable {
 
         //wait until the right number of players is connected
         if (playersName.size() != playersNumber) {
-            client.send(waitMessage);
+            //client.send(waitMessage);
             // TODO timeout
         }
 
@@ -142,6 +143,9 @@ public class Lobby extends ConnectionObservable {
         challenger = name;
 
         for (ClientHandler clientHandler : clients) {
+            if(!clientHandler.equals(client))
+                clientHandler.send(waitMessage);
+
             clientHandler.send(new NameMessage(godLikeMessage, challenger));
         }
 
@@ -231,11 +235,10 @@ public class Lobby extends ConnectionObservable {
 
         //the challenger chooses who starts playing
         client.send(startTurnMessage);
-        client.send(chooseStarterMessage);
 
-        /*for (ClientHandler ch : clients) {
-            if (!ch.equals(client)) ch.send(waitMessage);
-        }*/
+        for(String name : clientNames.keySet()) {
+            clientNames.get(name).send(new NameMessage(chooseStarterMessage, name));
+        }
 
         String starter = client.read();
         //TODO check server-side (ask if needed)

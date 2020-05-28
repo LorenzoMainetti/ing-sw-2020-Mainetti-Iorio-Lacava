@@ -20,7 +20,7 @@ public interface View {
 
     void askGodCard(List<String> gods);
 
-    void askFirstPlayer();
+    void askFirstPlayer(String name);
 
     void askInitPosition();
 
@@ -40,6 +40,8 @@ public interface View {
     void displayFullLobby();
 
     //Update User Interface
+    void waitPlayersNum();
+
     void waiting();
 
     void displayBoard(Board board);

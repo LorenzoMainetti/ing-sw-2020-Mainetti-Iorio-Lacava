@@ -176,6 +176,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
      */
     @Override
     public void updateLoser(String loser) {
+        clients.get(loser).setActive(false);
         for (ClientHandler ch : clients.values()) {
             ch.send(new NameMessage(loseMessage, loser));
         }

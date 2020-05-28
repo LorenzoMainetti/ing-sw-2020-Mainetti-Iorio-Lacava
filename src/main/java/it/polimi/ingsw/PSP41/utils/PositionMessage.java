@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PositionMessage implements Serializable {
     private static final long serialVersionUID = 3772134586452877455L;
-    List<Position> validPos;
+    private final List<Position> validPos;
 
     public PositionMessage(List<Position> validPos) {
         this.validPos = validPos;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.PSP41.view;
+package it.polimi.ingsw.PSP41.view.CLIPackage;
 
 public class CellCLI {
     private String string;

@@ -50,9 +50,6 @@ public class NetworkHandler implements Runnable, UiObserver {
                     case takenNameMessage:
                         view.displayTakenNickname();
                         break;
-                    case chooseStarterMessage:
-                        view.askFirstPlayer();
-                        break;
                     case initPosMessage:
                         view.askInitPosition();
                         break;
@@ -73,6 +70,9 @@ public class NetworkHandler implements Runnable, UiObserver {
                         break;
                     case endTurn:
                         view.endTurn();
+                        break;
+                    case waitPlayersNum:
+                        view.waitPlayersNum();
                         break;
                     case waitMessage:
                         view.waiting();
@@ -97,10 +97,12 @@ public class NetworkHandler implements Runnable, UiObserver {
                 case godLikeMessage:
                     view.displayChallenger(message.getName());
                     break;
+                case chooseStarterMessage:
+                    view.askFirstPlayer(message.getName());
+                    break;
                 default:
                     view.displayCurrentPlayer(message.getName());
                     break;
-
             }
         }
 
@@ -155,8 +157,9 @@ public class NetworkHandler implements Runnable, UiObserver {
     public void run() {
 
         try {
-            socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new PrintWriter(socket.getOutputStream(), true);
+            socketIn = new ObjectInputStream(socket.getInputStream());
+
         } catch (IOException e) {
             e.printStackTrace();
         }

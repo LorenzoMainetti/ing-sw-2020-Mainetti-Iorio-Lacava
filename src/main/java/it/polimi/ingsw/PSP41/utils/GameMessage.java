@@ -20,6 +20,7 @@ public class GameMessage {
     public final static String moveMessage = "Move phase!";
     public final static String buildMessage = "Build phase!";
     public final static String waitMessage = "waitMessage";
+    public final static String waitPlayersNum = "waitPlayersNum" ;
     public final static String godLikeMessage = "show challenger";
     public final static String winMessage = "winMessage";
     public final static String loseMessage = "loseMessage";

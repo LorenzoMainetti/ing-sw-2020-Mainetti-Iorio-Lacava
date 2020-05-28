@@ -72,7 +72,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     public synchronized void closeConnection() {
         try {
             socket.close();
-            System.out.println("Connection close with client #" + position);
+            System.out.println("Connection closed with client #" + position);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error in method close connection: " + e.getMessage());
@@ -88,7 +88,9 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     e.printStackTrace();
                 }
                 try {
+                    socketOut.reset();
                     socketOut.writeObject("");
+                    socketOut.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -115,7 +117,6 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                                 notifyAll();
                             }
                         } else {
-                            //TODO messaggi non ricevuti dal client, gestire disconnesione player stuck
                             if (active) {
                                 send(wrongTurnMessage);
                                 System.out.println("[SERVER] Wrong turn message");
@@ -125,7 +126,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                         }
                     }
                 } catch (IOException | NullPointerException e) {
-                        //System.out.println("[SERVER] Client #" + position + " unreachable");
+                        System.out.println("[SERVER] Client #" + position + " unreachable");
                         notifyDisconnection(this);
                         break;
                 }
@@ -167,12 +168,12 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         try {
             if (lobby.getPlayersNumber() == -1 || position <= lobby.getPlayersNumber()) {
                 if (position <= 3) {
-                    // Creazione lobby
+                    // Lobby creation
                     if (position == 1) {
                         lobby.setPlayersNumber(this);
                     }
                     else {
-                        send("The lobby creator is choosing the number of players...");
+                        send(waitPlayersNum);
                         lobby.waitPlayersNumber(this);
                     }
 

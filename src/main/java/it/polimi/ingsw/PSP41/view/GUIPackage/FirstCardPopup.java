@@ -1,13 +1,11 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -60,59 +58,39 @@ public class FirstCardPopup extends CardPopup {
             selectText.setTranslateX(-10.0);
         }
 
-        closeButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                closeButton.setImage(new Image("/btn_coral_pressed.png"));
-                closeText.setTranslateY(2.0);
-            }
+        closeButton.setOnMouseEntered(event -> {
+            closeButton.setImage(new Image("/btn_coral_pressed.png"));
+            closeText.setTranslateY(2.0);
         });
 
-        closeButton.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                closeButton.setImage(new Image("/btn_coral.png"));
-                closeText.setTranslateY(-0.5);
-            }
+        closeButton.setOnMouseExited(event -> {
+            closeButton.setImage(new Image("/btn_coral.png"));
+            closeText.setTranslateY(-0.5);
         });
 
-        closeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                stage.close();
-            }
+        closeButton.setOnMouseClicked(event -> stage.close());
+
+        selectButton.setOnMouseEntered(event -> {
+            selectButton.setImage(new Image("/btn_blue_pressed.png"));
+            selectText.setTranslateY(2.0);
         });
 
-        selectButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                selectButton.setImage(new Image("/btn_blue_pressed.png"));
-                selectText.setTranslateY(2.0);
-            }
+        selectButton.setOnMouseExited(event -> {
+            selectButton.setImage(new Image("/btn_blue.png"));
+            selectText.setTranslateY(-0.5);
         });
 
-        selectButton.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                selectButton.setImage(new Image("/btn_blue.png"));
-                selectText.setTranslateY(-0.5);
+        selectButton.setOnMouseClicked(event -> {
+            if(selectedCards.get(counter)){
+                eventSource.setStyle("-fx-border-color: none");
+                selectedCards.set(counter, false);
             }
-        });
-
-        selectButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(selectedCards.get(counter)){
-                    eventSource.setStyle("-fx-border-color: none");
-                    selectedCards.set(counter, false);
-                }
-                else {
-                    eventSource.setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
-                    selectedCards.set(counter, true);
-                }
-
-                stage.close();
+            else {
+                eventSource.setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
+                selectedCards.set(counter, true);
             }
+
+            stage.close();
         });
 
         stage.setScene(scene);

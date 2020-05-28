@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Controller class that sets the user inputs to manage a player's turn
  */
-//TODO check server-side here
 public class UserInputManager implements ViewObserver {
 
     private final VirtualView virtualView;

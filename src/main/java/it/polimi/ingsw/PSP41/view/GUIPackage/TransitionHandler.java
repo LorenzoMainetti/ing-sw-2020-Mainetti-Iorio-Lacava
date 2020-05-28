@@ -1,5 +1,6 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -57,7 +58,7 @@ public class TransitionHandler {
 
     //go to...
     private static void goTo(Scene scene){
-        primaryStage.setScene(scene);
+        Platform.runLater(() -> primaryStage.setScene(scene));
     }
 
     public static void toLoadingScene(){

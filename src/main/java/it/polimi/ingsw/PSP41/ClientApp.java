@@ -1,7 +1,7 @@
 package it.polimi.ingsw.PSP41;
 
 import it.polimi.ingsw.PSP41.client.NetworkHandler;
-import it.polimi.ingsw.PSP41.view.CLI;
+import it.polimi.ingsw.PSP41.view.CLIPackage.CLI;
 
 import java.util.Scanner;
 

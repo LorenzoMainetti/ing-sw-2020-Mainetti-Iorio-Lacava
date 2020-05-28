@@ -1,10 +1,11 @@
-package it.polimi.ingsw.PSP41.view;
+package it.polimi.ingsw.PSP41.view.CLIPackage;
 
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
+import it.polimi.ingsw.PSP41.view.View;
 
 
 import java.util.*;
@@ -18,10 +19,11 @@ public class CLI extends UiObservable implements Runnable, View {
     private String answer;
     private boolean answerReady = false;
 
+    //variables sent from Server
     private int playersNumber = 0;
-    private List<PlayersInfoMessage> playersInfo = new ArrayList<>();
-    private List<String> players = new ArrayList<>();
-
+    private String challenger = null;
+    private final List<PlayersInfoMessage> playersInfo = new ArrayList<>();
+    private final List<String> players = new ArrayList<>();
 
 
     public CLI(){
@@ -97,6 +99,23 @@ public class CLI extends UiObservable implements Runnable, View {
         System.out.println("The game will have " + number + " players");
     }
 
+    /**
+     * Ask the user his nickname and get the input
+     */
+    @Override
+    public void askNickname() {
+        System.out.print("Enter your nickname: ");
+        String nickname = getInput();
+
+        notify(nickname);
+    }
+
+    @Override
+    public void displayTakenNickname() {
+        System.out.println("This nickname is already taken. Please try again.");
+        askNickname();
+    }
+
     @Override
     public void askGameGods(List<String> gameGods) {
         System.out.println("Choose " + playersNumber + " gods from the ones available");
@@ -143,41 +162,25 @@ public class CLI extends UiObservable implements Runnable, View {
         }
 
         notify(chosenGod);
-
     }
 
     @Override
-    public void askFirstPlayer() {
+    public void askFirstPlayer(String name) {
         //print legenda
         for(PlayersInfoMessage message : playersInfo)
             showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
 
-        System.out.println("Challenger, choose who starts playing!");
+        if(name.equals(challenger)) {
+            System.out.println("Challenger, choose who starts playing!");
 
-        String starter = getInput();
-        while (!players.contains(starter)) {
-            System.out.println("Invalid nickname. Try again.");
-            starter = getInput();
+            String starter = getInput();
+            while (!players.contains(starter)) {
+                System.out.println("Invalid nickname. Try again.");
+                starter = getInput();
+            }
+
+            notify(starter);
         }
-
-        notify(starter);
-    }
-
-    /**
-     * Ask the user his nickname and get the input
-     */
-    @Override
-    public void askNickname() {
-        System.out.print("Enter your nickname: ");
-        String nickname = getInput();
-
-        notify(nickname);
-    }
-
-    @Override
-    public void displayTakenNickname() {
-        System.out.println("This nickname is already taken. Please try again.");
-        askNickname();
     }
 
     /**
@@ -322,6 +325,7 @@ public class CLI extends UiObservable implements Runnable, View {
 
     @Override
     public void displayChallenger(String name) {
+        challenger = name;
         System.out.println(ColorCLI.ANSI_GREEN + name.toUpperCase() + ColorCLI.RESET  + " is the most godlike! " + name + " is the challenger!");
     }
 
@@ -338,7 +342,7 @@ public class CLI extends UiObservable implements Runnable, View {
 
     @Override
     public void displayWinner(String name) {
-        System.out.println("Game over! The winner is "+ColorCLI.ANSI_GREEN+ name.toUpperCase() +ColorCLI.RESET+ "!!!");
+        System.out.println("Game over! The winner is "+ColorCLI.ANSI_GREEN+ name.toUpperCase() + ColorCLI.RESET+ "!!!");
         endGame();
     }
 
@@ -527,6 +531,11 @@ public class CLI extends UiObservable implements Runnable, View {
     @Override
     public void displayFullLobby() {
         System.out.println("The lobby is already full!");
+    }
+
+    @Override
+    public void waitPlayersNum() {
+        System.out.println("The lobby creator is choosing the number of players...");
     }
 
     @Override

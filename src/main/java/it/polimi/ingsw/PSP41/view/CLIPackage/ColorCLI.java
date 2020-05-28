@@ -1,4 +1,5 @@
-package it.polimi.ingsw.PSP41.view;
+
+package it.polimi.ingsw.PSP41.view.CLIPackage;
 
 public enum ColorCLI {
     ANSI_RED("\u001B[31m"), ANSI_BLUE("\u001B[34m"), ANSI_YELLOW("\u001B[33m"), ANSI_GREEN("\u001B[32m");

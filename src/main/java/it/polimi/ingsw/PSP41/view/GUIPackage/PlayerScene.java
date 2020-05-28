@@ -1,7 +1,7 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
+import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,8 +9,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -21,14 +19,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PlayerScene {
+public class PlayerScene extends UiObservable {
     private Pane root;
     private ArrayList<StackPane> stackList;
     private final List<String> gameGods = Arrays.asList("APOLLO", "ARTEMIS", "ATHENA", "ATLAS", "DEMETER", "HEPHAESTUS", "MINOTAUR", "PAN", "PROMETHEUS", "HESTIA", "ZEUS", "TRITON", "POSEIDON", "ARES");
-    private final List<String> gameGodsMessages = Arrays.asList("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated.", "You may remove an unoccupied block (not dome) neighbouring your unmoved worker.", "Your Worker may move one additional time, but not back to its initial space.", "If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn.", "Your Worker may build a dome at any level.", "Your Worker may build one additional time, but not on the same space.", "Your Worker may build one additional block (not dome) on top of your first block.", "Your worker may build one additional time, but this cannot be on a perimeter space.", "Your Worker may move into an opponent Worker's space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.", "You also win if your Worker moves down two or more levels.", "If your unmoved worker is on the ground level, it may build up to three times.", "If your Worker does not move up, it may build both before and after moving.", "Each time your worker moves into a perimeter space, it may immediately move again.", "Your worker may build a block under itself. You do not win by forcing yourself up to the third level.");
+    private final List<String> gameGodsMessages = Arrays.asList("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated.", "Your Worker may move one additional time, but not back to its initial space.", "If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn.", "Your Worker may build a dome at any level.", "Your Worker may build one additional time, but not on the same space.", "Your Worker may build one additional block (not dome) on top of your first block.", "Your Worker may move into an opponent Worker's space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.", "You also win if your Worker moves down two or more levels.", "If your Worker does not move up, it may build both before and after moving.", "Your worker may build one additional time, but this cannot be on a perimeter space.", "Your worker may build a block under itself. You do not win by forcing yourself up to the third level.", "Each time your worker moves into a perimeter space, it may immediately move again.", "If your unmoved worker is on the ground level, it may build up to three times.", "You may remove an unoccupied block (not dome) neighbouring your unmoved worker.");
 
 
-    public PlayerScene(List<PlayersInfoMessage> players, String challenger) {
+    public PlayerScene(List<PlayersInfoMessage> players, String challenger, String currPlayer) {
 
         try {
             root = FXMLLoader.load(getClass().getResource("/playerScene.fxml"));
@@ -131,21 +129,17 @@ public class PlayerScene {
 
         for(StackPane card : stackList) {
 
-            card.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            card.setOnMouseClicked(event -> {
 
-                @Override
-                public void handle(MouseEvent event) {
-
-                    int counter = 0;
-                    for (StackPane card : stackList) {
-                        if (card == event.getSource()) {
-                            break;
-                        }
-                        counter++;
+                int counter = 0;
+                for (StackPane card1 : stackList) {
+                    if (card1 == event.getSource()) {
+                        break;
                     }
-
-                    new ThirdCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
+                    counter++;
                 }
+
+                new ThirdCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
             });
 
             DropShadow borderGlow = new DropShadow();
@@ -153,24 +147,11 @@ public class PlayerScene {
             borderGlow.setOffsetX(0f);
             borderGlow.setOffsetY(0f);
 
-            card.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    card.setEffect(borderGlow);
-                }
-            });
+            card.setOnMouseEntered(event -> card.setEffect(borderGlow));
 
-            card.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    card.setEffect(null);
-                }
-            });
+            card.setOnMouseExited(event -> card.setEffect(null));
         }
 
-
-        //TODO ricavare il nome del currPlayer (nome del player che sta usando il client) dal server
-        String currPlayer = "gine";
 
         if(currPlayer.equals(challenger)){
             challengerTextField.setDisable(false);
@@ -183,56 +164,39 @@ public class PlayerScene {
             Text challengerText = (Text) root.lookup("#challengerText");
             challengerText.setText("Choose the first player:");
 
-            challengerTextField.setOnKeyPressed(new EventHandler<KeyEvent>()
-            {
-                @Override
-                public void handle(KeyEvent ke)
+            challengerTextField.setOnKeyPressed(ke -> {
+                ArrayList<String> nicknames = new ArrayList<>();
+                for(PlayersInfoMessage player : players)
                 {
-                    ArrayList<String> nicknames = new ArrayList<>();
-                    for(PlayersInfoMessage player : players)
-                    {
-                        nicknames.add(player.getPlayerName());
-                    }
+                    nicknames.add(player.getPlayerName());
+                }
 
-                    if (ke.getCode().equals(KeyCode.ENTER)) {
-                        if(nicknames.contains(challengerTextField.getText()) && challengerTextField.getText() != null) {
-                            challengerBackground.setImage(null);
-                            challengerText.setText(null);
-                            challengerTextField.setDisable(true);
-                            challengerTextField.setText(null);
-                            challengerTextField.setStyle("-fx-background-color: transparent;");
+                if (ke.getCode().equals(KeyCode.ENTER)) {
+                    String starter = challengerTextField.getText();
+                    if(nicknames.contains(starter) && starter != null) {
+                        challengerBackground.setImage(null);
+                        challengerText.setText(null);
+                        challengerTextField.setDisable(true);
+                        challengerTextField.setText(null);
+                        challengerTextField.setStyle("-fx-background-color: transparent;");
 
-                            playButton.setImage(new Image("/button-play-normal.png"));
-                            playButton.setMouseTransparent(false);
-                            //TODO invia nome al server
-                        }
-                        else
-                            new AlertPopup().display("Please enter a valid nickname.");
+                        playButton.setImage(new Image("/button-play-normal.png"));
+                        playButton.setMouseTransparent(false);
+
+                        PlayerScene.this.notify(starter);
                     }
+                    else
+                        new AlertPopup().display("Please enter a valid nickname.");
                 }
             });
         }
 
-        playButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                playButton.setImage(new Image("/button-play-down.png"));
-            }
-        });
+        //TODO da togliere
+        playButton.setOnMouseEntered(event -> playButton.setImage(new Image("/button-play-down.png")));
 
-        playButton.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                playButton.setImage(new Image("/button-play-normal.png"));
-            }
-        });
+        playButton.setOnMouseExited(event -> playButton.setImage(new Image("/button-play-normal.png")));
 
-        playButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                TransitionHandler.toGameScene();
-            }
-        });
+        playButton.setOnMouseClicked(event -> TransitionHandler.toGameScene());
 
     }
 

@@ -1,13 +1,11 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -49,28 +47,17 @@ public class AlertPopup {
 
         closeText.setMouseTransparent(true);
 
-        closeButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                closeButton.setImage(new Image("/btn_green_pressed.png"));
-                closeText.setTranslateY(2.0);
-            }
+        closeButton.setOnMouseEntered(event -> {
+            closeButton.setImage(new Image("/btn_green_pressed.png"));
+            closeText.setTranslateY(2.0);
         });
 
-        closeButton.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                closeButton.setImage(new Image("/btn_green.png"));
-                closeText.setTranslateY(-0.5);
-            }
+        closeButton.setOnMouseExited(event -> {
+            closeButton.setImage(new Image("/btn_green.png"));
+            closeText.setTranslateY(-0.5);
         });
 
-        closeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                stage.close();
-            }
-        });
+        closeButton.setOnMouseClicked(event -> stage.close());
 
         stage.setScene(scene);
         stage.show();

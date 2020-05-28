@@ -1,18 +1,16 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import it.polimi.ingsw.PSP41.observer.UiObservable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 
 import java.io.IOException;
 
-public class NumberScene {
+public class NumberScene extends UiObservable {
     private Pane root;
-    private Integer number;
+    private String number;
 
     public NumberScene() {
         try {
@@ -30,20 +28,15 @@ public class NumberScene {
         choiceBox.setStyle("-fx-font-size: 14;");
         choiceBox.setValue("2 Players");
 
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
+        okButton.setOnAction(event -> {
 
-            @Override
-            public void handle(ActionEvent event) {
+            String str = (String) choiceBox.getValue();
+            if(str.equals("2 Players"))
+                number = "2";
+            else
+                number = "3";
 
-                String str = (String) choiceBox.getValue();
-                if(str.equals("2 Players"))
-                    number = 2;
-                else
-                    number = 3;
-
-                //TODO inviare al server la scelta
-                TransitionHandler.toLoginScene();
-            }
+            NumberScene.this.notify(number);
         });
     }
 

@@ -89,7 +89,6 @@ public class Server implements Runnable, ConnectionObserver {
             try {
                 // Create socket
                 System.out.println("[SERVER] Waiting for client connection...");
-                // TODO rendere thread safe: separo accettazione client da creazione lobby
                 Socket newSocket = serverSocket.accept();
                 System.out.println("[SERVER] Client connected to server");
                 ClientHandler clientHandler = new ClientHandler(newSocket, lobby);
