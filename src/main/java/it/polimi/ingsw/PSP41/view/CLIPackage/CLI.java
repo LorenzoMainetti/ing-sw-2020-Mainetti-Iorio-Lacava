@@ -258,7 +258,6 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askPosition(List<Position> positions) {
-        //TODO client side check
         System.out.println("Valid positions:");
         for (Position position : positions) {
             System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
@@ -267,7 +266,36 @@ public class CLI extends UiObservable implements Runnable, View {
         int row = askRow();
         int column = askColumn();
 
-        String pos = Integer.toString(row)+Integer.toString(column);
+        boolean valid = false;
+        if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
+            for (Position position : positions) {
+                if (position.getPosRow() == row && position.getPosColumn() == column) {
+                    valid = true;
+                    break;
+                }
+            }
+        }
+
+        while (!valid) {
+            System.out.println("Valid positions:");
+            for (Position position : positions) {
+                System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
+            }
+            System.out.println("\n");
+            row = askRow();
+            column = askColumn();
+
+            if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
+                for (Position position : positions) {
+                    if (position.getPosRow() == row && position.getPosColumn() == column) {
+                        valid = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        String pos = Integer.toString(row) + Integer.toString(column);
 
         notify(pos);
     }
@@ -336,29 +364,29 @@ public class CLI extends UiObservable implements Runnable, View {
     @Override
     public void displayChallenger(String name) {
         challenger = name;
-        System.out.println(ColorCLI.ANSI_MAGENTA + name.toUpperCase() + ColorCLI.RESET  + " is the most godlike! " + ColorCLI.ANSI_MAGENTA + name.toUpperCase() + ColorCLI.RESET + " is the challenger!");
+        System.out.println(ColorCLI.ANSI_MAGENTA + name + ColorCLI.RESET  + " is the most godlike! " + ColorCLI.ANSI_MAGENTA + name + ColorCLI.RESET + " is the challenger!");
     }
 
     @Override
     public void displayCurrentPlayer(String name) {
-        System.out.println("It's " + ColorCLI.colorCLI(getColorFromName(name)) + name.toUpperCase() + ColorCLI.RESET + "'s turn!");
+        System.out.println("It's " + ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET + "'s turn!");
     }
 
     @Override
     public void displayLoser(String name) {
-        System.out.println(ColorCLI.colorCLI(getColorFromName(name)) + name.toUpperCase() + ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
+        System.out.println(ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
         playersInfo.removeIf(message -> message.getPlayerName().equals(name));
     }
 
     @Override
     public void displayWinner(String name) {
-        System.out.println("Game over! The winner is "+ ColorCLI.colorCLI(getColorFromName(name)) + name.toUpperCase() + ColorCLI.RESET + "!!!");
+        System.out.println("Game over! The winner is "+ ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET + "!!!");
         endGame();
     }
 
     @Override
     public void displayWrongTurn() {
-        System.out.println(wrongTurnMessage);
+        System.out.println("It's not your turn.");
     }
 
     /**
@@ -368,7 +396,7 @@ public class CLI extends UiObservable implements Runnable, View {
      * @param godPower god chosen by the player
      */
     private void showPlayersInfo(String nickname, Color color, String godPower) {
-        System.out.println(ColorCLI.colorCLI(color) + nickname.toUpperCase() + ColorCLI.RESET + " (" + godPower + ")");
+        System.out.println(ColorCLI.colorCLI(color) + nickname + ColorCLI.RESET + " (" + godPower + ")");
     }
 
     @Override

@@ -124,24 +124,29 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         String message = current.read();
         int row = Integer.parseInt(message)/10;
         int column = Integer.parseInt(message)%10;
-        boolean valid = false;
-        for (Position position : positionMessage.getValidPos()) {
-            if (position.getPosRow() == row && position.getPosColumn() == column) {
-                valid = true;
-                break;
-            }
-        }
 
-        while (!valid) {
-            current.send(wrongCellMessage);
-            current.send(positionMessage);
-            message = current.read();
-            row = Integer.parseInt(message)/10;
-            column = Integer.parseInt(message)%10;
+        boolean valid = false;
+        if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
             for (Position position : positionMessage.getValidPos()) {
                 if (position.getPosRow() == row && position.getPosColumn() == column) {
                     valid = true;
                     break;
+                }
+            }
+        }
+
+        while (!valid) {
+            current.send(positionMessage);
+            message = current.read();
+            row = Integer.parseInt(message)/10;
+            column = Integer.parseInt(message)%10;
+
+            if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
+                for (Position position : positionMessage.getValidPos()) {
+                    if (position.getPosRow() == row && position.getPosColumn() == column) {
+                        valid = true;
+                        break;
+                    }
                 }
             }
         }
@@ -213,7 +218,6 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     public void endTurn() {
         clients.get(currPlayer).send(endTurnMessage);
-        clients.get(currPlayer).send(endTurn);
     }
 
     /**

@@ -39,7 +39,6 @@ public class Server implements Runnable, ConnectionObserver {
         if (client.isActive()) {
             for (ClientHandler ch : log) {
                 ch.closeConnection();
-                // TODO chiudere thread clientHandler?
             }
             try {
                 serverSocket.close();

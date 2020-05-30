@@ -15,7 +15,6 @@ public class GameMessage {
     public final static String fullLobby = "fullLobby";
     public final static String takenNameMessage = "takenNameMessage";
     public final static String occupiedCellMessage = "occupiedCellMessage";
-    public final static String wrongCellMessage = "wrongCellMessage";
 
     public final static String moveMessage = "Move phase!";
     public final static String buildMessage = "Build phase!";
@@ -26,7 +25,6 @@ public class GameMessage {
     public final static String loseMessage = "loseMessage";
     public final static String startTurnMessage = "start";
     public final static String endTurnMessage = "end";
-    public final static String endTurn = "end turn";
     public final static String wrongTurnMessage = "wrong turn";
 
 }

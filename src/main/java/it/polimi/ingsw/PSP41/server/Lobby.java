@@ -110,7 +110,6 @@ public class Lobby {
         //wait until the right number of players is connected
         if (playersName.size() != playersNumber) {
             //client.send(waitMessage);
-            // TODO timeout
         }
 
         else {
@@ -153,7 +152,6 @@ public class Lobby {
         client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
 
         String s = client.read();
-
         String[] selectedGods = s.split("/");
 
         chosenGods.addAll(Arrays.asList(selectedGods));
@@ -162,11 +160,39 @@ public class Lobby {
             System.out.println("[SERVER] " + chosenGod + " chosen");
         }
 
-        //TODO check server-side (ask if needed)
-        /*for(String god : chosenGods) {
-            if(!gameGods.contains(god) || Collections.frequency(chosenGods, god) > 1)
-        }*/
+        boolean valid = true;
+        if (gameGods.containsAll(chosenGods)) {
+            for (String god : chosenGods) {
+                if (Collections.frequency(chosenGods, god) > 1) {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        else valid = false;
 
+        while (!valid) {
+            valid = true;
+            chosenGods.clear();
+            client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
+
+            s = client.read();
+            selectedGods = s.split("/");
+
+            chosenGods.addAll(Arrays.asList(selectedGods));
+
+            if (gameGods.containsAll(chosenGods)) {
+                for (String god : chosenGods) {
+                    if (Collections.frequency(chosenGods, god) > 1) {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+            else valid = false;
+        }
+
+        System.out.println("Out from while");
         client.send(endTurnMessage);
     }
 
@@ -189,15 +215,19 @@ public class Lobby {
      */
     private synchronized void assignGod(ClientHandler client) {
 
-        //TODO check server-side (ask if needed)
         client.send(new ChooseGodMessage(yourGodMessage, chosenGods));
         String godName = client.read().toUpperCase();
+        while (!chosenGods.contains(godName)) {
+            client.send(new ChooseGodMessage(yourGodMessage, chosenGods));
+            godName = client.read().toUpperCase();
+        }
         chosenGods.remove(godName);
 
         String name = null;
-        for(String s : clientNames.keySet())
-            if(clientNames.get(s).equals(client))
+        for (String s : clientNames.keySet()) {
+            if (clientNames.get(s).equals(client))
                 name = s;
+        }
 
         playerGodCard.put(name, godName);
 
@@ -227,7 +257,7 @@ public class Lobby {
             color = color.next();
         }
 
-        for(Player player : activePlayers) {
+        for (Player player : activePlayers) {
             player.addObserver(virtualView);
             player.getWorker1().addObserver(virtualView);
             player.getWorker2().addObserver(virtualView);
@@ -241,7 +271,10 @@ public class Lobby {
         }
 
         String starter = client.read();
-        //TODO check server-side (ask if needed)
+        while (!playersName.contains(starter)) {
+            client.send(new NameMessage(chooseStarterMessage, challenger));
+            starter = client.read();
+        }
 
         client.send(endTurnMessage);
         System.out.println("[SERVER] " + starter + " is the first to play");

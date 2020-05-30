@@ -94,7 +94,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     socketOut.writeObject("");
                     socketOut.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         });
