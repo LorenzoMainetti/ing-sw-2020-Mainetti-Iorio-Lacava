@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Scene that shows players'info (name, color, god card)
+ * and asks user (if challenger) to choose the start player
+ */
 public class PlayerScene extends UiObservable {
     private Pane root;
     private ArrayList<StackPane> stackList;
@@ -139,7 +143,7 @@ public class PlayerScene extends UiObservable {
                     counter++;
                 }
 
-                new ThirdCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
+                new SecondCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
             });
 
             DropShadow borderGlow = new DropShadow();

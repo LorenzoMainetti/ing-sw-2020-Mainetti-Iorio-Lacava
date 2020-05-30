@@ -25,9 +25,9 @@ public class NetworkHandler implements Runnable, UiObserver {
             socket = new Socket(ip, Integer.parseInt(port));
             this.view = view;
 
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             System.out.println("Server unreachable");
-            return;
+            System.exit(0);
         }
         System.out.println("Connection established");
     }
@@ -37,113 +37,106 @@ public class NetworkHandler implements Runnable, UiObserver {
      * @param inputObject message from server
      */
     private void manageInputFromServer(Object inputObject) {
-        Thread t = new Thread(() -> {
-            synchronized (this) {
-                if (inputObject instanceof NameMessage) {
 
-                    NameMessage message = (NameMessage) inputObject;
-                    switch (message.getType()) {
-                        case winMessage:
-                            view.displayWinner(message.getName());
-                            break;
-                        case loseMessage:
-                            view.displayLoser(message.getName());
-                            break;
-                        case godLikeMessage:
-                            view.displayChallenger(message.getName());
-                            break;
-                        case chooseStarterMessage:
-                            view.askFirstPlayer(message.getName());
-                            break;
-                        default:
-                            view.displayCurrentPlayer(message.getName());
-                            break;
+        //synchronized thread -> conflicts with the javaFX thread
 
-                    }
-                }
+        if (inputObject instanceof NameMessage) {
+            NameMessage message = (NameMessage) inputObject;
+            switch (message.getType()) {
+                case winMessage:
+                    view.displayWinner(message.getName());
+                    break;
+                case loseMessage:
+                    view.displayLoser(message.getName());
+                    break;
+                case godLikeMessage:
+                    view.displayChallenger(message.getName());
+                    break;
+                case chooseStarterMessage:
+                    view.askFirstPlayer(message.getName());
+                    break;
+                default:
+                    view.displayCurrentPlayer(message.getName());
+                    break;
+            }
+        } else if (inputObject instanceof ChooseGodMessage) {
+            ChooseGodMessage message = (ChooseGodMessage) inputObject;
+            switch (message.getType()) {
+                case gameGodsMessage:
+                    view.askGameGods(message.getGodList());
+                    break;
+                case yourGodMessage:
+                    view.askGodCard(message.getGodList());
+            }
+        }
+        else if (inputObject instanceof Board) {
+            view.displayBoard((Board) inputObject);
+        }
+        else if (inputObject instanceof PlayersInfoMessage) {
+            PlayersInfoMessage message = (PlayersInfoMessage) inputObject;
+            view.addPlayersInfo(message);
+        }
+        else if (inputObject instanceof PositionMessage) {
+            PositionMessage message = (PositionMessage) inputObject;
+            view.askPosition(message.getValidPos());
+        }
+        else if (inputObject instanceof Integer) {
+            view.displayPlayersNumber((Integer) inputObject);
+        }
+        else if (inputObject instanceof String) {
 
-                else if (inputObject instanceof ChooseGodMessage) {
-                    ChooseGodMessage message = (ChooseGodMessage) inputObject;
-                    switch (message.getType()) {
-                        case gameGodsMessage:
-                            view.askGameGods(message.getGodList());
-                            break;
-                        case yourGodMessage:
-                            view.askGodCard(message.getGodList());
-                    }
-                }
-
-                else if (inputObject instanceof Board) {
-                    view.displayBoard((Board) inputObject);
-                }
-
-                else if (inputObject instanceof PositionMessage) {
-                    PositionMessage message = (PositionMessage) inputObject;
-                    view.askPosition(message.getValidPos());
-                }
-
-                else if (inputObject instanceof PlayersInfoMessage) {
-                    PlayersInfoMessage message = (PlayersInfoMessage) inputObject;
-                    view.addPlayersInfo(message);
-                }
-
-                else if (inputObject instanceof Integer) {
-                    view.displayPlayersNumber((Integer) inputObject);
-                }
-
-                else if (inputObject instanceof String) {
-                    if (!inputObject.equals("")) {
-                        String message = (String) inputObject;
-                        switch (message) {
-                            case playersNumMessage:
-                                view.askPlayersNumber();
-                                break;
-                            case nicknameMessage:
-                                view.askNickname();
-                                break;
-                            case takenNameMessage:
-                                view.displayTakenNickname();
-                                break;
-                            case initPosMessage:
-                                view.askInitPosition();
-                                break;
-                            case occupiedCellMessage:
-                                view.displayTakenPosition();
-                                break;
-                            case workerNumMessage:
-                                view.askWorker();
-                                break;
-                            case activatePowMessage:
-                                view.askPowerActivation();
-                                break;
-                            case moveMessage:
-                                view.startMovePhase();
-                                break;
-                            case buildMessage:
-                                view.startBuildPhase();
-                                break;
-                            case waitMessage:
-                                view.waiting();
-                                break;
-                            case fullLobby:
-                                view.displayFullLobby();
-                                break;
-                            case wrongTurnMessage:
-                                view.displayWrongTurn();
-                                break;
-                        }
-                    }
-                }
-
-                else {
-                    throw new IllegalArgumentException();
+            if (!inputObject.equals("")) {
+                String message = (String) inputObject;
+                switch (message) {
+                    case playersNumMessage:
+                        view.askPlayersNumber();
+                        break;
+                    case nicknameMessage:
+                        view.askNickname();
+                        break;
+                    case takenNameMessage:
+                        view.displayTakenNickname();
+                        break;
+                    case initPosMessage:
+                        view.askInitPosition();
+                        break;
+                    case occupiedCellMessage:
+                        view.displayTakenPosition();
+                        break;
+                    case workerNumMessage:
+                        view.askWorker();
+                        break;
+                    case activatePowMessage:
+                        view.askPowerActivation();
+                        break;
+                    case moveMessage:
+                        view.startMovePhase();
+                        break;
+                    case buildMessage:
+                        view.startBuildPhase();
+                        break;
+                    case waitPlayersNum:
+                        view.waitPlayersNum();
+                        break;
+                    case waitMessage:
+                        view.waiting();
+                        break;
+                    case fullLobby:
+                        view.displayFullLobby();
+                        break;
+                    case wrongTurnMessage:
+                        view.displayWrongTurn();
+                        break;
                 }
             }
-
-        });
-        t.start();
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
+    /**
+     * send a ping message from Client to Server
+     */
     public void pingToServer() {
         Thread t = new Thread(() -> {
             while (true) {
@@ -158,6 +151,8 @@ public class NetworkHandler implements Runnable, UiObserver {
         t.start();
     }
 
+
+    @Override
     public void run() {
 
         try {

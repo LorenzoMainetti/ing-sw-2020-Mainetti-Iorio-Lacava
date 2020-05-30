@@ -8,12 +8,10 @@ import it.polimi.ingsw.PSP41.view.View;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -40,6 +38,13 @@ public class GUI extends Application implements View {
 
     @Override
     public void start(Stage primaryStage) {
+
+        //askPort e askView
+        String ip = "127.0.0.1";
+        String port = "9090";
+
+        networkHandler = new NetworkHandler(ip, port, this);
+        executor.submit(networkHandler);
 
         TransitionHandler.setPrimaryStage(primaryStage);
 
@@ -79,26 +84,15 @@ public class GUI extends Application implements View {
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Santorini Board Game");
-        
+
         primaryStage.setOnCloseRequest(event -> {
-            //TODO gestire disconnessione dopo chiusura finestra
             System.out.println("Disconnected.");
             Platform.exit();
+            System.exit(0);
         });
 
         primaryStage.show();
 
-
-        //askPort e askView
-        String ip = "127.0.0.1";
-        String port = "9090";
-
-        //TODO gestire conflitto javaFX thread e networkHandler
-
-        networkHandler = new NetworkHandler(ip, port, this);
-
-        executor.submit(networkHandler);
-        //new Thread(networkHandler).start();
     }
 
 
@@ -145,7 +139,6 @@ public class GUI extends Application implements View {
         playerScene.addObserver(networkHandler);
         Platform.runLater(() -> TransitionHandler.setPlayerScene(playerScene));
         Platform.runLater(TransitionHandler::toPlayerScene);
-
     }
 
     @Override
@@ -170,7 +163,7 @@ public class GUI extends Application implements View {
 
     @Override
     public void displayTakenNickname() {
-        Platform.runLater(() -> new AlertPopup().display("ERROR: Nickname already taken. Try again"));
+        Platform.runLater(() -> new AlertPopup().display("ERROR: Nickname already taken. Try again."));
         askNickname();
     }
 
@@ -209,6 +202,7 @@ public class GUI extends Application implements View {
 
     @Override
     public void displayBoard(Board board) {
+        //if(i = 0) new GameScene(playersInfo)
 
     }
 
@@ -245,11 +239,8 @@ public class GUI extends Application implements View {
     }
 
     @Override
-    public void displayWrongTurn() {}
-
-    @Override
-    public void endTurn() {
-
+    public void displayWrongTurn() {
+        Platform.runLater(() -> new AlertPopup().display("It's not your turn."));
     }
 
     @Override

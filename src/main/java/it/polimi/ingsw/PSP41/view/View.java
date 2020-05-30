@@ -9,9 +9,6 @@ import java.util.List;
 public interface View {
 
     //Get inputs from user
-    //void askIP();
-    //void askPort();
-
     void askPlayersNumber();
 
     void askNickname();
@@ -59,8 +56,6 @@ public interface View {
     void displayWinner(String name);
 
     void displayWrongTurn();
-
-    void endTurn();
 
     void startMovePhase();
 

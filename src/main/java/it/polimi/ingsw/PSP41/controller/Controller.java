@@ -244,7 +244,7 @@ public class Controller {
                 p.getGodCard().applyOpponentConstraints(moves, board, currWorker);
         }
 
-        uim.readChosenDirection(moves, currWorker.getRow(), currWorker.getColumn());
+        uim.readChosenDirection(moves);
         int oldRow = currWorker.getRow();
         int oldColumn = currWorker.getColumn();
         int newRow = uim.getChosenRow();
@@ -273,7 +273,7 @@ public class Controller {
                 p.getGodCard().applyOpponentConstraints(builds, board, currWorker);
         }
 
-        uim.readChosenDirection(builds, currWorker.getRow(), currWorker.getColumn());
+        uim.readChosenDirection(builds);
         player.build(board, uim.getChosenRow(), uim.getChosenColumn());
 
     }

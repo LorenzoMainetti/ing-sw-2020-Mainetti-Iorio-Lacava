@@ -58,8 +58,6 @@ public abstract class GodPower {
         return i;
     }
 
-    //check if not implemented methods are legal
-
     /**
      * modify the given list of positions applying godPower's constraints that are triggered during opponent's turn
      * @param positions current list of valid positions

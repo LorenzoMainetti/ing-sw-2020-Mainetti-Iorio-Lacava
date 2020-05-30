@@ -38,6 +38,7 @@ public class Lobby {
      * @param client current client
      */
     public void setPlayersNumber(ClientHandler client) {
+
         synchronized (lock) {
             client.send(startTurnMessage);
             virtualView.requestPlayersNum(client);
@@ -109,6 +110,7 @@ public class Lobby {
 
         //wait until the right number of players is connected
         if (playersName.size() != playersNumber) {
+            //waitMessage useless here
             //client.send(waitMessage);
         }
 
@@ -125,7 +127,6 @@ public class Lobby {
                 setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
 
                 for (String key : shuffleMap.keySet()) {
-                    //System.out.println(key);
                     setGodCard(shuffleMap.get(key));
                 }
             }
@@ -149,35 +150,14 @@ public class Lobby {
             clientHandler.send(new NameMessage(godLikeMessage, challenger));
         }
 
-        client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
-
-        String s = client.read();
-        String[] selectedGods = s.split("/");
-
-        chosenGods.addAll(Arrays.asList(selectedGods));
-
-        for (String chosenGod : chosenGods) {
-            System.out.println("[SERVER] " + chosenGod + " chosen");
-        }
-
         boolean valid = true;
-        if (gameGods.containsAll(chosenGods)) {
-            for (String god : chosenGods) {
-                if (Collections.frequency(chosenGods, god) > 1) {
-                    valid = false;
-                    break;
-                }
-            }
-        }
-        else valid = false;
 
-        while (!valid) {
-            valid = true;
-            chosenGods.clear();
+        outside:
+        do {
             client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
 
-            s = client.read();
-            selectedGods = s.split("/");
+            String s = client.read();
+            String[] selectedGods = s.split("/");
 
             chosenGods.addAll(Arrays.asList(selectedGods));
 
@@ -185,14 +165,23 @@ public class Lobby {
                 for (String god : chosenGods) {
                     if (Collections.frequency(chosenGods, god) > 1) {
                         valid = false;
-                        break;
+                        chosenGods.clear();
+                    }
+                    else {
+                        break outside;
                     }
                 }
             }
-            else valid = false;
+            else {
+                valid = false;
+                chosenGods.clear();
+            }
+        } while(!valid);
+
+        for (String chosenGod : chosenGods) {
+            System.out.println("[SERVER] " + chosenGod + " chosen");
         }
 
-        System.out.println("Out from while");
         client.send(endTurnMessage);
     }
 
@@ -299,14 +288,14 @@ public class Lobby {
     }
 
     /**
-     * Start a match using resources from the notify of lobby
+     * create Board and Controller and start a new match
      * @param sortedPlayers match players list (and associated gods)
      */
     public void startGame(List<Player> sortedPlayers) {
         System.out.println("[SERVER] game starts");
         Board board = new Board();
         Controller controller = new Controller(board, userInputManager, virtualView, sortedPlayers);
-        // Prima faccio scegliere la posizione iniziale dei worker ad ogni giocatore, poi inizio la partita
+        //first the players choose the initial position for their worker then the game starts
         controller.setWorkers();
         controller.play();
     }

@@ -80,12 +80,10 @@ public class UserInputManager implements ViewObserver {
     }
 
     /**
-     * Tells the View to display valid options (moves/builds)
+     * Tells the View to display valid Positions (moves/builds)
      * @param positions list of valid Positions for moving/building
-     * @param row current Worker's row
-     * @param column current Worker's column
      */
-    public void readChosenDirection(List<Position> positions, int row, int column) {
+    public void readChosenDirection(List<Position> positions) {
         PositionMessage positionMessage = new PositionMessage(positions);
         virtualView.requestPosition(positionMessage);
     }

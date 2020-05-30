@@ -13,7 +13,9 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 import java.util.*;
 
-
+/**
+ * Scene that shows the god cards selected by the challenger and asks user to choose one
+ */
 public class CardChoiceScene extends UiObservable {
     private Pane root;
     private ImageView nextButton;

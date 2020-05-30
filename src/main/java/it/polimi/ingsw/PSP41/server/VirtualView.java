@@ -51,7 +51,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
      * @param currClient first player in the lobby
      */
     public void requestPlayersNum(ClientHandler currClient) {
-        //send a message that when received by the client trigger askPlayersNumber method in CLI
+        //send a message that when received by the client trigger askPlayersNumber method in View
         currClient.send(playersNumMessage);
         String message = currClient.read();
 
@@ -119,37 +119,26 @@ public class VirtualView extends ViewObservable implements ModelObserver {
      * @param positionMessage available cells
      */
     public void requestPosition(PositionMessage positionMessage) {
-        ClientHandler current = clients.get(currPlayer);
-        current.send(positionMessage);
-        String message = current.read();
-        int row = Integer.parseInt(message)/10;
-        int column = Integer.parseInt(message)%10;
+        int row;
+        int column;
 
-        boolean valid = false;
-        if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
-            for (Position position : positionMessage.getValidPos()) {
-                if (position.getPosRow() == row && position.getPosColumn() == column) {
-                    valid = true;
-                    break;
-                }
-            }
-        }
-
-        while (!valid) {
+        outside:
+        do {
+            ClientHandler current = clients.get(currPlayer);
             current.send(positionMessage);
-            message = current.read();
-            row = Integer.parseInt(message)/10;
-            column = Integer.parseInt(message)%10;
+            String message = current.read();
+            row = Integer.parseInt(message) / 10;
+            column = Integer.parseInt(message) % 10;
 
             if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
                 for (Position position : positionMessage.getValidPos()) {
                     if (position.getPosRow() == row && position.getPosColumn() == column) {
-                        valid = true;
-                        break;
+                        break outside;
                     }
                 }
             }
-        }
+        } while(true);
+
         notifyPosition(new Position(row, column));
     }
 
@@ -176,7 +165,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Notifies players the loser player
+     * Notifies players the loser player (stuck)
      * @param loser loser nickname
      */
     @Override
@@ -186,8 +175,6 @@ public class VirtualView extends ViewObservable implements ModelObserver {
             ch.send(new NameMessage(loseMessage, loser));
         }
     }
-
-    //SET UP
 
     /**
      * Send players information

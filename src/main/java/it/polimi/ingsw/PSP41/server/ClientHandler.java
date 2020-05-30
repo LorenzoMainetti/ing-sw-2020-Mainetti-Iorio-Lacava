@@ -90,9 +90,9 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     e.printStackTrace();
                 }
                 try {
-                    socketOut.reset();
+                    //socketOut.reset();
                     socketOut.writeObject("");
-                    socketOut.flush();
+                    //socketOut.flush();
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
@@ -152,6 +152,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         return answer;
     }
 
+    @Override
     public void run() {
 
         try {

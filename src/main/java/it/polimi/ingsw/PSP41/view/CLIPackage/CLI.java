@@ -1,7 +1,6 @@
 package it.polimi.ingsw.PSP41.view.CLIPackage;
 
 import it.polimi.ingsw.PSP41.model.Color;
-import it.polimi.ingsw.PSP41.model.Player;
 import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.model.Board;
@@ -31,6 +30,9 @@ public class CLI extends UiObservable implements Runnable, View {
         this.in = new Scanner(System.in);
     }
 
+    /**
+     * read input from user when it's needed
+     */
     private void readInput() {
         while(true) {
 
@@ -48,6 +50,11 @@ public class CLI extends UiObservable implements Runnable, View {
         }
     }
 
+    /**
+     * wait until an input is needed
+     * @return input read from client
+     */
+    //TODO gestire disconnesione player che sta scrivendo (si trova in wait)
     private String getInput() {
         needAnswer = true;
         synchronized (this) {
@@ -59,10 +66,8 @@ public class CLI extends UiObservable implements Runnable, View {
                 }
             }
         }
-        //System.out.println("Read: " + answer);
         answerReady = false;
         needAnswer = false;
-        //System.out.println("Answer: "+ answer);
         return answer;
     }
 
@@ -117,6 +122,10 @@ public class CLI extends UiObservable implements Runnable, View {
         askNickname();
     }
 
+    /**
+     * Ask the user to choose a number of god cards equals to the number of players
+     * @param gameGods deck containing all the available god cards
+     */
     @Override
     public void askGameGods(List<String> gameGods) {
         System.out.println("Choose " + playersNumber + " gods from the ones available");
@@ -145,6 +154,10 @@ public class CLI extends UiObservable implements Runnable, View {
         notify(s);
     }
 
+    /**
+     * Ask the user to choose a god card from the ones available
+     * @param gods list of available god cards
+     */
     @Override
     public void askGodCard(List<String> gods) {
         System.out.println("Choose a god power from the ones chosen by the challenger: ");
@@ -165,6 +178,10 @@ public class CLI extends UiObservable implements Runnable, View {
         notify(chosenGod);
     }
 
+    /**
+     * Show players'info and ask the user (if challenger) to choose the start player
+     * @param name username
+     */
     @Override
     public void askFirstPlayer(String name) {
         //print legenda
@@ -185,7 +202,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user where his workers want to be placed and get the input
+     * Ask the user where to place his worker and get the input
      */
     @Override
     public void askInitPosition() {
@@ -253,30 +270,16 @@ public class CLI extends UiObservable implements Runnable, View {
     //TURN methods
 
     /**
-     * Display available cells to move or build
+     * Display available cells to move or build, ask the user to choose one and get the input
      * @param positions where player can play its action
      */
     @Override
     public void askPosition(List<Position> positions) {
-        System.out.println("Valid positions:");
-        for (Position position : positions) {
-            System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
-        }
-        System.out.println("\n");
-        int row = askRow();
-        int column = askColumn();
+        int row;
+        int column;
 
-        boolean valid = false;
-        if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
-            for (Position position : positions) {
-                if (position.getPosRow() == row && position.getPosColumn() == column) {
-                    valid = true;
-                    break;
-                }
-            }
-        }
-
-        while (!valid) {
+        outside:
+        do {
             System.out.println("Valid positions:");
             for (Position position : positions) {
                 System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
@@ -285,15 +288,15 @@ public class CLI extends UiObservable implements Runnable, View {
             row = askRow();
             column = askColumn();
 
-            if (row >= 0 && row <= 4 && column >= 0 && column <= 4) {
-                for (Position position : positions) {
-                    if (position.getPosRow() == row && position.getPosColumn() == column) {
-                        valid = true;
-                        break;
-                    }
+            for (Position position : positions) {
+                if (position.getPosRow() == row && position.getPosColumn() == column) {
+                    break outside;
                 }
             }
-        }
+            System.out.println("\nInvalid position. Try again.");
+
+        } while(true);
+
 
         String pos = Integer.toString(row) + Integer.toString(column);
 
@@ -347,21 +350,6 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     @Override
-    public void endTurn() {
-        System.out.println("Your turn is over.");
-        System.out.println();
-    }
-
-    private Color getColorFromName(String nickname) {
-        for (PlayersInfoMessage info : playersInfo) {
-            if (info.getPlayerName().equals(nickname)) {
-                return info.getPlayerColor();
-            }
-        }
-        return Color.MAGENTA;
-    }
-
-    @Override
     public void displayChallenger(String name) {
         challenger = name;
         System.out.println(ColorCLI.ANSI_MAGENTA + name + ColorCLI.RESET  + " is the most godlike! " + ColorCLI.ANSI_MAGENTA + name + ColorCLI.RESET + " is the challenger!");
@@ -384,13 +372,8 @@ public class CLI extends UiObservable implements Runnable, View {
         endGame();
     }
 
-    @Override
-    public void displayWrongTurn() {
-        System.out.println("It's not your turn.");
-    }
-
     /**
-     * Prints player and his/her respective god
+     * Prints player and his/her respective god card and color
      * @param nickname nickname of the player
      * @param color color of the player
      * @param godPower god chosen by the player
@@ -525,7 +508,7 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
      public void displayBoard(Board board) {
-         //print legenda
+         //print players'info
          System.out.println();
          for(PlayersInfoMessage message : playersInfo)
              showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
@@ -555,6 +538,20 @@ public class CLI extends UiObservable implements Runnable, View {
          System.out.println();
 
      }
+
+    private Color getColorFromName(String nickname) {
+        for (PlayersInfoMessage info : playersInfo) {
+            if (info.getPlayerName().equals(nickname)) {
+                return info.getPlayerColor();
+            }
+        }
+        return Color.MAGENTA;
+    }
+
+    @Override
+    public void displayWrongTurn() {
+        System.out.println("It's not your turn.");
+    }
 
     @Override
     public void displayNetworkError() {

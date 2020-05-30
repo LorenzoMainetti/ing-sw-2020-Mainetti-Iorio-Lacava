@@ -5,12 +5,13 @@ import it.polimi.ingsw.PSP41.view.GUIPackage.GUI;
 import javafx.application.Application;
 
 public class GUIApp {
-
+//non serve
     public static void main(String[] args) {
 
         GUI gui = new GUI();
-        //NetworkHandler networkHandler = new NetworkHandler("127.0.0.1", "9090", gui);
+        NetworkHandler networkHandler = new NetworkHandler("127.0.0.1", "9090", gui);
 
+        new Thread(networkHandler).start();
         Application.launch(GUI.class);
 
         //String ip = gui.askIP();
@@ -20,9 +21,6 @@ public class GUIApp {
 
         //add the observers
         //gui.addObserver(networkHandler);
-
-        //new Thread(networkHandler).start();
-
 
     }
 }

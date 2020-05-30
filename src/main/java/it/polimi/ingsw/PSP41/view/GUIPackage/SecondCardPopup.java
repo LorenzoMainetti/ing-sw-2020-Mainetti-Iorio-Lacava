@@ -14,9 +14,12 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class ThirdCardPopup extends CardPopup {
+/**
+ * Popup used to show a god card effect (not selectable)
+ */
+public class SecondCardPopup extends CardPopup {
 
-    public ThirdCardPopup(StackPane eventSource){
+    public SecondCardPopup(StackPane eventSource){
         try {
             root= FXMLLoader.load(getClass().getResource("/cardPopup.fxml"));
         } catch (IOException e) {

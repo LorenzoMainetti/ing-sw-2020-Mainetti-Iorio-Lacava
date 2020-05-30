@@ -12,16 +12,16 @@ public class ClientApp {
         Scanner scanner = new Scanner(System.in);
 
         //metodo cli.askPort
-        /*System.out.println("IP address of server?");
+        System.out.println("IP address of server?");
         String ip = scanner.nextLine();
         System.out.println("Port?");
-        String port = scanner.nextLine();*/
+        String port = scanner.nextLine();
 
         CLI cli = new CLI();
         new Thread(cli).start();
 
         //Open a connection to the server
-        NetworkHandler networkHandler = new NetworkHandler("127.0.0.1", "9090", cli);
+        NetworkHandler networkHandler = new NetworkHandler(ip, port, cli);
         cli.addObserver(networkHandler);
 
         new Thread(networkHandler).start();

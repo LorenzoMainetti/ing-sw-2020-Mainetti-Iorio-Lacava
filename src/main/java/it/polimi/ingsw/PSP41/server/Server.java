@@ -19,7 +19,10 @@ public class Server implements Runnable, ConnectionObserver {
     private List<ClientHandler> log = new ArrayList<>();
     private final Object lock = new Object();
 
-    //Deregister client
+    /**
+     * remove the current client from the list of connected clients
+     * @param client current client
+     */
     public synchronized void deregisterConnection(ClientHandler client) {
         System.out.println("[SERVER] Unregistering client...");
         log.remove(client);
@@ -31,7 +34,8 @@ public class Server implements Runnable, ConnectionObserver {
     }*/
 
     /**
-     * Manages disconnection: if the client disconnected is active, all the clients will be disconnected; else the client disconnected is removed from the server clients log
+     * Manages disconnection: if the client disconnected is active, all the clients will be disconnected;
+     * else the client disconnected is removed from the server clients log
      * @param client disconnected client
      */
     @Override
@@ -51,6 +55,7 @@ public class Server implements Runnable, ConnectionObserver {
         }
     }
 
+    @Override
     public void run() {
         try {
             serverSocket = new ServerSocket(PORT);

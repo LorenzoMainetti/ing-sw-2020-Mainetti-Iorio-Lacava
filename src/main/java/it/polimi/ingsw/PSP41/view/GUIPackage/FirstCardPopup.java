@@ -15,7 +15,9 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * Popup used to show a god card effect and to select/deselect it
+ */
 public class FirstCardPopup extends CardPopup {
 
     public FirstCardPopup(StackPane eventSource, List<Boolean> selectedCards, int counter) {

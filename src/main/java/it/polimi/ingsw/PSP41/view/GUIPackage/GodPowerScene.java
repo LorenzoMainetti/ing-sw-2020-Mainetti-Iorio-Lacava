@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * Scene that shows all available god cards and asks challenger
+ * to choose a number of them equals to the number of players
+ */
 public class GodPowerScene extends UiObservable {
     private Pane root;
     private ArrayList<StackPane> cardList;

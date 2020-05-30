@@ -9,7 +9,9 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-
+/**
+ * Scene used to get user's nickname
+ */
 public class LoginScene extends UiObservable {
     private Pane root;
 
