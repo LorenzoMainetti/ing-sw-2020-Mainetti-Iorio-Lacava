@@ -24,16 +24,16 @@
             <Image url="@btn_blue.png" />
          </image>
       </ImageView>
-      <Label id="godName" alignment="CENTER" layoutX="7.0" layoutY="8.0" prefHeight="43.0" prefWidth="237.0" textAlignment="CENTER">
+      <Label id="godName" alignment="CENTER" layoutX="1.0" prefHeight="42.0" prefWidth="250.0" textAlignment="CENTER">
          <font>
-            <Font name="Avenir Next Bold" size="30.0" />
+            <Font name="Diogenes" size="34.0" />
          </font>
       </Label>
-      <Label id="messageLabel" layoutX="33.0" layoutY="63.0" prefHeight="231.0" prefWidth="185.0" textAlignment="CENTER">
+      <Label id="messageLabel" layoutX="12.0" layoutY="75.0" prefHeight="217.0" prefWidth="229.0" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font name="Avenir Next Bold" size="17.0" />
+            <Font name="Diogenes" size="19.0" />
          </font></Label>
-      <Text layoutX="-1.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EFFECT:" textAlignment="CENTER" wrappingWidth="256.0000457763672">
+      <Text layoutX="-2.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EFFECT:" textAlignment="CENTER" wrappingWidth="256.0000457763672">
          <font>
             <Font name="Avenir Book" size="16.0" />
          </font>

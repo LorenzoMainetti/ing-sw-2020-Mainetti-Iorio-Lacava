@@ -139,9 +139,9 @@
             </ImageView>
          </children>
       </StackPane>
-      <Text layoutX="247.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose the God Power cards for this game" textAlignment="CENTER" wrappingWidth="788.7297973632812">
+      <Text id="choiceText" fill="#464646" layoutX="216.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="788.7297973632812">
          <font>
-            <Font name="Avenir Book" size="40.0" />
+            <Font name="Diogenes" size="41.0" />
          </font>
       </Text>
       <ImageView id="nextButton" fitHeight="47.0" fitWidth="176.0" layoutX="969.0" layoutY="628.0" pickOnBounds="true" preserveRatio="true">

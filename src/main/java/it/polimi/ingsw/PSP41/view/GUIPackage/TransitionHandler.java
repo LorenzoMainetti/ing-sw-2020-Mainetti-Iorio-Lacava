@@ -15,6 +15,7 @@ public class TransitionHandler {
     private static Scene cardChoiceScene;
     private static Scene playerScene;
     private static Scene numberScene;
+    private static Scene connectionScene;
 
 
     public static void setPrimaryStage(Stage primaryStage) {
@@ -31,9 +32,9 @@ public class TransitionHandler {
         TransitionHandler.loginScene = new Scene(loginScene.getRoot());
     }
 
-    /*public static void setGameScene(GameScene gameScene) {
+    public static void setGameScene(GameScene gameScene) {
         TransitionHandler.gameScene = new Scene(gameScene.getRoot());
-    }*/
+    }
 
     public static void setGodPowerScene(GodPowerScene godPowerScene) {
         TransitionHandler.godPowerScene = new Scene(godPowerScene.getRoot());
@@ -53,6 +54,10 @@ public class TransitionHandler {
 
     public static void setNumberScene(NumberScene numberscene){
         TransitionHandler.numberScene = new Scene(numberscene.getRoot());
+    }
+
+    public static void setConnectionScene(ConnectionScene connectionScene){
+        TransitionHandler.connectionScene = new Scene(connectionScene.getRoot());
     }
 
 
@@ -90,5 +95,9 @@ public class TransitionHandler {
     }
 
     public static void toNumberScene() { goTo(numberScene); }
+
+    public static void toConnectionScene(){
+        goTo(connectionScene);
+    }
 
 }

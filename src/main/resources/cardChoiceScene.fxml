@@ -15,9 +15,9 @@
             <Image url="@background.png" />
          </image>
       </ImageView>
-      <Text layoutX="-17.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="These are the cards chosen by the Challenger. Choose yours:" textAlignment="CENTER" wrappingWidth="1219.6288375854492">
+      <Text fill="#404040" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="These are the cards chosen by the Challenger. Choose yours:" textAlignment="CENTER" wrappingWidth="1219.6288375854492">
          <font>
-            <Font name="Avenir Book" size="40.0" />
+            <Font name="Diogenes" size="45.0" />
          </font>
       </Text>
       <StackPane id="firstStack" layoutX="177.0" layoutY="175.0" prefHeight="205.0" prefWidth="126.0">
@@ -25,12 +25,12 @@
             <ImageView id="firstCard" fitHeight="287.0" fitWidth="199.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </StackPane>
-      <StackPane id="thirdStack" layoutX="518.0" layoutY="175.0" prefHeight="287.0" prefWidth="168.0">
+      <StackPane id="thirdStack" layoutX="518.0" layoutY="175.0" prefHeight="205.0" prefWidth="126.0">
          <children>
             <ImageView id="thirdCard" fitHeight="287.0" fitWidth="199.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </StackPane>
-      <StackPane id="secondStack" layoutX="862.0" layoutY="178.0" prefHeight="290.0" prefWidth="171.0">
+      <StackPane id="secondStack" layoutX="862.0" layoutY="175.0" prefHeight="290.0" prefWidth="171.0">
          <children>
             <ImageView id="secondCard" fitHeight="287.0" fitWidth="199.0" pickOnBounds="true" preserveRatio="true" />
          </children>

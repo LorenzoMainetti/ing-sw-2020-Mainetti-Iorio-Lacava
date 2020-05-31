@@ -23,17 +23,17 @@
       </ImageView>
       <Label id="firstPlayer" alignment="CENTER" layoutX="94.0" layoutY="148.0" prefHeight="51.0" prefWidth="263.0" textFill="WHITE">
          <font>
-            <Font name="Avenir Next Bold" size="35.0" />
+            <Font name="Diogenes" size="35.0" />
          </font>
       </Label>
       <Label id="secondPlayer" alignment="CENTER" layoutX="846.0" layoutY="148.0" prefHeight="51.0" prefWidth="272.0" textFill="WHITE">
          <font>
-            <Font name="Avenir Next Bold" size="35.0" />
+            <Font name="Diogenes" size="35.0" />
          </font>
       </Label>
       <Label id="thirdPlayer" alignment="CENTER" layoutX="478.0" layoutY="123.0" prefHeight="59.0" prefWidth="263.0" textFill="WHITE">
          <font>
-            <Font name="Avenir Next Bold" size="35.0" />
+            <Font name="Diogenes" size="35.0" />
          </font>
       </Label>
       <StackPane id="thirdStack" layoutX="504.0" layoutY="220.0" prefHeight="281.0" prefWidth="170.0">

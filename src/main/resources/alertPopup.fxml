@@ -14,7 +14,7 @@
             <Image url="@bg_panelMid.png" />
          </image>
       </ImageView>
-      <Label id="messageLabel" layoutX="32.0" layoutY="67.0" prefHeight="160.0" prefWidth="325.0" textAlignment="CENTER">
+      <Label id="messageLabel" alignment="CENTER" layoutX="32.0" layoutY="67.0" prefHeight="160.0" prefWidth="325.0" textAlignment="CENTER">
          <font>
             <Font name="Avenir Next Bold" size="21.0" />
          </font>

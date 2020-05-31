@@ -15,13 +15,13 @@
             <Image url="@numberScene.png" />
          </image>
       </ImageView>
-      <Text id="nicknameText" fill="#3765ab" layoutX="393.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You are the first player in the lobby, choose the number of players:" textAlignment="CENTER" wrappingWidth="477.122802734375">
+      <Text id="nicknameText" fill="#3765ab" layoutX="361.0" layoutY="315.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You are the first player in the lobby, choose the number of players:" textAlignment="CENTER" wrappingWidth="477.122802734375">
          <font>
-            <Font name="Avenir Next Bold" size="24.0" />
+            <Font name="Avenir Next Bold" size="27.0" />
          </font>
       </Text>
-      <ChoiceBox id="choiceBox" layoutX="488.0" layoutY="383.0" prefHeight="37.0" prefWidth="210.0" />
-      <Button id="okButton" layoutX="711.0" layoutY="385.0" mnemonicParsing="false" text="OK">
+      <ChoiceBox id="choiceBox" layoutX="447.0" layoutY="383.0" prefHeight="37.0" prefWidth="210.0" />
+      <Button id="okButton" layoutX="667.0" layoutY="385.0" mnemonicParsing="false" text="OK">
          <font>
             <Font name="Avenir Book" size="15.0" />
          </font>
