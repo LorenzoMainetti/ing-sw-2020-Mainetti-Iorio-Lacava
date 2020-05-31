@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Scene that shows all available god cards and asks challenger
+ * Scene that displays all available god cards and asks challenger
  * to choose a number of them equals to the number of players
  */
 public class GodPowerScene extends UiObservable {
@@ -29,7 +29,7 @@ public class GodPowerScene extends UiObservable {
     private Text nextText;
 
     public GodPowerScene(int playersCount) {
-        for(String god : gameGods){
+        for(String ignored : gameGods){
             selectedCards.add(false);
         }
 
@@ -58,6 +58,8 @@ public class GodPowerScene extends UiObservable {
         nextButton = (ImageView) root.lookup("#nextButton");
         nextText = (Text) root.lookup("#nextText");
         nextText.setMouseTransparent(true);
+        Text choiceText = (Text) root.lookup("#choiceText");
+        choiceText.setText("Choose " + playersCount + " God Power cards for this game:");
 
         for (StackPane card : cardList) {
             card.setOnMouseClicked(event -> {

@@ -54,7 +54,6 @@ public class CLI extends UiObservable implements Runnable, View {
      * wait until an input is needed
      * @return input read from client
      */
-    //TODO gestire disconnesione player che sta scrivendo (si trova in wait)
     private String getInput() {
         needAnswer = true;
         synchronized (this) {
@@ -391,6 +390,7 @@ public class CLI extends UiObservable implements Runnable, View {
     public void displayLoser(String name) {
         System.out.println(ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
         playersInfo.removeIf(message -> message.getPlayerName().equals(name));
+        players.remove(name);
     }
 
     @Override
@@ -415,6 +415,10 @@ public class CLI extends UiObservable implements Runnable, View {
         players.add(message.getPlayerName());
     }
 
+    @Override
+    public void setClientName(String name) {
+        //unused in CLI
+    }
 
     //OTHER methods
 

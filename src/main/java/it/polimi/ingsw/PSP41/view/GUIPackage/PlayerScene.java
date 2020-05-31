@@ -2,6 +2,7 @@ package it.polimi.ingsw.PSP41.view.GUIPackage;
 
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
+import it.polimi.ingsw.PSP41.view.CLIPackage.ColorCLI;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Scene that shows players'info (name, color, god card)
+ * Scene that displays players'info (name, color, god card)
  * and asks user (if challenger) to choose the start player
  */
 public class PlayerScene extends UiObservable {
@@ -73,8 +74,23 @@ public class PlayerScene extends UiObservable {
         }
 
         int i=0;
-        while(i<players.size()) {
+        int j=0;
+        while(j<players.size()) {
             for (PlayersInfoMessage player : players) {
+                switch (player.getPlayerColor()) {
+                    case YELLOW:
+                        i = 0;
+                        break;
+                    case RED:
+                        i = 1;
+                        break;
+                    case BLUE:
+                        i = 2;
+                        break;
+                }
+
+                labelList.get(i).setText(player.getPlayerName());
+
                 switch(player.getGodName()){
                     case "APOLLO":
                         cardList.get(i).setImage(new Image("/godCards/01.png"));
@@ -119,17 +135,10 @@ public class PlayerScene extends UiObservable {
                         cardList.get(i).setImage(new Image("/godCards/12.png"));
                         break;
                 }
-                i++;
-            }
-        }
-
-        int j=0;
-        while(j<players.size()) {
-            for (PlayersInfoMessage player : players) {
-                labelList.get(j).setText(player.getPlayerName());
                 j++;
             }
         }
+
 
         for(StackPane card : stackList) {
 
@@ -200,7 +209,7 @@ public class PlayerScene extends UiObservable {
 
         playButton.setOnMouseExited(event -> playButton.setImage(new Image("/button-play-normal.png")));
 
-        playButton.setOnMouseClicked(event -> TransitionHandler.toGameScene());
+        //playButton.setOnMouseClicked(event -> TransitionHandler.toGameScene());
 
     }
 

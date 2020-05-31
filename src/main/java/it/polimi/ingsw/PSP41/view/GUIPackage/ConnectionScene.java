@@ -1,16 +1,15 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
+/**
+ * Scene that asks for ip and port needed for connecting to server
+ */
 public class ConnectionScene {
     private Pane root;
 
@@ -29,16 +28,13 @@ public class ConnectionScene {
         portText.setText(null);
 
 
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (ipText.getText() != null && portText.getText() != null) {
+        okButton.setOnAction(event -> {
+            if (ipText.getText() != null && portText.getText() != null) {
 
-                    //TODO inviare ipText.getText() e portText.getText() al server
-                    TransitionHandler.toNumberScene();
-                } else
-                    new AlertPopup().display("Please enter a valid IP Address and Port Number.");
-            }
+                //TODO inviare ipText.getText() e portText.getText() al server
+                TransitionHandler.toNumberScene();
+            } else
+                new AlertPopup().display("Please enter a valid IP Address and Port Number.");
         });
     }
 

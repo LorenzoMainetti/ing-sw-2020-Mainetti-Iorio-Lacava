@@ -4,6 +4,7 @@ public class GameMessage {
 
     public final static String playersNumMessage = "playersNumMessage";
     public final static String nicknameMessage = "nicknameMessage";
+    public final static String acceptedMessage = "client registered";
     public final static String godDeckMessage = "APOLLO, ARES, ARTEMIS, ATHENA, ATLAS, DEMETER, HEPHAESTUS, HESTIA, MINOTAUR, PAN, POSEIDON, PROMETHEUS, TRITON, ZEUS";
     public final static String gameGodsMessage = "challenger chooses god cards";
     public final static String yourGodMessage = "select a god card";

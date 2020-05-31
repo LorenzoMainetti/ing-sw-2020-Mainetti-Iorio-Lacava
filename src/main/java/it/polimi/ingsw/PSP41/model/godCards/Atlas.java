@@ -14,7 +14,6 @@ public class Atlas extends GodPower {
     @Override
     public void build(Board board, int row, int column) {
         if(isTriggered()) {
-            board.getCell(row, column).addLevel();
             board.getCell(row, column).setDome(true);
         }
         else

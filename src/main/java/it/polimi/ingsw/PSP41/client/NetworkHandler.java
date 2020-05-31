@@ -55,6 +55,9 @@ public class NetworkHandler implements Runnable, UiObserver {
                 case chooseStarterMessage:
                     view.askFirstPlayer(message.getName());
                     break;
+                case acceptedMessage:
+                    view.setClientName(message.getName());
+                    break;
                 default:
                     view.displayCurrentPlayer(message.getName());
                     break;

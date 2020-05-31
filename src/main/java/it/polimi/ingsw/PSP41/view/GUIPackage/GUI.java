@@ -23,12 +23,16 @@ public class GUI extends Application implements View {
 
     //variables sent from Server
     private int playersNumber = 0;
+    private String clientName = null;
     private String challenger = null;
     private final List<PlayersInfoMessage> playersInfo = new ArrayList<>();
-    private final List<String> players = new ArrayList<>();
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private NetworkHandler networkHandler;
+
+    private GameScene gameScene;
+    private boolean firstTime = true;
+    private boolean emptyBoard = true;
 
 
     public static void main(String[] args) {
@@ -143,22 +147,22 @@ public class GUI extends Application implements View {
 
     @Override
     public void askInitPosition() {
-
+        Platform.runLater(() -> gameScene.askInitPosition());
     }
 
     @Override
     public void askWorker() {
-
+        Platform.runLater(() -> gameScene.askWorker());
     }
 
     @Override
     public void askPowerActivation() {
-
+        Platform.runLater(() -> new PowerPopup(networkHandler).display());
     }
 
     @Override
     public void askPosition(List<Position> positions) {
-
+        Platform.runLater(() -> gameScene.askPosition(positions));
     }
 
     @Override
@@ -202,14 +206,21 @@ public class GUI extends Application implements View {
 
     @Override
     public void displayBoard(Board board) {
-        //if(i = 0) new GameScene(playersInfo)
+        //the first time the server send an emptyBoard
+        if(emptyBoard)
+            emptyBoard = false;
+        else
+            Platform.runLater(() -> gameScene.displayBoard(board));
+    }
 
+    @Override
+    public void setClientName(String name) {
+        clientName = name;
     }
 
     @Override
     public void addPlayersInfo(PlayersInfoMessage message) {
         playersInfo.add(message);
-        players.add(message.getPlayerName());
     }
 
     @Override
@@ -225,12 +236,23 @@ public class GUI extends Application implements View {
 
     @Override
     public void displayCurrentPlayer(String name) {
+        //if it's the first time this method is called create the GameScene
+        if(firstTime) {
+            firstTime = false;
+            gameScene = new GameScene(playersInfo, clientName);
+            gameScene.addObserver(networkHandler);
+            Platform.runLater(() -> TransitionHandler.setGameScene(gameScene));
+            Platform.runLater(TransitionHandler::toGameScene);
+        }
 
+        Platform.runLater(() -> gameScene.displayCurrentPlayer(name));
     }
 
     @Override
     public void displayLoser(String name) {
+        playersInfo.removeIf(message -> message.getPlayerName().equals(name));
 
+        Platform.runLater(() -> gameScene.displayLoser(name));
     }
 
     @Override
@@ -245,12 +267,12 @@ public class GUI extends Application implements View {
 
     @Override
     public void startMovePhase() {
-
+        Platform.runLater(() -> gameScene.startMovePhase());
     }
 
     @Override
     public void startBuildPhase() {
-
+        Platform.runLater(() -> gameScene.startBuildPhase());
     }
 
 }

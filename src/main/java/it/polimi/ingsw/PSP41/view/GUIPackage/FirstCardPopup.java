@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Popup used to show a god card effect and to select/deselect it
+ * Popup used to display a god card effect and to select/deselect it
  */
 public class FirstCardPopup extends CardPopup {
 

@@ -15,7 +15,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 
 /**
- * Popup used to show alert messages
+ * Popup used to display alert messages
  */
 public class AlertPopup {
     private Pane root;

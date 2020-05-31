@@ -98,6 +98,9 @@ public class Lobby {
 
         System.out.println("[SERVER] " + nickname + " registered!");
 
+        //tells client that it's been registered
+        client.send(new NameMessage(acceptedMessage, nickname));
+
         client.send(waitMessage);
         client.send(endTurnMessage);
 

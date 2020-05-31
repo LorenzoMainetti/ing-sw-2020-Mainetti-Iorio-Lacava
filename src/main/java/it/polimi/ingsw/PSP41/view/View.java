@@ -43,6 +43,8 @@ public interface View {
 
     void displayBoard(Board board);
 
+    void setClientName(String name);
+
     void addPlayersInfo(PlayersInfoMessage message);
 
     void displayPlayersNumber(int number);

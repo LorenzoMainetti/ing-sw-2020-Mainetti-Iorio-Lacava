@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Scene that shows the god cards selected by the challenger and asks user to choose one
+ * Scene that displays the god cards selected by the challenger and asks user to choose one
  */
 public class CardChoiceScene extends UiObservable {
     private Pane root;
@@ -29,7 +29,7 @@ public class CardChoiceScene extends UiObservable {
 
     public CardChoiceScene(List<String> selectedByChallenger) {
 
-        for(String god : selectedByChallenger) {
+        for(String ignored : selectedByChallenger) {
             selectedCards.add(false);
         }
 

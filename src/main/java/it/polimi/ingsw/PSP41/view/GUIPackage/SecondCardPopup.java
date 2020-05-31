@@ -15,7 +15,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 
 /**
- * Popup used to show a god card effect (not selectable)
+ * Popup used to display a god card effect (not selectable)
  */
 public class SecondCardPopup extends CardPopup {
 

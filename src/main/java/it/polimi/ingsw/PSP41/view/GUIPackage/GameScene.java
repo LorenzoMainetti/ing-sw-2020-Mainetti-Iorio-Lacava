@@ -2,16 +2,15 @@ package it.polimi.ingsw.PSP41.view.GUIPackage;
 
 import it.polimi.ingsw.PSP41.model.Board;
 import it.polimi.ingsw.PSP41.model.Position;
+import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -24,21 +23,24 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class GameScene {
+/**
+ * Main game scene where the board and all the changes that happens to it are displayed
+ */
+public class GameScene extends UiObservable {
     private Pane root;
     private final List<String> gameGods = Arrays.asList("APOLLO", "ARTEMIS", "ATHENA", "ATLAS", "DEMETER", "HEPHAESTUS", "MINOTAUR", "PAN", "PROMETHEUS", "HESTIA", "ZEUS", "TRITON", "POSEIDON", "ARES");
-    private final List<String> gameGodsMessages = Arrays.asList("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated.", "You may remove an unoccupied block (not dome) neighbouring your unmoved worker.", "Your Worker may move one additional time, but not back to its initial space.", "If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn.", "Your Worker may build a dome at any level.", "Your Worker may build one additional time, but not on the same space.", "Your Worker may build one additional block (not dome) on top of your first block.", "Your worker may build one additional time, but this cannot be on a perimeter space.", "Your Worker may move into an opponent Worker's space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.", "You also win if your Worker moves down two or more levels.", "If your unmoved worker is on the ground level, it may build up to three times.", "If your Worker does not move up, it may build both before and after moving.", "Each time your worker moves into a perimeter space, it may immediately move again.", "Your worker may build a block under itself. You do not win by forcing yourself up to the third level.");
+    private final List<String> gameGodsMessages = Arrays.asList("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated.", "Your Worker may move one additional time, but not back to its initial space.", "If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn.", "Your Worker may build a dome at any level.", "Your Worker may build one additional time, but not on the same space.", "Your Worker may build one additional block (not dome) on top of your first block.", "Your Worker may move into an opponent Worker's space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.", "You also win if your Worker moves down two or more levels.", "If your Worker does not move up, it may build both before and after moving.", "Your worker may build one additional time, but this cannot be on a perimeter space.", "Your worker may build a block under itself. You do not win by forcing yourself up to the third level.", "Each time your worker moves into a perimeter space, it may immediately move again.", "If your unmoved worker is on the ground level, it may build up to three times.", "You may remove an unoccupied block (not dome) neighbouring your unmoved worker.");
     private GridPane gameBoard;
-    List<PlayersInfoMessage> players;
+    private List<PlayersInfoMessage> players;
     private int counter=0;
     private Text phaseText;
     private Text phaseName;
-    ArrayList<Text> textList = new ArrayList<>();
-    ArrayList<StackPane> stackList = new ArrayList<>();
-    String currClient;
+    private ArrayList<Text> textList = new ArrayList<>();
+    private ArrayList<StackPane> stackList = new ArrayList<>();
+    private String clientName;
 
 
-    public GameScene(List<PlayersInfoMessage> players, String currClient) {
+    public GameScene(List<PlayersInfoMessage> players, String clientName) {
         try {
             root = FXMLLoader.load(getClass().getResource("/gameScene.fxml"));
         } catch (IOException e) {
@@ -48,11 +50,11 @@ public class GameScene {
         //board setup
         this.gameBoard = (GridPane) root.lookup("#board");
         this.players = players;
-        this.currClient = currClient;
+        this.clientName = clientName;
 
 
         for(PlayersInfoMessage player : players) {
-            if (!player.getPlayerName().equals(currClient))
+            if (!player.getPlayerName().equals(clientName))
                 counter++;
             else
                 break;
@@ -85,36 +87,27 @@ public class GameScene {
         phaseName = (Text) root.lookup("#phaseName");
 
 
-        helpImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                helpImage.setImage(null);
-                helpPressed.setImage(new Image("/button-helper-down.png"));
-            }
+        helpImage.setOnMouseEntered(event -> {
+            helpImage.setImage(null);
+            helpPressed.setImage(new Image("/button-helper-down.png"));
         });
 
-        helpImage.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                helpImage.setImage(new Image("/button-helper-normal.png"));
-                helpPressed.setImage(null);
-            }
+        helpImage.setOnMouseExited(event -> {
+            helpImage.setImage(new Image("/button-helper-normal.png"));
+            helpPressed.setImage(null);
         });
 
-        helpImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                new HelpPopup().display();
-                helpImage.setImage(new Image("/button-helper-normal.png"));
-                helpPressed.setImage(null);
-            }
+        helpImage.setOnMouseClicked(event -> {
+            new HelpPopup().display();
+            helpImage.setImage(new Image("/button-helper-normal.png"));
+            helpPressed.setImage(null);
         });
 
 
         int i = 1;
         int tmp = 0;
         for (PlayersInfoMessage player : players) {
-            if (currClient.equals(player.getPlayerName())) {
+            if (clientName.equals(player.getPlayerName())) {
                 tmp = i;
                 i = 0;
             }
@@ -180,7 +173,6 @@ public class GameScene {
                 i = tmp;
                 tmp = 0;
             }
-
         }
 
         if(players.size() == 2){
@@ -192,41 +184,37 @@ public class GameScene {
 
         for(StackPane card : stackList) {
 
-            card.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            card.setOnMouseClicked(event -> {
 
-                @Override
-                public void handle(MouseEvent event) {
+                int counter = 0;
+                for (StackPane card1 : stackList) {
+                    if (card1 == event.getSource()) {
+                        break;
+                    }
+                    counter++;
+                }
 
-                    int counter = 0;
-                    for (StackPane card : stackList) {
-                        if (card == event.getSource()) {
+                if(counter==0) {
+                    for (PlayersInfoMessage player : players) {
+                        if (player.getPlayerName().equals(clientName)) {
+                            new SecondCardPopup((StackPane) event.getSource()).display(player.getGodName(), gameGodsMessages.get(gameGods.indexOf(player.getGodName())));
                             break;
                         }
-                        counter++;
+                    }
+                }
+                else {
+                    int tmp1 = 0;
+                    for (PlayersInfoMessage player : players) {
+                        if (player.getPlayerName().equals(clientName))
+                            break;
+                        tmp1++;
                     }
 
-                    if(counter==0) {
-                        for (PlayersInfoMessage player : players) {
-                            if (player.getPlayerName().equals(currClient)) {
-                                new SecondCardPopup((StackPane) event.getSource()).display(player.getGodName(), gameGodsMessages.get(gameGods.indexOf(player.getGodName())));
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        int tmp = 0;
-                        for (PlayersInfoMessage player : players) {
-                            if (player.getPlayerName().equals(currClient))
-                                break;
-                            tmp++;
-                        }
+                    if(tmp1 >=counter)
+                        new SecondCardPopup((StackPane) event.getSource()).display(players.get(counter-1).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter-1).getGodName())));
+                    else
+                        new SecondCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
 
-                        if(tmp>=counter)
-                            new SecondCardPopup((StackPane) event.getSource()).display(players.get(counter-1).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter-1).getGodName())));
-                        else
-                            new SecondCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
-
-                    }
                 }
             });
 
@@ -235,19 +223,9 @@ public class GameScene {
             borderGlow.setOffsetX(0f);
             borderGlow.setOffsetY(0f);
 
-            card.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    card.setEffect(borderGlow);
-                }
-            });
+            card.setOnMouseEntered(event -> card.setEffect(borderGlow));
 
-            card.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    card.setEffect(null);
-                }
-            });
+            card.setOnMouseExited(event -> card.setEffect(null));
         }
     }
 
@@ -280,50 +258,39 @@ public class GameScene {
         phaseText.setText("Set workers' position.");
 
         for(Text text : textList) {
-            if(text.getText().equals(currClient))
+            if(text.getText().equals(clientName))
                 stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
         }
 
         for (Node node : this.gameBoard.getChildren()) {
 
-            node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            node.setOnMouseClicked(event -> {
+                Pane pane = (Pane) event.getSource();
 
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
+                if(findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString()) == null) {
+                    Integer col = GridPane.getColumnIndex(pane);
+                    Integer row = GridPane.getRowIndex(pane);
 
-                    if(findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString()) == null) {
-                        Integer col = GridPane.getColumnIndex(pane);
-                        Integer row = GridPane.getRowIndex(pane);
+                    String pos = Integer.toString(row) + Integer.toString(col);
+                    notify(pos);
+                }
+                else
+                    new AlertPopup().display("Please choose a valid position.");
+            });
 
-                        //TODO notifica col e row al server
-                    }
-                    else
-                        new AlertPopup().display("Please choose a valid position.");
+            node.setOnMouseEntered(event -> {
+                Pane pane = (Pane) event.getSource();
+
+                if (findId(pane, "#worker") == null) {
+                    ImageView light = addImage(pane, "/playermoveindicator_" + players.get(counter).getPlayerColor().toString() + ".png");
+                    light.setId("#light");
                 }
             });
 
-            node.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            node.setOnMouseExited(event -> {
+                Pane pane = (Pane) event.getSource();
 
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
-
-                    if (findId(pane, "#worker") == null) {
-                        ImageView light = addImage(pane, "/playermoveindicator_" + players.get(counter).getPlayerColor().toString() + ".png");
-                        light.setId("#light");
-                    }
-                }
-            });
-
-            node.setOnMouseExited(new EventHandler<MouseEvent>() {
-
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
-
-                    pane.getChildren().remove(findId(pane, "#light"));
-                }
+                pane.getChildren().remove(findId(pane, "#light"));
             });
         }
     }
@@ -334,60 +301,48 @@ public class GameScene {
         phaseText.setText("Choose the worker you want to use.");
 
         for(Text text : textList) {
-            if(text.getText().equals(currClient))
+            if(text.getText().equals(clientName))
                 stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
         }
 
         for (Node node : this.gameBoard.getChildren()) {
-            node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            node.setOnMouseClicked(event -> {
+                Pane pane = (Pane) event.getSource();
 
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
+                if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase() + "1") != null) {
+                    notify("1");
+                }
+                else if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase() + "2") != null) {
+                    notify("2");
+                }
+                else
+                    new AlertPopup().display("You have to select one of your workers.");
+            });
 
-                    ImageView worker = (ImageView) findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase());
+            node.setOnMouseEntered(event -> {
+                Pane pane = (Pane) event.getSource();
 
-                    if (worker != null) {
-                        Integer col = GridPane.getColumnIndex(pane);
-                        Integer row = GridPane.getRowIndex(pane);
+                ImageView workerImage = (ImageView) findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase());
+                if (workerImage != null) {
+                    DropShadow borderGlow = new DropShadow();
+                    borderGlow.setColor(javafx.scene.paint.Color.BLUE);
+                    borderGlow.setOffsetX(0f);
+                    borderGlow.setOffsetY(0f);
 
-                        //TODO notifica al server posizione worker scelto
-                    } else
-                        new AlertPopup().display("You have to select one of your workers.");
+                    workerImage.setEffect(borderGlow);
                 }
             });
 
-            node.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            node.setOnMouseExited(event -> {
+                Pane pane = (Pane) event.getSource();
 
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
-
-                    ImageView workerImage = (ImageView) findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase());
-                    if (workerImage != null) {
-                        DropShadow borderGlow = new DropShadow();
-                        borderGlow.setColor(javafx.scene.paint.Color.BLUE);
-                        borderGlow.setOffsetX(0f);
-                        borderGlow.setOffsetY(0f);
-
-                        workerImage.setEffect(borderGlow);
-                    }
-                }
-            });
-
-            node.setOnMouseExited(new EventHandler<MouseEvent>() {
-
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
-
-                    ImageView workerImage = (ImageView) findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase());
-                    if (workerImage != null)
-                        workerImage.setEffect(null);
-                }
+                ImageView workerImage = (ImageView) findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase());
+                if (workerImage != null)
+                    workerImage.setEffect(null);
             });
         }
     }
+
 
 
     public void askPosition(List<Position> availablePositions) {
@@ -401,67 +356,56 @@ public class GameScene {
 
         for (Node node : this.gameBoard.getChildren()) {
 
-            node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            node.setOnMouseClicked(event -> {
+                Pane pane = (Pane) event.getSource();
 
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
+                if(findId(pane, "#light") != null) {
+                    Integer col = GridPane.getColumnIndex(pane);
+                    Integer row = GridPane.getRowIndex(pane);
 
-                    if(findId(pane, "#light") != null) {
-                        Integer col = GridPane.getColumnIndex(pane);
-                        Integer row = GridPane.getRowIndex(pane);
+                    String pos = Integer.toString(row) + Integer.toString(col);
+                    notify(pos);
+                }
+                //else
+                    //new AlertPopup().display("Please choose a valid position.");
+            });
 
-                        //TODO notifica col e row al server
-                    }
-                    else
-                        new AlertPopup().display("Please choose a valid position.");
+            node.setOnMouseEntered(event -> {
+                Pane pane = (Pane) event.getSource();
+                ImageView light = (ImageView) findId(pane, "#light");
+
+                if (light != null) {
+                    Glow glow = new Glow();
+                    glow.setLevel(5);
+                    light.setEffect(glow);
                 }
             });
 
-            node.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            node.setOnMouseExited(event -> {
+                Pane pane = (Pane) event.getSource();
+                ImageView light = (ImageView) findId(pane, "#light");
 
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
-                    ImageView light = (ImageView) findId(pane, "#light");
-
-                    if (light != null) {
-                        Glow glow = new Glow();
-                        glow.setLevel(5);
-                        light.setEffect(glow);
-                    }
-                }
-            });
-
-            node.setOnMouseExited(new EventHandler<MouseEvent>() {
-
-                @Override
-                public void handle(MouseEvent event) {
-                    Pane pane = (Pane) event.getSource();
-                    ImageView light = (ImageView) findId(pane, "#light");
-
-                    if(light != null)
-                        light.setEffect(null);
-                }
+                if(light != null)
+                    light.setEffect(null);
             });
         }
     }
 
-
-    public void askPowerActivation(){
-        new PowerPopup().display();
-    }
-
     public void displayLoser(String loser){
-        new LoserPopup().display(loser, currClient);
+        //TODO remove this player from the list and stop showing his card
+        new LoserPopup().display(loser, clientName);
     }
 
+    public void displayBoard(Board board) {
 
-    public void displayBoard(Board board){
+        //clear the old board state
+        for(Node node : gameBoard.getChildren())
+            ((Pane) node).getChildren().clear();
 
-        for(int i=0; i<board.getGrid().length; i++){
-            for(int j=0; j<board.getGrid()[i].length; j++) {
-                switch(board.getGrid()[i][j].getLevel()){
+        //update at the current board state
+        for (int i = 0; i < Board.MAX_SIZE; i++) {
+            for (int j = 0; j < Board.MAX_SIZE; j++) {
+                switch (board.getCell(i, j).getLevel()) {
                     case 0:
                         break;
                     case 1:
@@ -476,26 +420,33 @@ public class GameScene {
                         addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/secondLevel.png");
                         addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/thirdLevel.png");
                         break;
-                    case 4:
-                        addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/firstLevel.png");
-                        addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/secondLevel.png");
-                        addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/thirdLevel.png");
-                        addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/dome.png");
-                        break;
                 }
-                if(board.getGrid()[i][j].getWorker() != null){
-                    switch(board.getGrid()[i][j].getWorker().getColor()){
+                if (board.getCell(i, j).isDome()) {
+                    addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/dome.png");
+                } else if (board.getCell(i, j).isOccupied()) {
+                    switch (board.getCell(i, j).getWorker().getColor()) {
                         case RED:
                             ImageView red = addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/worker_red.png");
-                            red.setId("#worker_red");
+                            if (board.getCell(i, j).getWorker().getNumber() == 1)
+                                red.setId("#worker_red1");
+                            else
+                                red.setId("#worker_red2");
                             break;
                         case YELLOW:
                             ImageView yellow = addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/worker_yellow.png");
-                            yellow.setId("#worker_yellow");
+                            if (board.getCell(i, j).getWorker().getNumber() == 1)
+                                yellow.setId("#worker_yellow1");
+                            else
+                                yellow.setId("#worker_yellow2");
                             break;
                         case BLUE:
                             ImageView blue = addImage((Pane) getNodeByRowColumnIndex(i, j, gameBoard), "/worker_blue.png");
-                            blue.setId("#worker_blu");
+                            if (board.getCell(i, j).getWorker().getNumber() == 1)
+                                blue.setId("#worker_blue1");
+                            else
+                                blue.setId("#worker_blue2");
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -503,7 +454,7 @@ public class GameScene {
         }
     }
 
-    public ImageView addImage(Pane pane, String image){
+    private ImageView addImage(Pane pane, String image){
         ImageView view = new ImageView();
         view.setImage(new Image(image));
 
@@ -514,7 +465,7 @@ public class GameScene {
         return view;
     }
 
-    public Node findId(Pane pane, String id){
+    private Node findId(Pane pane, String id){
         for(Node node : pane.getChildren()) {
             ImageView img = (ImageView) node;
             if (img.getId() != null && img.getId().contains(id))
@@ -524,7 +475,7 @@ public class GameScene {
         return null;
     }
 
-    public Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
+    private Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
         Node result = null;
         ObservableList<Node> childrens = gridPane.getChildren();
 
@@ -541,4 +492,5 @@ public class GameScene {
     public Pane getRoot() {
         return root;
     }
+
 }

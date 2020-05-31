@@ -40,8 +40,10 @@ public class Cell implements Serializable {
      */
     public void addLevel() throws IllegalStateException {
         if(!isDome() && level < 4) {
-            if(level == 3) dome = true;
-            level ++;
+            if(level == 3)
+                dome = true;
+            else
+                level ++;
         }
         else
             throw new IllegalStateException("You can't add another level.");
