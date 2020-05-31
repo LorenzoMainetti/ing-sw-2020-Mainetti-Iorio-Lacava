@@ -89,14 +89,17 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askPlayersNumber() {
-        System.out.println("You are the first player in the lobby, Choose the number of players (2 or 3)");
-        String players = getInput();
-        while (!players.equals("2") && !players.equals("3")) {
-            System.out.println("Sorry, we support only a 2 or 3 players game. Choose the number of players (2 or 3)");
-            players = getInput();
-        }
+        Thread t = new Thread(() -> {
+            System.out.println("You are the first player in the lobby, Choose the number of players (2 or 3)");
+            String players = getInput();
+            while (!players.equals("2") && !players.equals("3")) {
+                System.out.println("Sorry, we support only a 2 or 3 players game. Choose the number of players (2 or 3)");
+                players = getInput();
+            }
 
-        notify(players);
+            notify(players);
+        });
+        t.start();
     }
 
     @Override
@@ -110,10 +113,13 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askNickname() {
-        System.out.print("Enter your nickname: ");
-        String nickname = getInput();
+        Thread t = new Thread(() -> {
+            System.out.print("Enter your nickname: ");
+            String nickname = getInput();
 
-        notify(nickname);
+            notify(nickname);
+        });
+        t.start();
     }
 
     @Override
@@ -128,30 +134,33 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askGameGods(List<String> gameGods) {
-        System.out.println("Choose " + playersNumber + " gods from the ones available");
-        System.out.println(godDeckMessage);
-        List<String> chosenGods = new ArrayList<>();
+        Thread t = new Thread(() -> {
+            System.out.println("Choose " + playersNumber + " gods from the ones available");
+            System.out.println(godDeckMessage);
+            List<String> chosenGods = new ArrayList<>();
 
-        for (int i = 1; i <= playersNumber; i++) {
-            System.out.println("God #" + i + ": ");
-            String selectedGod = getInput().toUpperCase();
-
-            while (!gameGods.contains(selectedGod) || chosenGods.contains(selectedGod)) {
-                System.out.println("Invalid God Card. Try again.");
+            for (int i = 1; i <= playersNumber; i++) {
                 System.out.println("God #" + i + ": ");
-                selectedGod = getInput().toUpperCase();
+                String selectedGod = getInput().toUpperCase();
+
+                while (!gameGods.contains(selectedGod) || chosenGods.contains(selectedGod)) {
+                    System.out.println("Invalid God Card. Try again.");
+                    System.out.println("God #" + i + ": ");
+                    selectedGod = getInput().toUpperCase();
+                }
+                chosenGods.add(selectedGod);
             }
-            chosenGods.add(selectedGod);
-        }
 
-        String s = "";
-        for (int i=0; i<chosenGods.size(); i++) {
-            s = s.concat(chosenGods.get(i));
-            if (i < chosenGods.size()-1)
-                s = s.concat("/");
-        }
+            String s = "";
+            for (int i=0; i<chosenGods.size(); i++) {
+                s = s.concat(chosenGods.get(i));
+                if (i < chosenGods.size()-1)
+                    s = s.concat("/");
+            }
 
-        notify(s);
+            notify(s);
+        });
+        t.start();
     }
 
     /**
@@ -160,22 +169,25 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askGodCard(List<String> gods) {
-        System.out.println("Choose a god power from the ones chosen by the challenger: ");
-        for(String god : gods)
-            System.out.print(god + "  ");
-        System.out.print("\n");
-
-        String chosenGod = getInput().toUpperCase();
-
-        while (!gods.contains(chosenGod)) {
-            System.out.println("Invalid God Card. Try again.");
-            for (String card : gods)
-                System.out.print(card + "  ");
+        Thread t = new Thread(() -> {
+            System.out.println("Choose a god power from the ones chosen by the challenger: ");
+            for(String god : gods)
+                System.out.print(god + "  ");
             System.out.print("\n");
-            chosenGod = getInput().toUpperCase();
-        }
 
-        notify(chosenGod);
+            String chosenGod = getInput().toUpperCase();
+
+            while (!gods.contains(chosenGod)) {
+                System.out.println("Invalid God Card. Try again.");
+                for (String card : gods)
+                    System.out.print(card + "  ");
+                System.out.print("\n");
+                chosenGod = getInput().toUpperCase();
+            }
+
+            notify(chosenGod);
+        });
+        t.start();
     }
 
     /**
@@ -184,21 +196,24 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askFirstPlayer(String name) {
-        //print legenda
-        for(PlayersInfoMessage message : playersInfo)
-            showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
+        Thread t = new Thread(() -> {
+            //print legenda
+            for(PlayersInfoMessage message : playersInfo)
+                showPlayersInfo(message.getPlayerName(), message.getPlayerColor(), message.getGodName());
 
-        if(name.equals(challenger)) {
-            System.out.println("Challenger, choose who starts playing!");
+            if(name.equals(challenger)) {
+                System.out.println("Challenger, choose who starts playing!");
 
-            String starter = getInput();
-            while (!players.contains(starter)) {
-                System.out.println("Invalid nickname. Try again.");
-                starter = getInput();
+                String starter = getInput();
+                while (!players.contains(starter)) {
+                    System.out.println("Invalid nickname. Try again.");
+                    starter = getInput();
+                }
+
+                notify(starter);
             }
-
-            notify(starter);
-        }
+        });
+        t.start();
     }
 
     /**
@@ -206,13 +221,16 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askInitPosition() {
-        System.out.println("Choose the initial position for your worker.");
-        int row = askRow();
-        int column = askColumn();
+        Thread t = new Thread(() -> {
+            System.out.println("Choose the initial position for your worker.");
+            int row = askRow();
+            int column = askColumn();
 
-        String pos = Integer.toString(row)+Integer.toString(column);
+            String pos = Integer.toString(row)+Integer.toString(column);
 
-        notify(pos);
+            notify(pos);
+        });
+        t.start();
     }
 
     @Override
@@ -233,7 +251,7 @@ public class CLI extends UiObservable implements Runnable, View {
             try {
                 row = Integer.parseInt(getInput());
                 if(row < 0 || row > 4)
-                    System.out.println("Invalid row. Choose a number between 0 and 4: ");
+                    System.out.print("Invalid row. Choose a number between 0 and 4: ");
                 else break;
             } catch (NumberFormatException e) {
                 System.out.println("Invalid integer. Try again. ");
@@ -256,7 +274,7 @@ public class CLI extends UiObservable implements Runnable, View {
             try {
                 column = Integer.parseInt(getInput());
                 if(column < 0 || column > 4)
-                    System.out.println("Invalid column. Choose a number between 0 and 4: ");
+                    System.out.print("Invalid column. Choose a number between 0 and 4: ");
                 else break;
             } catch (NumberFormatException e) {
                 System.out.println("Invalid integer. Try again. ");
@@ -275,32 +293,35 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askPosition(List<Position> positions) {
-        int row;
-        int column;
+        Thread t = new Thread(() -> {
+            int row;
+            int column;
 
-        outside:
-        do {
-            System.out.println("Valid positions:");
-            for (Position position : positions) {
-                System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
-            }
-            System.out.println("\n");
-            row = askRow();
-            column = askColumn();
-
-            for (Position position : positions) {
-                if (position.getPosRow() == row && position.getPosColumn() == column) {
-                    break outside;
+            outside:
+            do {
+                System.out.println("Valid positions:");
+                for (Position position : positions) {
+                    System.out.print("R" + position.getPosRow() + ", C" + position.getPosColumn() + "      ");
                 }
-            }
-            System.out.println("\nInvalid position. Try again.");
+                System.out.println("\n");
+                row = askRow();
+                column = askColumn();
 
-        } while(true);
+                for (Position position : positions) {
+                    if (position.getPosRow() == row && position.getPosColumn() == column) {
+                        break outside;
+                    }
+                }
+                System.out.println("\nInvalid position. Try again.");
+
+            } while(true);
 
 
-        String pos = Integer.toString(row) + Integer.toString(column);
+            String pos = Integer.toString(row) + Integer.toString(column);
 
-        notify(pos);
+            notify(pos);
+        });
+        t.start();
     }
 
     /**
@@ -308,14 +329,17 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askWorker() {
-        System.out.println("Which worker do you want to use? (1 or 2):");
-        String worker = getInput();
-        while (!worker.equals("1") && !worker.equals("2")) {
-            System.out.println("Invalid worker number. (choose 1 or 2)");
-            worker = getInput();
-        }
+        Thread t = new Thread(() -> {
+            System.out.println("Which worker do you want to use? (1 or 2):");
+            String worker = getInput();
+            while (!worker.equals("1") && !worker.equals("2")) {
+                System.out.println("Invalid worker number. (choose 1 or 2)");
+                worker = getInput();
+            }
 
-        notify(worker);
+            notify(worker);
+        });
+        t.start();
     }
 
     /**
@@ -323,14 +347,17 @@ public class CLI extends UiObservable implements Runnable, View {
      */
     @Override
     public void askPowerActivation() {
-        System.out.println("Do you want to activate your God Power? (yes or no)");
-        String power = getInput();
-        while (!power.equals("yes") && !power.equals("no")) {
-            System.out.println("Invalid answer. (choose yes or no)");
-            power = getInput();
-        }
+        Thread t = new Thread(() -> {
+            System.out.println("Do you want to activate your God Power? (yes or no)");
+            String power = getInput();
+            while (!power.equals("yes") && !power.equals("no")) {
+                System.out.println("Invalid answer. (choose yes or no)");
+                power = getInput();
+            }
 
-        notify(power);
+            notify(power);
+        });
+        t.start();
     }
 
     @Override

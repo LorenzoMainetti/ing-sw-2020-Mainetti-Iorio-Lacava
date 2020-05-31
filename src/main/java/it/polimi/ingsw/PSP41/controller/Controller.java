@@ -166,8 +166,8 @@ public class Controller {
         List<Position> movesW2 = am.getValidMoves(board, player.getWorker2().getRow(), player.getWorker2().getColumn());
         for(Player p : activePlayers) {
             if (!p.equals(player) && p.getGodCard().getAffectPhase().equals(TurnPhase.MOVE))
-                p.getGodCard().applyOpponentConstraints(movesW1, board, currWorker);
-                p.getGodCard().applyOpponentConstraints(movesW2, board, currWorker);
+                p.getGodCard().applyOpponentConstraints(movesW1, board, player.getWorker1());
+                p.getGodCard().applyOpponentConstraints(movesW2, board, player.getWorker2());
         }
 
         if (movesW1.isEmpty() && movesW2.isEmpty()) {

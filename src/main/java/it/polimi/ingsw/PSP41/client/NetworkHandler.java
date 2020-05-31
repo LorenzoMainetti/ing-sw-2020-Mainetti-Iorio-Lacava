@@ -38,7 +38,7 @@ public class NetworkHandler implements Runnable, UiObserver {
      */
     private void manageInputFromServer(Object inputObject) {
 
-        //synchronized thread -> conflicts with the javaFX thread
+        //TODO synchronized thread -> conflicts with the javaFX thread
 
         if (inputObject instanceof NameMessage) {
             NameMessage message = (NameMessage) inputObject;
