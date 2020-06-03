@@ -37,7 +37,10 @@ public class GameScene extends UiObservable {
     private Text phaseName;
     private ArrayList<Text> textList = new ArrayList<>();
     private ArrayList<StackPane> stackList = new ArrayList<>();
+    private ArrayList<ImageView> cardList = new ArrayList<>();
+    private ArrayList<ImageView> flagList = new ArrayList<>();
     private String clientName;
+
 
 
     public GameScene(List<PlayersInfoMessage> players, String clientName) {
@@ -62,7 +65,6 @@ public class GameScene extends UiObservable {
 
 
         //setup of the other objects
-        ArrayList<ImageView> cardList = new ArrayList<>();
         cardList.add((ImageView) root.lookup("#firstCard"));
         cardList.add((ImageView) root.lookup("#secondCard"));
         cardList.add((ImageView) root.lookup("#thirdCard"));
@@ -71,7 +73,6 @@ public class GameScene extends UiObservable {
         stackList.add(1, (StackPane) root.lookup("#secondStack"));
         stackList.add(2, (StackPane) root.lookup("#thirdStack"));
 
-        ArrayList<ImageView> flagList = new ArrayList<>();
         flagList.add((ImageView) root.lookup("#firstFlag"));
         flagList.add((ImageView) root.lookup("#secondFlag"));
         flagList.add((ImageView) root.lookup("#thirdFlag"));
@@ -249,7 +250,7 @@ public class GameScene extends UiObservable {
 
         for(Text text : textList) {
             if(text.getText().equals(currPlayer))
-                stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
+                stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: fuchsia;" + "-fx-border-width: 3;");
         }
     }
 
@@ -259,7 +260,7 @@ public class GameScene extends UiObservable {
 
         for(Text text : textList) {
             if(text.getText().equals(clientName))
-                stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
+                stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: fuchsia;" + "-fx-border-width: 3;");
         }
 
         for (Node node : this.gameBoard.getChildren()) {
@@ -302,7 +303,7 @@ public class GameScene extends UiObservable {
 
         for(Text text : textList) {
             if(text.getText().equals(clientName))
-                stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: red;" + "-fx-border-width: 3;");
+                stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: fuchsia;" + "-fx-border-width: 3;");
         }
 
         for (Node node : this.gameBoard.getChildren()) {
@@ -315,8 +316,8 @@ public class GameScene extends UiObservable {
                 else if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase() + "2") != null) {
                     notify("2");
                 }
-                else
-                    new AlertPopup().display("You have to select one of your workers.");
+                //else
+                    //new AlertPopup().display("You have to select one of your workers.");
             });
 
             node.setOnMouseEntered(event -> {
@@ -367,7 +368,7 @@ public class GameScene extends UiObservable {
                     notify(pos);
                 }
                 //else
-                    //new AlertPopup().display("Please choose a valid position.");
+                //new AlertPopup().display("Please choose a valid position.");
             });
 
             node.setOnMouseEntered(event -> {
@@ -392,7 +393,33 @@ public class GameScene extends UiObservable {
     }
 
     public void displayLoser(String loser){
-        //TODO remove this player from the list and stop showing his card
+
+        int i = 0;
+        for(Text text : textList) {
+            if (!text.getText().equals(loser))
+                i++;
+        }
+
+        textList.get(i).setText(null);
+        textList.get(i).setMouseTransparent(true);
+        stackList.get(i).setMouseTransparent(true);
+        cardList.get(i).setImage(null);
+        cardList.get(i).setMouseTransparent(true);
+        flagList.get(i).setImage(null);
+        flagList.get(i).setMouseTransparent(true);
+
+        if(i==1) {
+            stackList.get(2).setTranslateX(-72);
+            textList.get(2).setTranslateX(-72);
+            flagList.get(2).setTranslateX(-72);
+        }
+        else if(i==2){
+            stackList.get(1).setTranslateX(72);
+            textList.get(1).setTranslateX(72);
+            flagList.get(1).setTranslateX(72);
+        }
+
+
         new LoserPopup().display(loser, clientName);
     }
 

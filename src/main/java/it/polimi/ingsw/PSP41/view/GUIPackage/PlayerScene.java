@@ -56,7 +56,6 @@ public class PlayerScene extends UiObservable {
 
         ImageView thirdPlayerDrap = (ImageView) root.lookup("#thirdPlayerDrap");
         TextField challengerTextField = (TextField) root.lookup("#challengerTextField");
-        ImageView playButton = (ImageView) root.lookup("#playButton");
         ImageView versusImage = (ImageView) root.lookup("#versusImage");
         ImageView challengerBackground = (ImageView) root.lookup("#challengerBackground");
 
@@ -169,8 +168,6 @@ public class PlayerScene extends UiObservable {
         if(currPlayer.equals(challenger)){
             challengerTextField.setDisable(false);
             challengerTextField.setStyle("-fx-background-color: white;");
-            playButton.setImage(null);
-            playButton.setMouseTransparent(true);
 
             challengerBackground.setImage(new Image("/challengerBackground.png"));
 
@@ -193,9 +190,6 @@ public class PlayerScene extends UiObservable {
                         challengerTextField.setText(null);
                         challengerTextField.setStyle("-fx-background-color: transparent;");
 
-                        playButton.setImage(new Image("/button-play-normal.png"));
-                        playButton.setMouseTransparent(false);
-
                         PlayerScene.this.notify(starter);
                     }
                     else
@@ -203,13 +197,6 @@ public class PlayerScene extends UiObservable {
                 }
             });
         }
-
-        //TODO da togliere
-        playButton.setOnMouseEntered(event -> playButton.setImage(new Image("/button-play-down.png")));
-
-        playButton.setOnMouseExited(event -> playButton.setImage(new Image("/button-play-normal.png")));
-
-        //playButton.setOnMouseClicked(event -> TransitionHandler.toGameScene());
 
     }
 

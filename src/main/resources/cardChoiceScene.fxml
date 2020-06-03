@@ -15,7 +15,7 @@
             <Image url="@background.png" />
          </image>
       </ImageView>
-      <Text fill="#404040" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="These are the cards chosen by the Challenger. Choose yours:" textAlignment="CENTER" wrappingWidth="1219.6288375854492">
+      <Text fill="#404040" layoutX="-8.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="These are the cards chosen by the Challenger. Choose yours:" textAlignment="CENTER" wrappingWidth="1219.6288375854492">
          <font>
             <Font name="Diogenes" size="45.0" />
          </font>

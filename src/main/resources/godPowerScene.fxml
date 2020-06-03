@@ -23,7 +23,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="artemisCard" layoutX="217.0" layoutY="115.0" prefHeight="217.0" prefWidth="130.0">
+      <StackPane id="artemisCard" layoutX="217.0" layoutY="114.0" prefHeight="217.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -32,7 +32,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="athenaCard" layoutX="376.0" layoutY="116.0" prefHeight="217.0" prefWidth="130.0">
+      <StackPane id="athenaCard" layoutX="376.0" layoutY="114.0" prefHeight="217.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -40,7 +40,7 @@
                </image>
             </ImageView>
          </children></StackPane>
-      <StackPane id="atlasCard" layoutX="536.0" layoutY="116.0" prefHeight="220.0" prefWidth="130.0">
+      <StackPane id="atlasCard" layoutX="536.0" layoutY="114.0" prefHeight="220.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -49,7 +49,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="demeterCard" layoutX="695.0" layoutY="116.0" prefHeight="220.0" prefWidth="133.0">
+      <StackPane id="demeterCard" layoutX="695.0" layoutY="114.0" prefHeight="220.0" prefWidth="133.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -58,7 +58,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="hephaestusCard" layoutX="857.0" layoutY="116.0" prefHeight="220.0" prefWidth="130.0">
+      <StackPane id="hephaestusCard" layoutX="857.0" layoutY="114.0" prefHeight="220.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -67,7 +67,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="minotaurCard" layoutX="1017.0" layoutY="117.0" prefHeight="220.0" prefWidth="127.0">
+      <StackPane id="minotaurCard" layoutX="1017.0" layoutY="114.0" prefHeight="220.0" prefWidth="127.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="127.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -76,7 +76,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="panCard" layoutX="59.0" layoutY="377.0" prefHeight="214.0" prefWidth="127.0">
+      <StackPane id="panCard" layoutX="58.0" layoutY="377.0" prefHeight="214.0" prefWidth="127.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -85,7 +85,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="prometheusCard" layoutX="214.0" layoutY="377.0" prefHeight="217.0" prefWidth="130.0">
+      <StackPane id="prometheusCard" layoutX="217.0" layoutY="377.0" prefHeight="217.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="129.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -94,7 +94,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="aresCard" layoutX="370.0" layoutY="376.0" prefHeight="220.0" prefWidth="130.0">
+      <StackPane id="aresCard" layoutX="376.0" layoutY="376.0" prefHeight="220.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -103,7 +103,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="tritonCard" layoutX="531.0" layoutY="376.0" prefHeight="220.0" prefWidth="127.0">
+      <StackPane id="tritonCard" layoutX="536.0" layoutY="376.0" prefHeight="220.0" prefWidth="127.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -112,7 +112,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="hestiaCard" layoutX="692.0" layoutY="377.0" prefHeight="220.0" prefWidth="130.0">
+      <StackPane id="hestiaCard" layoutX="695.0" layoutY="377.0" prefHeight="220.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -121,7 +121,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="poseidonCard" layoutX="855.0" layoutY="379.0" prefHeight="217.0" prefWidth="130.0">
+      <StackPane id="poseidonCard" layoutX="857.0" layoutY="379.0" prefHeight="217.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -130,7 +130,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <StackPane id="zeusCard" layoutX="1018.0" layoutY="378.0" prefHeight="223.0" prefWidth="130.0">
+      <StackPane id="zeusCard" layoutX="1017.0" layoutY="378.0" prefHeight="223.0" prefWidth="130.0">
          <children>
             <ImageView fitHeight="217.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>

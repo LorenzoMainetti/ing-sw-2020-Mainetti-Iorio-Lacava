@@ -11,22 +11,17 @@
    <children>
       <ImageView fitHeight="563.0" fitWidth="411.0" layoutX="-4.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@bg_panelMid.png" />
+            <Image url="@alertPopup.png" />
          </image>
       </ImageView>
-      <Label id="messageLabel" alignment="CENTER" layoutX="32.0" layoutY="67.0" prefHeight="160.0" prefWidth="325.0" textAlignment="CENTER">
+      <Label id="messageLabel" alignment="CENTER" layoutX="32.0" layoutY="96.0" prefHeight="145.0" prefWidth="340.0" textAlignment="CENTER">
          <font>
             <Font name="Avenir Next Bold" size="21.0" />
          </font>
       </Label>
-      <Text layoutX="156.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="! ! !" textAlignment="CENTER" wrappingWidth="87.51254272460938">
-         <font>
-            <Font name="Avenir Next Bold" size="31.0" />
-         </font>
-      </Text>
       <ImageView id="closeButton" fitHeight="33.0" fitWidth="215.0" layoutX="140.0" layoutY="251.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@btn_green.png" />
+            <Image url="@btn_small_gray.png" />
          </image>
       </ImageView>
       <Text id="closeText" fill="WHITE" layoutX="181.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLOSE" wrappingWidth="48.70100402832031">

@@ -21,17 +21,17 @@
             <Image url="@gameGodFrameName3.png" />
          </image>
       </ImageView>
-      <Label id="firstPlayer" alignment="CENTER" layoutX="94.0" layoutY="148.0" prefHeight="51.0" prefWidth="263.0" textFill="WHITE">
+      <Label id="firstPlayer" alignment="CENTER" layoutX="94.0" layoutY="140.0" prefHeight="51.0" prefWidth="263.0" textFill="WHITE">
          <font>
             <Font name="Diogenes" size="35.0" />
          </font>
       </Label>
-      <Label id="secondPlayer" alignment="CENTER" layoutX="846.0" layoutY="148.0" prefHeight="51.0" prefWidth="272.0" textFill="WHITE">
+      <Label id="secondPlayer" alignment="CENTER" layoutX="846.0" layoutY="140.0" prefHeight="51.0" prefWidth="272.0" textFill="WHITE">
          <font>
             <Font name="Diogenes" size="35.0" />
          </font>
       </Label>
-      <Label id="thirdPlayer" alignment="CENTER" layoutX="478.0" layoutY="123.0" prefHeight="59.0" prefWidth="263.0" textFill="WHITE">
+      <Label id="thirdPlayer" alignment="CENTER" layoutX="470.0" layoutY="120.0" prefHeight="59.0" prefWidth="263.0" textFill="WHITE">
          <font>
             <Font name="Diogenes" size="35.0" />
          </font>
@@ -52,20 +52,15 @@
             <ImageView id="firstCard" fitHeight="285.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </StackPane>
-      <ImageView id="challengerBackground" fitHeight="370.0" fitWidth="658.0" layoutX="262.0" layoutY="423.0" pickOnBounds="true" preserveRatio="true" />
-      <TextField id="challengerTextField" layoutX="474.0" layoutY="602.0" prefHeight="51.0" prefWidth="229.0" promptText="nickname">
+      <ImageView id="challengerBackground" fitHeight="268.0" fitWidth="558.0" layoutX="357.0" layoutY="477.0" pickOnBounds="true" preserveRatio="true" />
+      <TextField id="challengerTextField" layoutX="499.0" layoutY="607.0" prefHeight="41.0" prefWidth="216.0" promptText="nickname">
          <font>
             <Font size="20.0" />
          </font></TextField>
-      <Text id="challengerText" fill="WHITE" layoutX="362.0" layoutY="578.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="448.1958386970672">
+      <Text id="challengerText" fill="WHITE" layoutX="382.0" layoutY="591.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="448.1958386970672">
          <font>
-            <Font name="Avenir Book" size="43.0" />
+            <Font name="Avenir Book" size="35.0" />
          </font>
       </Text>
-      <ImageView id="playButton" fitHeight="136.0" fitWidth="145.0" layoutX="544.0" layoutY="581.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@button-play-normal.png" />
-         </image>
-      </ImageView>
    </children>
 </Pane>

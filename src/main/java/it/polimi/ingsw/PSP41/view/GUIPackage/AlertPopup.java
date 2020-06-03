@@ -51,12 +51,12 @@ public class AlertPopup {
         closeText.setMouseTransparent(true);
 
         closeButton.setOnMouseEntered(event -> {
-            closeButton.setImage(new Image("/btn_green_pressed.png"));
+            closeButton.setImage(new Image("/btn_gray_pressed.png"));
             closeText.setTranslateY(2.0);
         });
 
         closeButton.setOnMouseExited(event -> {
-            closeButton.setImage(new Image("/btn_green.png"));
+            closeButton.setImage(new Image("/btn_small_gray.png"));
             closeText.setTranslateY(-0.5);
         });
 

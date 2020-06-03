@@ -231,7 +231,8 @@ public class GUI extends Application implements View {
     @Override
     public void displayChallenger(String name) {
         challenger = name;
-        Platform.runLater(() -> new AlertPopup().display(name.toUpperCase() + " is the most godlike! " + name.toUpperCase() + " is the challenger!"));
+        if(!challenger.equals(clientName))
+            Platform.runLater(() -> new AlertPopup().display(name.toUpperCase() + " is the most godlike! " + name.toUpperCase() + " is the challenger!"));
     }
 
     @Override
