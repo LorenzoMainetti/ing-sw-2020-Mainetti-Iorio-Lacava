@@ -4,4 +4,6 @@ public interface UiObserver {
 
     void update(String string);
 
+    void updateConnection(String ip, String port);
+
 }

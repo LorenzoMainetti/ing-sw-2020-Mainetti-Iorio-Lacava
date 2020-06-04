@@ -78,10 +78,6 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     public void errorTakenPosition() {
         clients.get(currPlayer).send(occupiedCellMessage);
-        String message = clients.get(currPlayer).read();
-        int position = Integer.parseInt(message);
-
-        notifyPosition(new Position(position/10, position%10));
     }
 
     /**
@@ -159,6 +155,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
      */
     @Override
     public void updateWinner(String winner) {
+        System.out.println("[SERVER] The winner is " + winner);
         for (ClientHandler ch : clients.values()) {
             ch.send(new NameMessage(winMessage, winner));
         }

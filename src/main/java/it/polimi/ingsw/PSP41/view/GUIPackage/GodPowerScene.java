@@ -104,7 +104,6 @@ public class GodPowerScene extends UiObservable {
             }
 
             if(playersCount == num) {
-                //new AlertPopup().display("God Card selected!\nNow wait for the other players to choose their Gods.");
 
                 String s = "";
                 int j = 0;

@@ -40,6 +40,7 @@ public class GameScene extends UiObservable {
     private ArrayList<ImageView> cardList = new ArrayList<>();
     private ArrayList<ImageView> flagList = new ArrayList<>();
     private String clientName;
+    private boolean myTurn;
 
 
 
@@ -63,19 +64,18 @@ public class GameScene extends UiObservable {
                 break;
         }
 
-
         //setup of the other objects
-        cardList.add((ImageView) root.lookup("#firstCard"));
-        cardList.add((ImageView) root.lookup("#secondCard"));
-        cardList.add((ImageView) root.lookup("#thirdCard"));
+        cardList.add(0, (ImageView) root.lookup("#firstCard"));
+        cardList.add(1, (ImageView) root.lookup("#secondCard"));
+        cardList.add(2, (ImageView) root.lookup("#thirdCard"));
 
         stackList.add(0, (StackPane) root.lookup("#firstStack"));
         stackList.add(1, (StackPane) root.lookup("#secondStack"));
         stackList.add(2, (StackPane) root.lookup("#thirdStack"));
 
-        flagList.add((ImageView) root.lookup("#firstFlag"));
-        flagList.add((ImageView) root.lookup("#secondFlag"));
-        flagList.add((ImageView) root.lookup("#thirdFlag"));
+        flagList.add(0, (ImageView) root.lookup("#firstFlag"));
+        flagList.add(1, (ImageView) root.lookup("#secondFlag"));
+        flagList.add(2, (ImageView) root.lookup("#thirdFlag"));
 
         textList.add(0, (Text) root.lookup("#firstText"));
         textList.add(1, (Text) root.lookup("#secondText"));
@@ -230,17 +230,19 @@ public class GameScene extends UiObservable {
         }
     }
 
-    public void startMovePhase(){
+    public void startMovePhase() {
         phaseName.setText("MOVE");
         phaseText.setText("Choose where you want to move.");
     }
 
-    public void startBuildPhase(){
+    public void startBuildPhase() {
         phaseName.setText("BUILD");
         phaseText.setText("Choose where you want to build.");
     }
 
-    public void displayCurrentPlayer(String currPlayer){
+    public void displayCurrentPlayer(String currPlayer) {
+        myTurn = currPlayer.equals(clientName);
+
         phaseName.setText(null);
         phaseText.setText(currPlayer + "'s turn.");
 
@@ -258,33 +260,37 @@ public class GameScene extends UiObservable {
         phaseName.setText(null);
         phaseText.setText("Set workers' position.");
 
-        for(Text text : textList) {
-            if(text.getText().equals(clientName))
+        for (Text text : textList) {
+            if (text.getText().equals(clientName))
                 stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: fuchsia;" + "-fx-border-width: 3;");
         }
 
-        for (Node node : this.gameBoard.getChildren()) {
+        for (Node node : gameBoard.getChildren()) {
 
             node.setOnMouseClicked(event -> {
                 Pane pane = (Pane) event.getSource();
 
-                if(findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString()) == null) {
+                if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString()) == null) {
                     Integer col = GridPane.getColumnIndex(pane);
                     Integer row = GridPane.getRowIndex(pane);
 
-                    String pos = Integer.toString(row) + Integer.toString(col);
-                    notify(pos);
+                    if(myTurn) {
+                        String pos = Integer.toString(row) + Integer.toString(col);
+                        notify(pos);
+                    }
                 }
-                else
-                    new AlertPopup().display("Please choose a valid position.");
+                //else
+                //new AlertPopup().display("Please choose a valid position.");
             });
 
             node.setOnMouseEntered(event -> {
                 Pane pane = (Pane) event.getSource();
 
-                if (findId(pane, "#worker") == null) {
-                    ImageView light = addImage(pane, "/playermoveindicator_" + players.get(counter).getPlayerColor().toString() + ".png");
-                    light.setId("#light");
+                if(myTurn) {
+                    if (findId(pane, "#worker") == null) {
+                        ImageView light = addImage(pane, "/playermoveindicator_" + players.get(counter).getPlayerColor().toString() + ".png");
+                        light.setId("#light");
+                    }
                 }
             });
 
@@ -294,10 +300,11 @@ public class GameScene extends UiObservable {
                 pane.getChildren().remove(findId(pane, "#light"));
             });
         }
+
     }
 
 
-    public void askWorker(){
+    public void askWorker() {
         phaseName.setText(null);
         phaseText.setText("Choose the worker you want to use.");
 
@@ -306,18 +313,17 @@ public class GameScene extends UiObservable {
                 stackList.get(textList.indexOf(text)).setStyle("-fx-border-color: fuchsia;" + "-fx-border-width: 3;");
         }
 
-        for (Node node : this.gameBoard.getChildren()) {
+        for (Node node : gameBoard.getChildren()) {
             node.setOnMouseClicked(event -> {
                 Pane pane = (Pane) event.getSource();
 
                 if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase() + "1") != null) {
                     notify("1");
-                }
-                else if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase() + "2") != null) {
+                } else if (findId(pane, "#worker_" + players.get(counter).getPlayerColor().toString().toLowerCase() + "2") != null) {
                     notify("2");
                 }
                 //else
-                    //new AlertPopup().display("You have to select one of your workers.");
+                //new AlertPopup().display("You have to select one of your workers.");
             });
 
             node.setOnMouseEntered(event -> {
@@ -342,6 +348,7 @@ public class GameScene extends UiObservable {
                     workerImage.setEffect(null);
             });
         }
+
     }
 
 
@@ -355,7 +362,7 @@ public class GameScene extends UiObservable {
             light.setId("#light");
         }
 
-        for (Node node : this.gameBoard.getChildren()) {
+        for (Node node : gameBoard.getChildren()) {
 
             node.setOnMouseClicked(event -> {
                 Pane pane = (Pane) event.getSource();
@@ -368,7 +375,7 @@ public class GameScene extends UiObservable {
                     notify(pos);
                 }
                 //else
-                //new AlertPopup().display("Please choose a valid position.");
+                    //new AlertPopup().display("Please choose a valid position.");
             });
 
             node.setOnMouseEntered(event -> {
@@ -392,36 +399,52 @@ public class GameScene extends UiObservable {
         }
     }
 
-    public void displayLoser(String loser){
+    public void displayLoser(String loser) {
 
         int i = 0;
         for(Text text : textList) {
-            if (!text.getText().equals(loser))
-                i++;
+            if(text.getText().equals(loser))
+                i = textList.indexOf(text);
         }
 
         textList.get(i).setText(null);
         textList.get(i).setMouseTransparent(true);
         stackList.get(i).setMouseTransparent(true);
+        stackList.get(i).setStyle(null);
         cardList.get(i).setImage(null);
         cardList.get(i).setMouseTransparent(true);
         flagList.get(i).setImage(null);
         flagList.get(i).setMouseTransparent(true);
 
+        textList.remove(i);
+        stackList.remove(i);
+        flagList.remove(i);
+        cardList.remove(i);
+
         if(i==1) {
-            stackList.get(2).setTranslateX(-72);
-            textList.get(2).setTranslateX(-72);
-            flagList.get(2).setTranslateX(-72);
+            stackList.get(1).setTranslateX(-72);
+            textList.get(1).setTranslateX(-72);
+            flagList.get(1).setTranslateX(-72);
         }
-        else if(i==2){
+        else if(i==2) {
             stackList.get(1).setTranslateX(72);
             textList.get(1).setTranslateX(72);
             flagList.get(1).setTranslateX(72);
         }
 
-
+        players.removeIf(message -> message.getPlayerName().equals(loser));
+        counter = 0;
+        for(PlayersInfoMessage player : players) {
+            if(!clientName.equals(loser)) {
+                if (!player.getPlayerName().equals(clientName))
+                    counter++;
+                else
+                    break;
+            }
+        }
         new LoserPopup().display(loser, clientName);
     }
+
 
     public void displayBoard(Board board) {
 
@@ -481,7 +504,7 @@ public class GameScene extends UiObservable {
         }
     }
 
-    private ImageView addImage(Pane pane, String image){
+    private ImageView addImage(Pane pane, String image) {
         ImageView view = new ImageView();
         view.setImage(new Image(image));
 

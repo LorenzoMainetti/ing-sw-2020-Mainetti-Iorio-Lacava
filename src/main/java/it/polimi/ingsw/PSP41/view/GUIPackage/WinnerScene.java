@@ -8,6 +8,9 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 
+/**
+ * Scene used to display the winner of the game
+ */
 public class WinnerScene {
     private Pane root;
 
@@ -21,8 +24,8 @@ public class WinnerScene {
 
         Text text = (Text) root.lookup("#text");
         text.setText(winner.toUpperCase());
-        ImageView button = (ImageView) root.lookup("nextButton");
-        Text endText = (Text) root.lookup("nextText");
+        ImageView button = (ImageView) root.lookup("#nextButton");
+        Text endText = (Text) root.lookup("#endText");
 
         button.setOnMouseEntered(event -> {
             button.setImage(new Image("/btn_blue_pressed.png"));
@@ -34,8 +37,7 @@ public class WinnerScene {
             endText.setTranslateY(-0.5);
         });
 
-        //TODO: passare alla endScene
-        //button.setOnMouseClicked(event -> TransitionHandler.toEndScene());
+        button.setOnMouseClicked(event -> TransitionHandler.toEndScene());
 
     }
 

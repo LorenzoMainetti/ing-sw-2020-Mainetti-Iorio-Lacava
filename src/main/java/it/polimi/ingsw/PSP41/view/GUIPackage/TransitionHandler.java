@@ -16,6 +16,8 @@ public class TransitionHandler {
     private static Scene playerScene;
     private static Scene numberScene;
     private static Scene connectionScene;
+    private static Scene winnerScene;
+    private static Scene endScene;
 
 
     public static void setPrimaryStage(Stage primaryStage) {
@@ -60,6 +62,14 @@ public class TransitionHandler {
         TransitionHandler.connectionScene = new Scene(connectionScene.getRoot());
     }
 
+    public static void setWinnerScene(WinnerScene winnerScene){
+        TransitionHandler.winnerScene = new Scene(winnerScene.getRoot());
+    }
+
+    public static void setEndScene(EndScene endScene){
+        TransitionHandler.endScene = new Scene(endScene.getRoot());
+    }
+
 
     //go to...
     private static void goTo(Scene scene){
@@ -99,5 +109,9 @@ public class TransitionHandler {
     public static void toConnectionScene(){
         goTo(connectionScene);
     }
+
+    public static void toWinnerScene() { goTo(winnerScene); }
+
+    public static void toEndScene() {goTo(endScene); }
 
 }

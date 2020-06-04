@@ -235,7 +235,6 @@ public class CLI extends UiObservable implements Runnable, View {
     @Override
     public void displayTakenPosition() {
         System.out.println("The chosen cell is already occupied!");
-        askInitPosition();
     }
 
     /**
@@ -373,6 +372,7 @@ public class CLI extends UiObservable implements Runnable, View {
         System.out.println("Thanks for playing!");
         System.out.println("This videogame was made by Ginevra Iorio, Lorenzo Mainetti and Marco Lacava, " +
                 "based on the official boardgame Santorini");
+        System.exit(0);
     }
 
     @Override
@@ -579,6 +579,14 @@ public class CLI extends UiObservable implements Runnable, View {
         return Color.MAGENTA;
     }
 
+    private void askConnection() {
+        System.out.println("IP address of server?");
+        String ip = in.nextLine();
+        System.out.println("Port?");
+        String port = in.nextLine();
+        notifyConnection(ip, port);
+    }
+
     @Override
     public void displayWrongTurn() {
         System.out.println("It's not your turn.");
@@ -606,6 +614,7 @@ public class CLI extends UiObservable implements Runnable, View {
 
     @Override
     public void run() {
+        askConnection();
         startGame();
         readInput();
     }

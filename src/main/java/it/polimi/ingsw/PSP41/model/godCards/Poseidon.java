@@ -3,7 +3,8 @@ package it.polimi.ingsw.PSP41.model.godCards;
 import it.polimi.ingsw.PSP41.model.*;
 
 public class Poseidon extends GodPower {
-    Position otherWorker;
+    private Position otherWorker;
+    private boolean firstTime = true;
 
     public Poseidon() {
         affectPhase = TurnPhase.BUILD;
@@ -14,8 +15,10 @@ public class Poseidon extends GodPower {
 
     @Override
     public boolean isActionable(Board board, Worker worker) {
-        if(!isTriggered())
+        if(firstTime) {
+            firstTime = false;
             otherWorker = am.getOtherWorker(board, worker.getRow(), worker.getColumn());
+        }
         if(board.getCell(otherWorker.getPosRow(), otherWorker.getPosColumn()).getLevel() == 0)
             return !am.getValidBuilds(board, otherWorker.getPosRow(), otherWorker.getPosColumn()).isEmpty();
         else
@@ -34,6 +37,7 @@ public class Poseidon extends GodPower {
                 phases.add(TurnPhase.BUILD);
         }
         else {
+            firstTime = true;
             while(phases.size() > 3)
                 phases.remove(TurnPhase.BUILD);
         }

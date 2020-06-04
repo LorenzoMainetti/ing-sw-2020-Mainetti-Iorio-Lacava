@@ -35,19 +35,11 @@ public class GUI extends Application implements View {
     private boolean emptyBoard = true;
 
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
 
     @Override
     public void start(Stage primaryStage) {
 
-        //askPort e askView
-        String ip = "127.0.0.1";
-        String port = "9090";
-
-        networkHandler = new NetworkHandler(ip, port, this);
+        networkHandler = new NetworkHandler(this);
         executor.submit(networkHandler);
 
         TransitionHandler.setPrimaryStage(primaryStage);
@@ -76,11 +68,10 @@ public class GUI extends Application implements View {
                     ex.printStackTrace();
                 }
                 fadeOut.play();
+                askConnection();
             });
-
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -92,7 +83,6 @@ public class GUI extends Application implements View {
         primaryStage.setOnCloseRequest(event -> {
             System.out.println("Disconnected.");
             Platform.exit();
-            System.exit(0);
         });
 
         primaryStage.show();
@@ -100,13 +90,16 @@ public class GUI extends Application implements View {
     }
 
 
+    private void askConnection() {
+        //ask ip and port
+        ConnectionScene connectionScene = new ConnectionScene();
+        connectionScene.addObserver(networkHandler);
+        Platform.runLater(() -> TransitionHandler.setConnectionScene(connectionScene));
+        Platform.runLater(TransitionHandler::toConnectionScene);
+    }
+
     @Override
     public void askPlayersNumber() {
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
         NumberScene numberScene = new NumberScene();
         numberScene.addObserver(networkHandler);
         Platform.runLater(() -> TransitionHandler.setNumberScene(numberScene));
@@ -173,13 +166,15 @@ public class GUI extends Application implements View {
 
     @Override
     public void displayTakenPosition() {
-        Platform.runLater(() -> new AlertPopup().display("ERROR: this position is occupied. Try again."));
+        //Platform.runLater(() -> new AlertPopup().display("ERROR: this position is occupied. Try again."));
         askInitPosition();
     }
 
     @Override
     public void displayNetworkError() {
         Platform.runLater(() -> new AlertPopup().display("ERROR: Connection closed from server side."));
+        Platform.exit();
+        System.exit(-1);
     }
 
     @Override
@@ -189,11 +184,6 @@ public class GUI extends Application implements View {
 
     @Override
     public void waitPlayersNum() {
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
         waiting();
     }
 
@@ -231,8 +221,8 @@ public class GUI extends Application implements View {
     @Override
     public void displayChallenger(String name) {
         challenger = name;
-        if(!challenger.equals(clientName))
-            Platform.runLater(() -> new AlertPopup().display(name.toUpperCase() + " is the most godlike! " + name.toUpperCase() + " is the challenger!"));
+        if(!clientName.equals(challenger))
+            Platform.runLater(() -> new AlertPopup().display(name + " is the most godlike! " + name + " is the challenger!"));
     }
 
     @Override
@@ -258,7 +248,11 @@ public class GUI extends Application implements View {
 
     @Override
     public void displayWinner(String name) {
-
+        WinnerScene winnerScene = new WinnerScene(name);
+        Platform.runLater(() -> TransitionHandler.setWinnerScene(winnerScene));
+        Platform.runLater(TransitionHandler::toWinnerScene);
+        EndScene endScene = new EndScene();
+        Platform.runLater(() -> TransitionHandler.setEndScene(endScene));
     }
 
     @Override
@@ -274,6 +268,11 @@ public class GUI extends Application implements View {
     @Override
     public void startBuildPhase() {
         Platform.runLater(() -> gameScene.startBuildPhase());
+    }
+
+    @Override
+    public void stop() {
+        System.exit(0);
     }
 
 }

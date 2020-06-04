@@ -18,18 +18,11 @@ public class NetworkHandler implements Runnable, UiObserver {
     Socket socket;
     ObjectInputStream socketIn;
     PrintWriter socketOut;
-    private View view;
+    private final View view;
+    private boolean ready = false;
 
-    public NetworkHandler(String ip, String port, View view) {
-        try {
-            socket = new Socket(ip, Integer.parseInt(port));
-            this.view = view;
-
-        } catch (IOException | IllegalArgumentException e) {
-            System.out.println("Server unreachable");
-            System.exit(0);
-        }
-        System.out.println("Connection established");
+    public NetworkHandler(View view) {
+        this.view = view;
     }
 
     /**
@@ -37,8 +30,6 @@ public class NetworkHandler implements Runnable, UiObserver {
      * @param inputObject message from server
      */
     private void manageInputFromServer(Object inputObject) {
-
-        //TODO synchronized thread -> conflicts with the javaFX thread
 
         if (inputObject instanceof NameMessage) {
             NameMessage message = (NameMessage) inputObject;
@@ -158,6 +149,16 @@ public class NetworkHandler implements Runnable, UiObserver {
     @Override
     public void run() {
 
+        synchronized (this) {
+            while (!ready) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         try {
             socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new PrintWriter(socket.getOutputStream(), true);
@@ -192,7 +193,6 @@ public class NetworkHandler implements Runnable, UiObserver {
                 e.printStackTrace();
             }
         }
-        System.exit(0);
     }
 
     @Override
@@ -201,4 +201,19 @@ public class NetworkHandler implements Runnable, UiObserver {
         socketOut.flush();
     }
 
+    @Override
+    public void updateConnection(String ip, String port) {
+        try {
+            socket = new Socket(ip, Integer.parseInt(port));
+            ready = true;
+            synchronized (this) {
+                notifyAll();
+            }
+
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("Server unreachable");
+            System.exit(0);
+        }
+        System.out.println("Connection established");
+    }
 }

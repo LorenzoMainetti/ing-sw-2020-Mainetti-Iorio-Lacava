@@ -25,4 +25,12 @@ public class UiObservable {
             }
         }
     }
+
+    public void notifyConnection(String ip, String port){
+        synchronized (observers) {
+            for(UiObserver observer : observers){
+                observer.updateConnection(ip, port);
+            }
+        }
+    }
 }
