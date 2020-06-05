@@ -23,7 +23,7 @@
             <Font name="Diogenes" size="49.0" />
          </font>
       </Text>
-      <ImageView id="nextButton" fitHeight="150.0" fitWidth="200.0" layoutX="967.0" layoutY="638.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView id="button" fitHeight="150.0" fitWidth="200.0" layoutX="967.0" layoutY="638.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@btn_blue.png" />
          </image>

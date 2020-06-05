@@ -59,7 +59,7 @@ public class GodPowerScene extends UiObservable {
         nextText = (Text) root.lookup("#nextText");
         nextText.setMouseTransparent(true);
         Text choiceText = (Text) root.lookup("#choiceText");
-        choiceText.setText("Choose " + playersCount + " God Power cards for this game:");
+        choiceText.setText("You are the Challenger. Choose " + playersCount + " God Power cards for this game:");
 
         for (StackPane card : cardList) {
             card.setOnMouseClicked(event -> {

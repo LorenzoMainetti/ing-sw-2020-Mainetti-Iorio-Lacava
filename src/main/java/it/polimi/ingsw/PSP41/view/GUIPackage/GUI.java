@@ -222,7 +222,7 @@ public class GUI extends Application implements View {
     public void displayChallenger(String name) {
         challenger = name;
         if(!clientName.equals(challenger))
-            Platform.runLater(() -> new AlertPopup().display(name + " is the most godlike! " + name + " is the challenger!"));
+            Platform.runLater(() -> new AlertPopup().display(name.toUpperCase() + " is the most godlike! " + name.toUpperCase() + " is the Challenger!"));
     }
 
     @Override
@@ -251,8 +251,6 @@ public class GUI extends Application implements View {
         WinnerScene winnerScene = new WinnerScene(name);
         Platform.runLater(() -> TransitionHandler.setWinnerScene(winnerScene));
         Platform.runLater(TransitionHandler::toWinnerScene);
-        EndScene endScene = new EndScene();
-        Platform.runLater(() -> TransitionHandler.setEndScene(endScene));
     }
 
     @Override

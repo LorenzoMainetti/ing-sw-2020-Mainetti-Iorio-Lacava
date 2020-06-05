@@ -1,7 +1,6 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
 import javafx.animation.FadeTransition;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
@@ -32,13 +31,16 @@ public class EndScene {
             fadeIn.play();
             fadeIn.setOnFinished((e) -> {
                 try {
-                    Thread.sleep(6000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
                 fadeOut.play();
-                Platform.exit();
-            });
+
+                fadeOut.setOnFinished((ev) -> {
+                    Platform.exit();
+                });
+            }); 
 
         } catch (IOException e){
             e.printStackTrace();

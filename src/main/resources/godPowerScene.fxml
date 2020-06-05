@@ -139,7 +139,7 @@
             </ImageView>
          </children>
       </StackPane>
-      <Text id="choiceText" fill="#464646" layoutX="216.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="788.7297973632812">
+      <Text id="choiceText" fill="#464646" layoutX="5.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="1194.1848754882812">
          <font>
             <Font name="Diogenes" size="41.0" />
          </font>
