@@ -580,11 +580,11 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     private void askConnection() {
-        System.out.println("IP address of server?");
+        /*System.out.println("IP address of server?");
         String ip = in.nextLine();
         System.out.println("Port?");
-        String port = in.nextLine();
-        notifyConnection(ip, port);
+        String port = in.nextLine();*/
+        notifyConnection("127.0.0.1", "9090");
     }
 
     @Override
@@ -594,7 +594,8 @@ public class CLI extends UiObservable implements Runnable, View {
 
     @Override
     public void displayNetworkError() {
-        System.out.println("Connection closed from server side");
+        System.out.println("\nConnection closed from server side");
+        System.exit(0);
     }
 
     @Override

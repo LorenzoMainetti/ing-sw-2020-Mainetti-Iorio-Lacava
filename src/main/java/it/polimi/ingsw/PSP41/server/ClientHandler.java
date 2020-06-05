@@ -7,15 +7,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 public class ClientHandler extends ConnectionObservable implements Runnable {
 
     private Socket socket;
-    private Lobby lobby; //NON FINAL ALTRIMENTI NON FUNZIONA NIENTE, INTELLIJ MENTE
-    private int position;
     private boolean connected = true;
     private boolean active = true;
     private boolean myTurn = false;
@@ -24,17 +21,8 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     private ObjectOutputStream socketOut;
     private BufferedReader socketIn;
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public ClientHandler(Socket socket, Lobby lobby) {
+    public ClientHandler(Socket socket) {
         this.socket = socket;
-        this.lobby = lobby;
     }
 
     public void setActive(boolean active) {
@@ -63,7 +51,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                 socketOut.flush();
             }
         } catch (IOException | NullPointerException e) {
-            System.err.println("Error in method send #" + position + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -74,10 +62,9 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         try {
             connected = false;
             socket.close();
-            System.out.println("Connection closed with client #" + position);
+            //System.out.println("Connection closed with client");
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Error in method close connection: " + e.getMessage());
         }
     }
 
@@ -94,7 +81,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     socketOut.writeObject("");
                     //socketOut.flush();
                 } catch (IOException e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         });
@@ -124,9 +111,9 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                         }
                     }
                 } catch (IOException | NullPointerException e) {
-                        System.out.println("[SERVER] Client #" + position + " unreachable");
-                        notifyDisconnection(this);
-                        break;
+                    System.out.println("[SERVER] Client unreachable");
+                    notifyDisconnection(this);
+                    break;
                 }
             }
         });
@@ -154,40 +141,12 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
 
     @Override
     public void run() {
-
         try {
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketOut = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //new Thread(this::pingToClient).start();
-
-        try {
-            if (lobby.getPlayersNumber() == -1 || position <= lobby.getPlayersNumber()) {
-                if (position <= 3) {
-                    // Lobby creation
-                    if (position == 1) {
-                        lobby.setPlayersNumber(this);
-                    }
-                    else {
-                        send(waitPlayersNum);
-                        lobby.waitPlayersNumber(this);
-                    }
-
-                    lobby.setNickname(this);
-                    lobby.setGodLike(this);
-                }
-            }
-            else {
-                send(fullLobby);
-                setActive(false);
-                closeConnection();
-            }
-
-        } catch (NoSuchElementException e) {
-            System.err.println("[SERVER] Error!" + e.getMessage());
-        }
     }
+
 }

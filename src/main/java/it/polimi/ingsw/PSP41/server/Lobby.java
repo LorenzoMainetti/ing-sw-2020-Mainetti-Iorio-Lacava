@@ -6,6 +6,8 @@ import it.polimi.ingsw.PSP41.model.GodPowerFactory;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.observer.ConnectionObserver;
+import it.polimi.ingsw.PSP41.observer.LobbyObservable;
 import it.polimi.ingsw.PSP41.utils.ChooseGodMessage;
 import it.polimi.ingsw.PSP41.utils.NameMessage;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
@@ -15,7 +17,7 @@ import java.util.*;
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 // Se mai volessimo fare multipartita, bisogna togliere gli static e creare un'istanza di lobby nel server, assegnandola direttamente ai clienthandler
-public class Lobby {
+public class Lobby extends LobbyObservable implements ConnectionObserver  {
     private final VirtualView virtualView = new VirtualView();
     private final UserInputManager userInputManager = new UserInputManager(virtualView);
     private Map<String, ClientHandler> clientNames = new HashMap<>();
@@ -28,9 +30,78 @@ public class Lobby {
     private final Object lock = new Object();
     private String challenger;
     private int playersNumber = -1;
+    private boolean ready = false;
 
-    public int getPlayersNumber() {
-        return playersNumber;
+    /**
+     * remove the current client from the list of connected clients
+     * @param client current client
+     */
+    public synchronized void deregisterConnection(ClientHandler client) {
+        System.out.println("[SERVER] Unregistering client...");
+        clients.remove(client);
+        System.out.println("[SERVER] Done!");
+    }
+
+    /**
+     * Manages disconnection: if the client disconnected is active, all the clients will be disconnected;
+     * else the client disconnected is removed from the server clients log
+     * @param client disconnected client
+     */
+    @Override
+    public void updateDisconnection(ClientHandler client) {
+        if (client.isActive()) {
+            if (ready) {
+                for (ClientHandler ch : clients) {
+                    ch.closeConnection();
+                    //deregisterConnection(client);
+                }
+            }
+            else {
+                client.closeConnection();
+                deregisterConnection(client);
+                if (playersNumber == -1) {
+                    notifyPlayersNumber(this);
+                }
+            }
+        }
+        else {
+            deregisterConnection(client);
+        }
+    }
+
+    public void addClient(ClientHandler client) {
+        Thread t = new Thread(() -> {
+            //System.out.println("[SERVER] addClient() is called");
+            client.addObserver(this);
+            clients.add(client);
+            System.out.println("clients size: " + clients.size());
+
+            if (clients.size() != playersNumber) {
+                if (clients.size() == 1) {
+                    if (playersNumber == -1) {
+                        setPlayersNumber(client);
+                    }
+                    else {
+                        client.send(playersNumber);
+                        notifyPlayersNumber(this);
+                        // TODO host migration message
+                    }
+                }
+                else {
+                    client.send(playersNumber);
+                    notifyPlayersNumber(this);
+                    // TODO host migration message
+                }
+            }
+            else {
+                client.send(playersNumber);
+            }
+
+            synchronized (lock) {
+                lock.notifyAll();
+            }
+        });
+        t.start();
     }
 
     /**
@@ -38,39 +109,35 @@ public class Lobby {
      * @param client current client
      */
     public void setPlayersNumber(ClientHandler client) {
+        client.send(startTurnMessage);
+        virtualView.requestPlayersNum(client);
+        playersNumber = userInputManager.getPlayersNumber();
+        System.out.println("[SERVER] The game will have " + playersNumber + " players");
+        client.send(Integer.valueOf(playersNumber));
+        client.send(endTurnMessage);
+
+        notifyPlayersNumber(this);
 
         synchronized (lock) {
-            client.send(startTurnMessage);
-            virtualView.requestPlayersNum(client);
-            playersNumber = userInputManager.getPlayersNumber();
-            lock.notifyAll();
-            System.out.println("[SERVER] The game will have " + playersNumber + " players");
-            client.send(Integer.valueOf(playersNumber));
-            client.send(endTurnMessage);
-        }
-    }
-
-    /**
-     * wait until the first connected user has not choose the playersNumber
-     * @param client current client
-     */
-    public void waitPlayersNumber(ClientHandler client) {
-        synchronized (lock) {
-            while (playersNumber == -1) {
+            while (clients.size() != playersNumber) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+        }
 
-            if (client.getPosition() > playersNumber) {
-                client.send(fullLobby);
-                client.setActive(false);
-                client.closeConnection();
-            } else {
-                client.send(Integer.valueOf(playersNumber));
-            }
+        ready = true;
+        notifyLobbyIsReady();
+        System.out.println("[SERVER] setPlayers()");
+        setPlayers();
+    }
+
+    public void setPlayers() {
+        for (ClientHandler client : clients) {
+            setNickname(client);
+            setGodLike(client);
         }
     }
 
@@ -92,14 +159,11 @@ public class Lobby {
 
         //add user to the list of connected users
         playersName.add(nickname);
-        clients.add(client);
+        //clients.add(client);
         clientNames.put(nickname, client);
         virtualView.addClient(nickname, client);
 
         System.out.println("[SERVER] " + nickname + " registered!");
-
-        //tells client that it's been registered
-        client.send(new NameMessage(acceptedMessage, nickname));
 
         client.send(waitMessage);
         client.send(endTurnMessage);
