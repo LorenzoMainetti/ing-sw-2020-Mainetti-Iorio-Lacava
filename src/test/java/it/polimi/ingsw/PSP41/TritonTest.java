@@ -46,4 +46,14 @@ public class TritonTest {
         assertEquals(3, godPower.getPhases().size());
     }
 
+    @Test
+    public void testMove() {
+        godPower.move(player.getWorker1(), board, 3, 4);
+        assertFalse(godPower.isTriggered());
+        assertFalse(board.getCell(4,4).isOccupied());
+        assertTrue(board.getCell(3,4).isOccupied());
+        assertEquals(3, player.getWorker1().getRow());
+        assertEquals(4, player.getWorker1().getColumn());
+    }
+
 }

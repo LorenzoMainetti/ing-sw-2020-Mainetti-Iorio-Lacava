@@ -14,6 +14,11 @@ public class Artemis extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if there is a valid move position that is not the worker's starting one
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         List<Position> pos = am.getValidMoves(board, worker.getRow(), worker.getColumn());
@@ -21,12 +26,22 @@ public class Artemis extends GodPower {
         return !pos.isEmpty();
     }
 
+    /**
+     * When triggered remove worker's starting position from the available ones
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase)
             positions.removeIf(p -> (p.getPosRow()==rowConstraint && p.getPosColumn()==colConstraint));
     }
 
+    /**
+     * Add move phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -40,16 +55,18 @@ public class Artemis extends GodPower {
         }
     }
 
+    /**
+     * Save worker's starting position and perform a regular move
+     * @param worker worker that the player wants to move
+     * @param board board state
+     * @param row selected by the player where the worker will move
+     * @param column selected by the player where the worker will move
+     */
     @Override
     public void move(Worker worker, Board board, int row, int column) {
         rowConstraint = worker.getRow();
         colConstraint = worker.getColumn();
         super.move(worker, board, row, column);
-    }
-
-    @Override
-    public String toString() {
-        return ("Your Worker may move one additional time, but not back to its initial space.");
     }
 
 }

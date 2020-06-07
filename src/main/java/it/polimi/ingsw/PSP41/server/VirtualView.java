@@ -16,7 +16,7 @@ import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 public class VirtualView extends ViewObservable implements ModelObserver {
 
     private Map<String, ClientHandler> clients = new ConcurrentHashMap<>();
-    String currPlayer;
+    private String currPlayer;
 
     public void addClient(String name, ClientHandler client) {
         clients.put(name, client);
@@ -31,7 +31,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * ask the nickname
+     * Ask the nickname
      * @param currClient player addressee
      */
     public void requestNickname(ClientHandler currClient) {
@@ -47,7 +47,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * ask the lobby size
+     * Ask the lobby size
      * @param currClient first player in the lobby
      */
     public void requestPlayersNum(ClientHandler currClient) {

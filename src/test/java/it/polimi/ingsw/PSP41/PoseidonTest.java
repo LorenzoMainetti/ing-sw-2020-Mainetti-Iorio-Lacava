@@ -49,6 +49,12 @@ public class PoseidonTest {
     }
 
     @Test
+    public void testSwitchWorker() {
+        godPower.switchWorker();
+        assertFalse(godPower.switchWorker());
+    }
+
+    @Test
     public void testAddPhase() {
         godPower.setTriggered(true);
         godPower.addPhase();
@@ -57,6 +63,13 @@ public class PoseidonTest {
         godPower.setTriggered(false);
         godPower.addPhase();
         assertEquals(3, godPower.getPhases().size());
+    }
+
+    @Test
+    public void testBuild() {
+        player.build(board, 3, 4);
+        assertFalse(godPower.isTriggered());
+        assertEquals(1, board.getCell(3, 4).getLevel());
     }
 
 }

@@ -2,7 +2,6 @@ package it.polimi.ingsw.PSP41.view.GUIPackage;
 
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
-import it.polimi.ingsw.PSP41.view.CLIPackage.ColorCLI;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -134,26 +133,13 @@ public class PlayerScene extends UiObservable {
                         cardList.get(i).setImage(new Image("/godCards/12.png"));
                         break;
                 }
+
+                stackList.get(i).setOnMouseClicked(event -> new SecondCardPopup((StackPane) event.getSource()).display(player.getGodName(), gameGodsMessages.get(gameGods.indexOf(player.getGodName()))));
                 j++;
             }
         }
 
-
         for(StackPane card : stackList) {
-
-            card.setOnMouseClicked(event -> {
-
-                int counter = 0;
-                for (StackPane card1 : stackList) {
-                    if (card1 == event.getSource()) {
-                        break;
-                    }
-                    counter++;
-                }
-
-                new SecondCardPopup((StackPane) event.getSource()).display(players.get(counter).getGodName(), gameGodsMessages.get(gameGods.indexOf(players.get(counter).getGodName())));
-            });
-
             DropShadow borderGlow = new DropShadow();
             borderGlow.setColor(Color.BLUE);
             borderGlow.setOffsetX(0f);
@@ -190,7 +176,7 @@ public class PlayerScene extends UiObservable {
                         challengerTextField.setText(null);
                         challengerTextField.setStyle("-fx-background-color: transparent;");
 
-                        PlayerScene.this.notify(starter);
+                        notify(starter);
                     }
                     else
                         new AlertPopup().display("Please enter a valid nickname.");

@@ -118,7 +118,7 @@ public class GodPowerScene extends UiObservable {
                         break;
                 }
 
-                GodPowerScene.this.notify(s);
+                notify(s);
 
             }
             else

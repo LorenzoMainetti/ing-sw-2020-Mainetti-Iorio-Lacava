@@ -20,7 +20,7 @@ public class Server implements Runnable, ConnectionObserver {
     private final Object lock = new Object();
 
     /**
-     * remove the current client from the list of connected clients
+     * Remove the current client from the list of connected clients
      * @param client current client
      */
     public synchronized void deregisterConnection(ClientHandler client) {

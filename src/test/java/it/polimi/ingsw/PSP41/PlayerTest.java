@@ -52,6 +52,11 @@ public class PlayerTest {
         assertEquals(2, player.getWorker1().getColumn());
         assertTrue(board.getCell(0, 2).isOccupied());
 
+        player.getGodCard().move(player.getWorker2(), board, 3, 4);
+        assertEquals(3, player.getWorker2().getRow());
+        assertEquals(4, player.getWorker2().getColumn());
+        assertTrue(board.getCell(3, 4).isOccupied());
+
     }
 
     @Test
@@ -67,7 +72,7 @@ public class PlayerTest {
         c.addLevel();
         c.addLevel();
         player.build(board, 0, 3);
-        assertEquals(4, board.getCell(0, 3).getLevel());
+        assertEquals(3, board.getCell(0, 3).getLevel());
         assertTrue(board.getCell(0, 3).isDome());
     }
 

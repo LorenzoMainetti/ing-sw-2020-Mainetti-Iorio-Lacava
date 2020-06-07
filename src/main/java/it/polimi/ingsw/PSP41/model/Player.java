@@ -65,7 +65,7 @@ public class Player extends ModelObservable {
     }
 
     /**
-     * apply GodPower's strategy for move
+     * Apply GodPower's strategy for move
      * @param worker worker that the player wants to move
      * @param board board state
      * @param row selected by the player where the worker will move
@@ -76,7 +76,7 @@ public class Player extends ModelObservable {
     }
 
     /**
-     * apply GodPower's strategy for build
+     * Apply GodPower's strategy for build
      * @param board board state
      * @param row where the player wants to build
      * @param column where the player wants to build

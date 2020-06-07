@@ -173,8 +173,13 @@ public class GUI extends Application implements View {
     @Override
     public void displayNetworkError() {
         Platform.runLater(() -> new AlertPopup().display("ERROR: Connection closed from server side."));
+        //wait that user can read the alert
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Platform.exit();
-        System.exit(-1);
     }
 
     @Override
@@ -222,7 +227,7 @@ public class GUI extends Application implements View {
     public void displayChallenger(String name) {
         challenger = name;
         if(!clientName.equals(challenger))
-            Platform.runLater(() -> new AlertPopup().display(name.toUpperCase() + " is the most godlike! " + name.toUpperCase() + " is the Challenger!"));
+            Platform.runLater(() -> new AlertPopup().display(name + " is the most godlike! " + name + " is the Challenger!"));
     }
 
     @Override

@@ -11,6 +11,12 @@ public class Atlas extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * Atlas strategy for BUILD: "Your Worker may build a dome at any level"
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
+     */
     @Override
     public void build(Board board, int row, int column) {
         if(isTriggered()) {
@@ -18,11 +24,6 @@ public class Atlas extends GodPower {
         }
         else
             super.build(board, row, column);
-    }
-
-    @Override
-    public String toString() {
-        return ("Your Worker may build a dome at any level.");
     }
 
 }

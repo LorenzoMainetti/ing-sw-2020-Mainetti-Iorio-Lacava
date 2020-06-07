@@ -12,12 +12,24 @@ public class Ares extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true when there is at least a removable block (not dome)
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         Position otherWorker = am.getOtherWorker(board, worker.getRow(), worker.getColumn());
         return !am.getValidRemovableBlocks(board, otherWorker.getPosRow(), otherWorker.getPosColumn()).isEmpty();
     }
 
+    /**
+     * When triggered remove ground level positions
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase) {
@@ -30,6 +42,9 @@ public class Ares extends GodPower {
         return isTriggered();
     }
 
+    /**
+     * Add build phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -42,6 +57,13 @@ public class Ares extends GodPower {
         }
     }
 
+    /**
+     * Ares strategy for BUILD: "You may remove an unoccupied block
+     * (not dome) neighbouring your unmoved worker"
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
+     */
     @Override
     public void build(Board board, int row, int column) {
         if(isTriggered()) {
@@ -49,11 +71,6 @@ public class Ares extends GodPower {
         }
         else
             super.build(board, row, column);
-    }
-
-    @Override
-    public String toString() {
-        return ("You may remove an unoccupied block (not dome) neighbouring your unmoved worker.");
     }
 
 }

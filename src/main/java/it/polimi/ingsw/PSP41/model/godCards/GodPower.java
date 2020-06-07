@@ -23,7 +23,7 @@ public abstract class GodPower {
     }
 
     /**
-     * get the worker's number if the only available move is guaranteed by the use of the GodPower
+     * Get the worker's number if the only available move is guaranteed by the use of the GodPower
      * @param board current board state
      * @param player chosen worker
      * @return no available workers (-1), worker1 (1), worker2 (2), user's choice (0)
@@ -59,7 +59,7 @@ public abstract class GodPower {
     }
 
     /**
-     * modify the given list of positions applying godPower's constraints that are triggered during opponent's turn
+     * Modify the given list of positions applying godPower's constraints that are triggered during opponent's turn
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -67,7 +67,7 @@ public abstract class GodPower {
     public void applyOpponentConstraints(List<Position> positions, Board board, Worker worker) { }
 
     /**
-     * modify the given list of positions applying godPower's extenders/constraints that trigger during owner's turn
+     * Modify the given list of positions applying godPower's extenders/constraints that trigger during owner's turn
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -81,7 +81,7 @@ public abstract class GodPower {
     public boolean switchWorker() { return false; }
 
     /**
-     * add a phase to owner's turn
+     * Add a phase to owner's turn
      */
     public void addPhase() { }
 

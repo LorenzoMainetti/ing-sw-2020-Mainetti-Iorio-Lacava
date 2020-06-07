@@ -61,21 +61,14 @@ public class WorkerTest {
         catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("Invalid position.", ex.getMessage());
         }
-        catch (IllegalStateException ex){
-            assertEquals("Position taken.", ex.getMessage());
-        }
         finally {
             assertEquals(-1, worker.getRow());
             assertEquals(-1, worker.getColumn());
         }
 
-
         try {
             worker.setPosition(board,2, 3);
             anotherWorker.setPosition(board, 2,3);
-        }
-        catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("Invalid position.", ex.getMessage());
         }
         catch (IllegalStateException ex){
             assertEquals("Position taken.", ex.getMessage());

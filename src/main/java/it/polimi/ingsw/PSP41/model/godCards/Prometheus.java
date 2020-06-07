@@ -12,6 +12,13 @@ public class Prometheus extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true when there are some not higher cells available for building
+     * (if there is only one, either its level needs to be lower than the worker's one,
+     * or there needs to be some other valid builds)
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         List<Position> notHigherCells = am.getNotHigherCells(board, worker.getRow(), worker.getColumn());
@@ -24,6 +31,14 @@ public class Prometheus extends GodPower {
                 || am.getValidBuilds(board, worker.getRow(), worker.getColumn()).size() != 1);
     }
 
+    /**
+     * When triggered: if it's build phase handle corner case (only one not higher cell available),
+     * if it's move phase remove higher cells from the available moves
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered()) {
@@ -44,6 +59,9 @@ public class Prometheus extends GodPower {
         }
     }
 
+    /**
+     * Add build phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -54,11 +72,6 @@ public class Prometheus extends GodPower {
             if(phases.size() > 2)
                 phases.remove(0);
         }
-    }
-
-    @Override
-    public String toString() {
-        return ("If your Worker does not move up, it may build both before and after moving.");
     }
 
 }

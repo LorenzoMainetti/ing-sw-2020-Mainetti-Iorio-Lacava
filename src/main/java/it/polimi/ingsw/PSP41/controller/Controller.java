@@ -65,7 +65,7 @@ public class Controller {
     }
 
     /**
-     * handle turn shifts
+     * Handle turn shifts
      */
     public void play() {
 
@@ -94,7 +94,7 @@ public class Controller {
     }
 
     /**
-     * handle a player's turn
+     * Handle a player's turn
      * @param player current player
      */
     private void performTurn(Player player) {
@@ -217,7 +217,7 @@ public class Controller {
     }
 
     /**
-     * tells VirtualView to ask for worker number and set the answer
+     * Tells VirtualView to ask for worker number and set the answer
      * @param player current Player
      */
     private void askWorkerNum(Player player) {
@@ -279,7 +279,7 @@ public class Controller {
     }
 
     /**
-     * apply any additional phase
+     * Apply any additional phase
      * @param player current Player
      * @param turnPhase current turnPhase
      */
@@ -314,7 +314,7 @@ public class Controller {
     }
 
     /**
-     * switch the current Worker with the other one of the same Player
+     * Switch the current Worker with the other one of the same Player
      * @param player current Player
      */
     private void applySwitchWorker(Player player) {

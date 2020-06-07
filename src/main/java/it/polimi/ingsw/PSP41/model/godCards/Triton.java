@@ -12,12 +12,20 @@ public class Triton extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if worker is on the perimeter and there are available moves
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         return (new Position(worker.getRow(), worker.getColumn()).isPerimeter() &&
                 !am.getValidMoves(board, worker.getRow(), worker.getColumn()).isEmpty());
     }
 
+    /**
+     * Add move phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -30,15 +38,17 @@ public class Triton extends GodPower {
         }
     }
 
+    /**
+     * Perform a regular move and reset trigger in order to re-ask activation
+     * @param worker worker that the player wants to move
+     * @param board board state
+     * @param row selected by the player where the worker will move
+     * @param column selected by the player where the worker will move
+     */
     @Override
     public void move(Worker worker, Board board, int row, int column) {
         triggered = false;
         super.move(worker, board, row, column);
-    }
-
-    @Override
-    public String toString() {
-        return ("Each time your worker moves into a perimeter space, it may immediately move again.");
     }
 
 }

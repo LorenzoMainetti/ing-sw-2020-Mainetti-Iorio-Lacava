@@ -12,6 +12,11 @@ public class Hestia extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if there is a valid build position not on the perimeter
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         List<Position> pos = am.getValidBuilds(board, worker.getRow(), worker.getColumn());
@@ -19,12 +24,22 @@ public class Hestia extends GodPower {
         return !pos.isEmpty();
     }
 
+    /**
+     * When triggered remove positions on the perimeter from the available ones
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase)
             positions.removeIf(Position::isPerimeter);
     }
 
+    /**
+     * Add build phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -36,11 +51,6 @@ public class Hestia extends GodPower {
             if(phases.size() > 2)
                 phases.remove(TurnPhase.BUILD);
         }
-    }
-
-    @Override
-    public String toString() {
-        return ("Your worker may build one additional time, but this cannot be on a perimeter space.");
     }
 
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.PSP41.view.GUIPackage;
 
 import it.polimi.ingsw.PSP41.model.Board;
+import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Position;
 import it.polimi.ingsw.PSP41.observer.UiObservable;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
@@ -288,7 +289,16 @@ public class GameScene extends UiObservable {
 
                 if(myTurn) {
                     if (findId(pane, "#worker") == null) {
-                        ImageView light = addImage(pane, "/playermoveindicator_" + players.get(counter).getPlayerColor().toString() + ".png");
+                        ImageView light;
+                        if(players.get(counter).getPlayerColor() == Color.RED) {
+                            light = addImage(pane, "/playermoveindicator_red.png");
+                        }
+                        else if(players.get(counter).getPlayerColor() == Color.YELLOW) {
+                            light = addImage(pane, "/playermoveindicator_yellow.png");
+                        }
+                        else {
+                            light = addImage(pane, "/playermoveindicator_blue.png");
+                        }
                         light.setId("#light");
                     }
                 }
@@ -358,7 +368,16 @@ public class GameScene extends UiObservable {
         for(Position pos : availablePositions){
             Pane pane = (Pane) getNodeByRowColumnIndex(pos.getPosRow(), pos.getPosColumn(), gameBoard);
 
-            ImageView light = addImage(pane, "/playermoveindicator_" + players.get(counter).getPlayerColor().toString() + ".png");
+            ImageView light;
+            if(players.get(counter).getPlayerColor() == Color.RED) {
+                light = addImage(pane, "/playermoveindicator_red.png");
+            }
+            else if(players.get(counter).getPlayerColor() == Color.YELLOW) {
+                light = addImage(pane, "/playermoveindicator_yellow.png");
+            }
+            else {
+                light = addImage(pane, "/playermoveindicator_blue.png");
+            }
             light.setId("#light");
         }
 

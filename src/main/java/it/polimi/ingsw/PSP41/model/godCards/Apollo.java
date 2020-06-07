@@ -12,11 +12,22 @@ public class Apollo extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if the chosen worker is neighboring an opponent's worker that is able to move
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         return !am.getActiveOpponentWorkers(board, worker.getRow(), worker.getColumn()).isEmpty();
     }
 
+    /**
+     * Find workers placed where the godPower is actionable, if there are any
+     * @param board current board state
+     * @param player chosen worker
+     * @return no available workers (-1), worker1 (1), worker2 (2), user's choice (0)
+     */
     @Override
     public int godPowerRequired(Board board, Player player) {
         if(!isActionable(board, player.getWorker1()) && !isActionable(board, player.getWorker2()))
@@ -31,6 +42,13 @@ public class Apollo extends GodPower {
         }
     }
 
+    /**
+     * When actionable add neighboring opponent's workers' positions to the available ones
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isActionable(board,worker) && phase==TurnPhase.MOVE) {
@@ -38,6 +56,14 @@ public class Apollo extends GodPower {
         }
     }
 
+    /**
+     * Apollo strategy for MOVE: "Your Worker may move into an opponent Worker's space
+     * by forcing their Worker to the space yours just vacated"
+     * @param worker worker that the player wants to move
+     * @param board board state
+     * @param row selected by the player where the worker will move
+     * @param column selected by the player where the worker will move
+     */
     @Override
     public void move(Worker worker, Board board, int row, int column) {
         if (board.getCell(row, column).isOccupied()) {
@@ -55,11 +81,6 @@ public class Apollo extends GodPower {
         }
         else
             super.move(worker, board, row, column);
-    }
-
-    @Override
-    public String toString() {
-        return ("Your Worker may move into an opponent Worker's space by forcing their Worker to the space yours just vacated.");
     }
 
 }

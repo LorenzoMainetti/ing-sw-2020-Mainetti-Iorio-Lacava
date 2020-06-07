@@ -34,7 +34,7 @@ public class Lobby {
     }
 
     /**
-     * ask and set the number of players to the first connected user
+     * Ask and set the number of players to the first connected user
      * @param client current client
      */
     public void setPlayersNumber(ClientHandler client) {
@@ -51,7 +51,7 @@ public class Lobby {
     }
 
     /**
-     * wait until the first connected user has not choose the playersNumber
+     * Wait until the first connected user has not choose the playersNumber
      * @param client current client
      */
     public void waitPlayersNumber(ClientHandler client) {
@@ -75,7 +75,7 @@ public class Lobby {
     }
 
     /**
-     * ask and set the current client's nickname
+     * Ask and set the current client's nickname
      * @param client current client
      */
     public synchronized void setNickname(ClientHandler client) {
@@ -107,7 +107,7 @@ public class Lobby {
     }
 
     /**
-     * random choice of the challenger from the connected clients
+     * Random choice of the challenger from the connected clients
      */
     public synchronized void setGodLike(ClientHandler client) {
 
@@ -137,7 +137,7 @@ public class Lobby {
     }
 
     /**
-     * ask the challenger to choose the godCards that will be used in the game
+     * Ask the challenger to choose the godCards that will be used in the game
      * @param client challenger's client
      * @param name challenger's nickname
      */
@@ -189,7 +189,7 @@ public class Lobby {
     }
 
     /**
-     * assign a godCard to the current client (the challenger gets the remaining card)
+     * Assign a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
      */
     public synchronized void setGodCard(ClientHandler client) {
@@ -202,7 +202,7 @@ public class Lobby {
     }
 
     /**
-     * ask and set the chosen godCard
+     * Ask and set the chosen godCard
      * @param client current client
      */
     private synchronized void assignGod(ClientHandler client) {
@@ -234,7 +234,7 @@ public class Lobby {
     }
 
     /**
-     * setup game creating model and controller, then notifies the server that will start the match
+     * Setup game creating model and controller, then notifies the server that will start the match
      * @param client current client
      */
     private void createGame(ClientHandler client) {
@@ -291,7 +291,7 @@ public class Lobby {
     }
 
     /**
-     * create Board and Controller and start a new match
+     * Create Board and Controller and start a new match
      * @param sortedPlayers match players list (and associated gods)
      */
     public void startGame(List<Player> sortedPlayers) {

@@ -14,11 +14,23 @@ public class Hephaestus extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if previous build position's level is lower then the third
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         return board.getCell(rowConstraint, colConstraint).getLevel() < 3;
     }
 
+    /**
+     * When triggered make only available position the one where it has been built previously
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isTriggered() && phase == affectPhase) {
@@ -27,6 +39,9 @@ public class Hephaestus extends GodPower {
         }
     }
 
+    /**
+     * Add build phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -39,7 +54,12 @@ public class Hephaestus extends GodPower {
         }
     }
 
-    //TODO mi chiede dove costruire anche se non necessario, potrei chiedergli l'attivazione Before Build e fare +2lev
+    /**
+     * Save current build position and perform a regular build
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
+     */
     @Override
     public void build(Board board, int row, int column) {
         rowConstraint = row;
@@ -47,8 +67,4 @@ public class Hephaestus extends GodPower {
         super.build(board, row, column);
     }
 
-    @Override
-    public String toString() {
-        return ("Your Worker may build one additional block (not dome) on top of your first block.");
-    }
 }

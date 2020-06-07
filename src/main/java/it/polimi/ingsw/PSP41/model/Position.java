@@ -22,7 +22,7 @@ public class Position implements Serializable {
     }
 
     /**
-     * Return if the position is on the perimeter of the board or not
+     * @return if the position is on the perimeter of the board or not
      */
     public boolean isPerimeter() {
 

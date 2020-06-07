@@ -39,7 +39,7 @@ public class NumberScene extends UiObservable {
             else
                 number = "3";
 
-            NumberScene.this.notify(number);
+            notify(number);
         });
     }
 

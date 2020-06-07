@@ -13,6 +13,11 @@ public class Poseidon extends GodPower {
         phases.add(TurnPhase.BUILD); //so the while in controller can keep going
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if the unmoved worker is on the ground level and there are available build positions
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         if(firstTime) {
@@ -30,6 +35,9 @@ public class Poseidon extends GodPower {
         return isTriggered();
     }
 
+    /**
+     * Add build phase, reset to default when not triggered
+     */
     @Override
     public void addPhase() {
         if(isTriggered()) {
@@ -43,15 +51,16 @@ public class Poseidon extends GodPower {
         }
     }
 
+    /**
+     * Perform a regular build and reset trigger in order to re-ask activation
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
+     */
     @Override
     public void build(Board board, int row, int column) {
         triggered = false;
         super.build(board, row, column);
-    }
-
-    @Override
-    public String toString() {
-        return ("If your unmoved worker is on the ground level, it may build up to three times.");
     }
 
 }

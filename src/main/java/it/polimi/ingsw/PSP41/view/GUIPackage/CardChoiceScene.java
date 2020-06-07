@@ -163,7 +163,7 @@ public class CardChoiceScene extends UiObservable {
 
                 String s = selectedByChallenger.get(selectedCards.indexOf(true));
 
-                CardChoiceScene.this.notify(s);
+                notify(s);
 
             }
             else

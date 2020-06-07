@@ -36,6 +36,11 @@ public class AresTest {
     }
 
     @Test
+    public void testSwitchWorker() {
+        assertFalse(godPower.switchWorker());
+    }
+
+    @Test
     public void testApplyEffect() {
         godPower.setTriggered(true);
         board.getCell(1, 2).addLevel();

@@ -12,20 +12,27 @@ public class Zeus extends GodPower {
         phases.add(TurnPhase.BUILD);
     }
 
+    /**
+     * @param board current board state
+     * @param worker chosen worker
+     * @return true if chosen worker's level is lower then the third
+     */
     @Override
     public boolean isActionable(Board board, Worker worker) {
         return board.getCell(worker.getRow(), worker.getColumn()).getLevel() < 3;
     }
 
+    /**
+     * When actionable add current worker's position to the available ones
+     * @param positions current list of valid positions
+     * @param board current board state
+     * @param worker chosen worker
+     * @param phase current phase
+     */
     @Override
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) {
         if(isActionable(board, worker) && phase==TurnPhase.BUILD)
             positions.add(new Position(worker.getRow(), worker.getColumn()));
-    }
-
-    @Override
-    public String toString() {
-        return ("Your worker may build a block under itself. You do not win by forcing yourself up to the third level.");
     }
 
 }

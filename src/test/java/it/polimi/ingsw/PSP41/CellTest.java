@@ -54,7 +54,7 @@ public class CellTest {
             assertEquals("You can't add another level.", ex.getMessage());
         }
         finally {
-            assertEquals(4, cell.getLevel());
+            assertEquals(3, cell.getLevel());
             assertTrue(cell.isDome());
         }
 
@@ -85,8 +85,17 @@ public class CellTest {
         } catch (IllegalStateException ex) {
             assertEquals("You can't add another level.", ex.getMessage());
         } finally {
-            assertEquals(4, cell.getLevel());
+            assertEquals(3, cell.getLevel());
             assertTrue(cell.isDome());
+        }
+    }
+
+    @Test
+    public void testRemoveLevelException() {
+        try {
+            cell.removeLevel();
+        } catch (IllegalStateException ex) {
+            assertEquals("There are no levels to remove.", ex.getMessage());
         }
     }
 

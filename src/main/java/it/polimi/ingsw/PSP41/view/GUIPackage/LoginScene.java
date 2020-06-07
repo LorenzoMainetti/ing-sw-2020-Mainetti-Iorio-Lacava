@@ -30,7 +30,7 @@ public class LoginScene extends UiObservable {
             String nickname = nicknameTextField.getText();
 
             if(nickname != null) {
-                LoginScene.this.notify(nickname);
+                notify(nickname);
 
             }
             else

@@ -31,7 +31,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * read input from user when it's needed
+     * Read input from user when it's needed
      */
     private void readInput() {
         while(true) {
@@ -51,7 +51,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * wait until an input is needed
+     * Wait until an input is needed
      * @return input read from client
      */
     private String getInput() {
@@ -595,6 +595,7 @@ public class CLI extends UiObservable implements Runnable, View {
     @Override
     public void displayNetworkError() {
         System.out.println("Connection closed from server side");
+        System.exit(0);
     }
 
     @Override

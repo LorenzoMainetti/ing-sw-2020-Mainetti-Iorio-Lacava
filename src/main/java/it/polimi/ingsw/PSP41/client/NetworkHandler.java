@@ -129,7 +129,7 @@ public class NetworkHandler implements Runnable, UiObserver {
     }
 
     /**
-     * send a ping message from Client to Server
+     * Send a ping message from Client to Server
      */
     public void pingToServer() {
         Thread t = new Thread(() -> {
