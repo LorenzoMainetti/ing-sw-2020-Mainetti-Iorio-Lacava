@@ -601,6 +601,7 @@ public class CLI extends UiObservable implements Runnable, View {
     @Override
     public void displayFullLobby() {
         System.out.println("The lobby is already full!");
+        System.exit(0);
     }
 
     @Override

@@ -70,7 +70,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     /**
      * Closes connection with client
      */
-    public synchronized void closeConnection() {
+    public void closeConnection() {
         try {
             connected = false;
             socket.close();
@@ -123,7 +123,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                             System.out.println("[SERVER] Wrong turn message");
                         }
                     }
-                } catch (IOException | NullPointerException e) {
+                } catch (IOException | NullPointerException | IllegalArgumentException e) {
                         System.out.println("[SERVER] Client #" + position + " unreachable");
                         notifyDisconnection(this);
                         break;
@@ -162,7 +162,14 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
             e.printStackTrace();
         }
 
-        //new Thread(this::pingToClient).start();
+        pingToClient();
+        readFromClient();
+
+        if (position > 3) {
+            send(fullLobby);
+            active = false;
+            closeConnection();
+        }
 
         try {
             if (lobby.getPlayersNumber() == -1 || position <= lobby.getPlayersNumber()) {

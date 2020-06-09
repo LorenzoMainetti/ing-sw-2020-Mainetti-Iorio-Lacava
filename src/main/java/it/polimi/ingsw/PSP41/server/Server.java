@@ -85,21 +85,11 @@ public class Server implements Runnable, ConnectionObserver {
 
                 executor.submit(clientHandler);
 
-                if (clientHandler.getPosition() <= 3) {
-                    clientHandler.pingToClient();
-                    clientHandler.readFromClient();
-                }
-                else {
-                    clientHandler.send(fullLobby);
-                    clientHandler.setActive(false);
-                    clientHandler.closeConnection();
-                }
-
             } catch (IOException e) {
                 System.out.println("[SERVER] Restarting server...");
                 return;
             }
         }
-
     }
+
 }

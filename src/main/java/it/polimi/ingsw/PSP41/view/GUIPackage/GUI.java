@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -38,6 +39,9 @@ public class GUI extends Application implements View {
 
     @Override
     public void start(Stage primaryStage) {
+        Font.loadFont(getClass().getResourceAsStream("/fonts/AvenirBook.ttf"), 28);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/AvenirNext-Bold.ttf"), 28);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Diogenes.ttf"), 28);
 
         networkHandler = new NetworkHandler(this);
         executor.submit(networkHandler);
@@ -185,6 +189,12 @@ public class GUI extends Application implements View {
     @Override
     public void displayFullLobby() {
         Platform.runLater(() -> new AlertPopup().display("Sorry, the lobby is already full. Try again later."));
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Platform.exit();
     }
 
     @Override
