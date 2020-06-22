@@ -7,11 +7,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+import static it.polimi.ingsw.PSP41.utils.GameMessage.waitPlayersNum;
+
 public class Server implements Runnable, LobbyObserver {
 
     ServerSocket serverSocket;
     private final int PORT = 9090;
-    private List<ClientHandler> log = new ArrayList<>();
+    private List<ClientHandler> clientsList = Collections.synchronizedList(new ArrayList<>()); // TODO coda concurrent
     private boolean first = true;
     private final Object lock = new Object();
 
@@ -30,9 +32,7 @@ public class Server implements Runnable, LobbyObserver {
                 Socket newSocket = serverSocket.accept();
                 System.out.println("[SERVER] Client connected to server");
                 ClientHandler clientHandler = new ClientHandler(newSocket);
-                clientHandler.run();
-                clientHandler.pingToClient();
-                clientHandler.readFromClient();
+                clientHandler.begin();
 
                 addClientToLog(clientHandler);
 
@@ -43,37 +43,37 @@ public class Server implements Runnable, LobbyObserver {
         }
     }
 
-    public void addClientToLog(ClientHandler client) {
-        Thread t = new Thread(() -> {
-            log.add(client);
-            System.out.println("[SERVER] new log.size(): " + log.size());
-            synchronized (lock) {
-                lock.notifyAll();
-            }
+    private void addClientToLog(ClientHandler client) {
+        synchronized (clientsList) {
+            clientsList.add(client);
+            System.out.println("[SERVER] new log.size(): " + clientsList.size());
             System.out.println("[SERVER] client added in log");
             if (first) {
                 System.out.println("[SERVER] First player");
                 first = false;
-                addLobby(new Lobby());
+                createNewLobby();
             }
-        });
-        t.start();
+            else {
+               client.send(waitPlayersNum);
+            }
+            clientsList.notifyAll();
+        }
     }
 
     @Override
     public void updatePlayersNumber(Lobby lobby) {
-        System.out.println("[SERVER] log.size() in updatePlayersNumber(): " + log.size());
-        synchronized (lock) {
-            System.out.println("[SERVER] log.size() in updatePlayersNumber(): " + log.size());
-            while (log.size() == 0) {
+        System.out.println("[SERVER] log.size() in updatePlayersNumber(): " + clientsList.size());
+        synchronized (clientsList) {
+            System.out.println("[SERVER] log.size() in updatePlayersNumber(): " + clientsList.size());
+            while (clientsList.size() == 0) {
                 try {
-                    lock.wait();
+                    clientsList.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            ClientHandler client = log.get(0);
-            log.remove(0);
+            ClientHandler client = clientsList.get(0);
+            clientsList.remove(0);
             System.out.println("[SERVER] addClient()");
             lobby.addClient(client);
         }
@@ -81,29 +81,27 @@ public class Server implements Runnable, LobbyObserver {
 
     @Override
     public void createNewLobby() {
-        addLobby(new Lobby());
+        Thread t = new Thread(() -> addLobby(new Lobby()));
+        t.start();
     }
 
     public void addLobby(Lobby lobby) {
-        Thread t = new Thread(() -> {
-            lobby.addObserver(this);
-            System.out.println("[SERVER] log.size() in addLobby(): " + log.size());
-            synchronized (lock) {
-                System.out.println("[SERVER] log.size() in addLobby(): " + log.size());
-                while (log.size() == 0) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        lobby.addObserver(this);
+        System.out.println("[SERVER] log.size() in addLobby(): " + clientsList.size());
+        synchronized (clientsList) {
+            System.out.println("[SERVER] log.size() in addLobby(): " + clientsList.size());
+            while (clientsList.size() == 0) {
+                try {
+                    clientsList.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                ClientHandler client = log.get(0);
-                log.remove(0);
-                System.out.println("[SERVER] addLobby()");
-                lobby.addClient(client);
             }
-        });
-        t.start();
+            ClientHandler client = clientsList.get(0);
+            clientsList.remove(0);
+            System.out.println("[SERVER] addLobby()");
+            lobby.addClient(client);
+        }
     }
 
 }

@@ -70,50 +70,42 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     public void addClient(ClientHandler client) {
-        Thread t = new Thread(() -> {
-            //System.out.println("[SERVER] addClient() is called");
-            client.addObserver(this);
-            clients.add(client);
-            System.out.println("clients size: " + clients.size());
+        //System.out.println("[SERVER] addClient() is called");
+        client.addObserver(this);
+        clients.add(client);
+        System.out.println("clients size: " + clients.size());
 
-            if (clients.size() != playersNumber) {
-                if (clients.size() == 1) {
-                    if (playersNumber == -1) {
-                        setPlayersNumber(client);
-                    }
-                    else {
-                        client.send(playersNumber);
-                        notifyPlayersNumber(this);
-                        // TODO host migration message
-                    }
-                }
-                else {
-                    client.send(playersNumber);
-                    notifyPlayersNumber(this);
-                    // TODO host migration message
-                }
+        if (clients.size() != playersNumber) {
+            if (clients.size() == 1 && playersNumber == -1) {
+                    setPlayersNumber(client);
             }
             else {
                 client.send(playersNumber);
+                client.send(waitMessage);
+                notifyPlayersNumber(this);
             }
+        }
+        else {
+            client.send(playersNumber);
+            client.send(waitMessage);
+        }
 
-            synchronized (lock) {
-                lock.notifyAll();
-            }
-        });
-        t.start();
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
 
     /**
      * ask and set the number of players to the first connected user
      * @param client current client
      */
-    public void setPlayersNumber(ClientHandler client) {
+    private void setPlayersNumber(ClientHandler client) {
         client.send(startTurnMessage);
         virtualView.requestPlayersNum(client);
         playersNumber = userInputManager.getPlayersNumber();
         System.out.println("[SERVER] The game will have " + playersNumber + " players");
         client.send(Integer.valueOf(playersNumber));
+        client.send(waitMessage);
         client.send(endTurnMessage);
 
         notifyPlayersNumber(this);
@@ -128,24 +120,25 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
             }
         }
 
+        // TODO vanno in synchronized?
         ready = true;
         notifyLobbyIsReady();
         System.out.println("[SERVER] setPlayers()");
         setPlayers();
     }
 
-    public void setPlayers() {
+    private void setPlayers() {
         for (ClientHandler client : clients) {
             setNickname(client);
-            setGodLike(client);
         }
+        setGodLike();
     }
 
     /**
      * ask and set the current client's nickname
      * @param client current client
      */
-    public synchronized void setNickname(ClientHandler client) {
+    private synchronized void setNickname(ClientHandler client) {
 
         client.send(startTurnMessage);
 
@@ -173,30 +166,21 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     /**
      * random choice of the challenger from the connected clients
      */
-    public synchronized void setGodLike(ClientHandler client) {
+    private synchronized void setGodLike() {
 
-        //wait until the right number of players is connected
-        if (playersName.size() != playersNumber) {
-            //waitMessage useless here
-            //client.send(waitMessage);
+        Collections.shuffle(playersName);
+
+        Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
+        for (String key : playersName) {
+            shuffleMap.put(key, clientNames.get(key));
         }
 
-        else {
-            //if block executed only once
-            if (chosenGods.size() == 0) {
-                Collections.shuffle(playersName);
+        System.out.println("[SERVER] before set challenger call");
+        setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
+        System.out.println("[SERVER] after set challenger call");
 
-                Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
-                for (String key : playersName) {
-                    shuffleMap.put(key, clientNames.get(key));
-                }
-
-                setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
-
-                for (String key : shuffleMap.keySet()) {
-                    setGodCard(shuffleMap.get(key));
-                }
-            }
+        for (String key : shuffleMap.keySet()) {
+            setGodCard(shuffleMap.get(key));
         }
     }
 
@@ -221,7 +205,9 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
 
         outside:
         do {
+            System.out.println("[SERVER] before chooseGodMessage");
             client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
+            System.out.println("[SERVER] after chooseGodMessage");
 
             String s = client.read();
             String[] selectedGods = s.split("/");
@@ -256,7 +242,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      * assign a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
      */
-    public synchronized void setGodCard(ClientHandler client) {
+    private synchronized void setGodCard(ClientHandler client) {
         if(!client.equals(clientNames.get(challenger))) {
             client.send(startTurnMessage);
             assignGod(client);
@@ -358,7 +344,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      * create Board and Controller and start a new match
      * @param sortedPlayers match players list (and associated gods)
      */
-    public void startGame(List<Player> sortedPlayers) {
+    private void startGame(List<Player> sortedPlayers) {
         System.out.println("[SERVER] game starts");
         Board board = new Board();
         Controller controller = new Controller(board, userInputManager, virtualView, sortedPlayers);

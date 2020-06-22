@@ -166,7 +166,7 @@ public class NetworkHandler implements Runnable, UiObserver {
             e.printStackTrace();
         }
 
-        new Thread(this::pingToServer).start();
+        pingToServer();
 
         try{
             while (true) {

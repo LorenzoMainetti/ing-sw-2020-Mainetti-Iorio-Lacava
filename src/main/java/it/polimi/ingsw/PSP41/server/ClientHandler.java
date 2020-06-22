@@ -10,7 +10,7 @@ import java.net.Socket;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
-public class ClientHandler extends ConnectionObservable implements Runnable {
+public class ClientHandler extends ConnectionObservable {
 
     private Socket socket;
     private boolean connected = true;
@@ -62,7 +62,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         try {
             connected = false;
             socket.close();
-            //System.out.println("Connection closed with client");
+            System.out.println("[SERVER] Connection closed with client");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,7 +81,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     socketOut.writeObject("");
                     //socketOut.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         });
@@ -91,9 +91,9 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     /**
      * Loop read from client: when a message is read, answerReady is set true. If the client is unreachable, server is notified
      */
-    public void readFromClient(){
+    public void readFromClient() {
         Thread t = new Thread(() -> {
-            while (true) {
+            while (connected) {
                 try {
                     socket.setSoTimeout(5000);
                     String fromClient = socketIn.readLine();
@@ -112,6 +112,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     }
                 } catch (IOException | NullPointerException e) {
                     System.out.println("[SERVER] Client unreachable");
+                    e.printStackTrace();
                     notifyDisconnection(this);
                     break;
                 }
@@ -139,14 +140,16 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         return answer;
     }
 
-    @Override
-    public void run() {
+    public void begin() {
         try {
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketOut = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        readFromClient();
+        pingToClient();
     }
 
 }

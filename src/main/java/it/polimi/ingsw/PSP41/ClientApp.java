@@ -10,7 +10,7 @@ public class ClientApp {
 
     public static void main(String[] args) {
 
-        //if(args.length > 0) {
+        if(args.length > 0) {
             //start CLI ClientApp
             CLI cli = new CLI();
 
@@ -20,11 +20,11 @@ public class ClientApp {
             new Thread(networkHandler).start();
             new Thread(cli).start();
 
-        /*}
-        //else {
+        }
+        else {
             //start GUI ClientApp
             Application.launch(GUI.class);
-        }*/
+        }
 
     }
 }
