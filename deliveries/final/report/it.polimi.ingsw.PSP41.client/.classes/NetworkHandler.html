@@ -1,0 +1,302 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NetworkHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.PSP41.client</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NetworkHandler (it.polimi.ingsw.PSP41.client)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NetworkHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 118)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.PSP41.client;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.PSP41.observer.UiObserver;
+<i>4</i>&nbsp;import it.polimi.ingsw.PSP41.model.Board;
+<i>5</i>&nbsp;import it.polimi.ingsw.PSP41.utils.*;
+<i>6</i>&nbsp;import it.polimi.ingsw.PSP41.view.View;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.ObjectInputStream;
+<i>10</i>&nbsp;import java.io.PrintWriter;
+<i>11</i>&nbsp;import java.net.Socket;
+<i>12</i>&nbsp;import java.util.NoSuchElementException;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;public class NetworkHandler implements Runnable, UiObserver {
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    Socket socket;
+<i>19</i>&nbsp;    ObjectInputStream socketIn;
+<i>20</i>&nbsp;    PrintWriter socketOut;
+<i>21</i>&nbsp;    private final View view;
+<b class="nc"><i>22</i>&nbsp;    private boolean ready = false;</b>
+<i>23</i>&nbsp;
+<b class="nc"><i>24</i>&nbsp;    public NetworkHandler(View view) {</b>
+<b class="nc"><i>25</i>&nbsp;        this.view = view;</b>
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     * Server messages manager
+<i>30</i>&nbsp;     * @param inputObject message from server
+<i>31</i>&nbsp;     */
+<i>32</i>&nbsp;    private void manageInputFromServer(Object inputObject) {
+<i>33</i>&nbsp;
+<b class="nc"><i>34</i>&nbsp;        if (inputObject instanceof NameMessage) {</b>
+<b class="nc"><i>35</i>&nbsp;            NameMessage message = (NameMessage) inputObject;</b>
+<b class="nc"><i>36</i>&nbsp;            switch (message.getType()) {</b>
+<i>37</i>&nbsp;                case winMessage:
+<b class="nc"><i>38</i>&nbsp;                    view.displayWinner(message.getName());</b>
+<b class="nc"><i>39</i>&nbsp;                    break;</b>
+<i>40</i>&nbsp;                case loseMessage:
+<b class="nc"><i>41</i>&nbsp;                    view.displayLoser(message.getName());</b>
+<b class="nc"><i>42</i>&nbsp;                    break;</b>
+<i>43</i>&nbsp;                case godLikeMessage:
+<b class="nc"><i>44</i>&nbsp;                    view.displayChallenger(message.getName());</b>
+<b class="nc"><i>45</i>&nbsp;                    break;</b>
+<i>46</i>&nbsp;                case chooseStarterMessage:
+<b class="nc"><i>47</i>&nbsp;                    view.askFirstPlayer(message.getName());</b>
+<b class="nc"><i>48</i>&nbsp;                    break;</b>
+<i>49</i>&nbsp;                case acceptedMessage:
+<b class="nc"><i>50</i>&nbsp;                    view.setClientName(message.getName());</b>
+<b class="nc"><i>51</i>&nbsp;                    break;</b>
+<i>52</i>&nbsp;                default:
+<b class="nc"><i>53</i>&nbsp;                    view.displayCurrentPlayer(message.getName());</b>
+<i>54</i>&nbsp;                    break;
+<i>55</i>&nbsp;            }
+<b class="nc"><i>56</i>&nbsp;        } else if (inputObject instanceof ChooseGodMessage) {</b>
+<b class="nc"><i>57</i>&nbsp;            ChooseGodMessage message = (ChooseGodMessage) inputObject;</b>
+<b class="nc"><i>58</i>&nbsp;            switch (message.getType()) {</b>
+<i>59</i>&nbsp;                case gameGodsMessage:
+<b class="nc"><i>60</i>&nbsp;                    view.askGameGods(message.getGodList());</b>
+<b class="nc"><i>61</i>&nbsp;                    break;</b>
+<i>62</i>&nbsp;                case yourGodMessage:
+<b class="nc"><i>63</i>&nbsp;                    view.askGodCard(message.getGodList());</b>
+<i>64</i>&nbsp;            }
+<b class="nc"><i>65</i>&nbsp;        }</b>
+<b class="nc"><i>66</i>&nbsp;        else if (inputObject instanceof Board) {</b>
+<b class="nc"><i>67</i>&nbsp;            view.displayBoard((Board) inputObject);</b>
+<i>68</i>&nbsp;        }
+<b class="nc"><i>69</i>&nbsp;        else if (inputObject instanceof PlayersInfoMessage) {</b>
+<b class="nc"><i>70</i>&nbsp;            PlayersInfoMessage message = (PlayersInfoMessage) inputObject;</b>
+<b class="nc"><i>71</i>&nbsp;            view.addPlayersInfo(message);</b>
+<b class="nc"><i>72</i>&nbsp;        }</b>
+<b class="nc"><i>73</i>&nbsp;        else if (inputObject instanceof PositionMessage) {</b>
+<b class="nc"><i>74</i>&nbsp;            PositionMessage message = (PositionMessage) inputObject;</b>
+<b class="nc"><i>75</i>&nbsp;            view.askPosition(message.getValidPos());</b>
+<b class="nc"><i>76</i>&nbsp;        }</b>
+<b class="nc"><i>77</i>&nbsp;        else if (inputObject instanceof Integer) {</b>
+<b class="nc"><i>78</i>&nbsp;            view.displayPlayersNumber((Integer) inputObject);</b>
+<i>79</i>&nbsp;        }
+<b class="nc"><i>80</i>&nbsp;        else if (inputObject instanceof String) {</b>
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;            if (!inputObject.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>83</i>&nbsp;                String message = (String) inputObject;</b>
+<b class="nc"><i>84</i>&nbsp;                switch (message) {</b>
+<i>85</i>&nbsp;                    case playersNumMessage:
+<b class="nc"><i>86</i>&nbsp;                        view.askPlayersNumber();</b>
+<b class="nc"><i>87</i>&nbsp;                        break;</b>
+<i>88</i>&nbsp;                    case nicknameMessage:
+<b class="nc"><i>89</i>&nbsp;                        view.askNickname();</b>
+<b class="nc"><i>90</i>&nbsp;                        break;</b>
+<i>91</i>&nbsp;                    case takenNameMessage:
+<b class="nc"><i>92</i>&nbsp;                        view.displayTakenNickname();</b>
+<b class="nc"><i>93</i>&nbsp;                        break;</b>
+<i>94</i>&nbsp;                    case initPosMessage:
+<b class="nc"><i>95</i>&nbsp;                        view.askInitPosition();</b>
+<b class="nc"><i>96</i>&nbsp;                        break;</b>
+<i>97</i>&nbsp;                    case occupiedCellMessage:
+<b class="nc"><i>98</i>&nbsp;                        view.displayTakenPosition();</b>
+<b class="nc"><i>99</i>&nbsp;                        break;</b>
+<i>100</i>&nbsp;                    case workerNumMessage:
+<b class="nc"><i>101</i>&nbsp;                        view.askWorker();</b>
+<b class="nc"><i>102</i>&nbsp;                        break;</b>
+<i>103</i>&nbsp;                    case activatePowMessage:
+<b class="nc"><i>104</i>&nbsp;                        view.askPowerActivation();</b>
+<b class="nc"><i>105</i>&nbsp;                        break;</b>
+<i>106</i>&nbsp;                    case moveMessage:
+<b class="nc"><i>107</i>&nbsp;                        view.startMovePhase();</b>
+<b class="nc"><i>108</i>&nbsp;                        break;</b>
+<i>109</i>&nbsp;                    case buildMessage:
+<b class="nc"><i>110</i>&nbsp;                        view.startBuildPhase();</b>
+<b class="nc"><i>111</i>&nbsp;                        break;</b>
+<i>112</i>&nbsp;                    case waitPlayersNum:
+<b class="nc"><i>113</i>&nbsp;                        view.waitPlayersNum();</b>
+<b class="nc"><i>114</i>&nbsp;                        break;</b>
+<i>115</i>&nbsp;                    case waitMessage:
+<b class="nc"><i>116</i>&nbsp;                        view.waiting();</b>
+<b class="nc"><i>117</i>&nbsp;                        break;</b>
+<i>118</i>&nbsp;                    case fullLobby:
+<b class="nc"><i>119</i>&nbsp;                        view.displayFullLobby();</b>
+<b class="nc"><i>120</i>&nbsp;                        break;</b>
+<i>121</i>&nbsp;                    case wrongTurnMessage:
+<b class="nc"><i>122</i>&nbsp;                        view.displayWrongTurn();</b>
+<i>123</i>&nbsp;                        break;
+<i>124</i>&nbsp;                }
+<b class="nc"><i>125</i>&nbsp;            }</b>
+<i>126</i>&nbsp;        } else {
+<b class="nc"><i>127</i>&nbsp;            throw new IllegalArgumentException();</b>
+<i>128</i>&nbsp;        }
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * Send a ping message from Client to Server
+<i>133</i>&nbsp;     */
+<i>134</i>&nbsp;    public void pingToServer() {
+<b class="nc"><i>135</i>&nbsp;        Thread t = new Thread(() -&gt; {</b>
+<i>136</i>&nbsp;            while (true) {
+<i>137</i>&nbsp;                try {
+<b class="nc"><i>138</i>&nbsp;                    Thread.sleep(1000);</b>
+<b class="nc"><i>139</i>&nbsp;                } catch (InterruptedException e) {</b>
+<b class="nc"><i>140</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>141</i>&nbsp;                }</b>
+<b class="nc"><i>142</i>&nbsp;                socketOut.println(&quot;&quot;);</b>
+<i>143</i>&nbsp;            }
+<i>144</i>&nbsp;        });
+<b class="nc"><i>145</i>&nbsp;        t.start();</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    @Override
+<i>150</i>&nbsp;    public void run() {
+<i>151</i>&nbsp;
+<b class="nc"><i>152</i>&nbsp;        synchronized (this) {</b>
+<b class="nc"><i>153</i>&nbsp;            while (!ready) {</b>
+<i>154</i>&nbsp;                try {
+<b class="nc"><i>155</i>&nbsp;                    wait();</b>
+<b class="nc"><i>156</i>&nbsp;                } catch (InterruptedException e) {</b>
+<b class="nc"><i>157</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>158</i>&nbsp;                }</b>
+<i>159</i>&nbsp;            }
+<b class="nc"><i>160</i>&nbsp;        }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;        try {
+<b class="nc"><i>163</i>&nbsp;            socketIn = new ObjectInputStream(socket.getInputStream());</b>
+<b class="nc"><i>164</i>&nbsp;            socketOut = new PrintWriter(socket.getOutputStream(), true);</b>
+<b class="nc"><i>165</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>166</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>167</i>&nbsp;        }</b>
+<i>168</i>&nbsp;
+<b class="nc"><i>169</i>&nbsp;        pingToServer();</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;        try{
+<i>172</i>&nbsp;            while (true) {
+<i>173</i>&nbsp;                try {
+<b class="nc"><i>174</i>&nbsp;                    socket.setSoTimeout(5000);</b>
+<b class="nc"><i>175</i>&nbsp;                    Object inputObject = socketIn.readObject();</b>
+<b class="nc"><i>176</i>&nbsp;                    manageInputFromServer(inputObject);</b>
+<i>177</i>&nbsp;                    // close socket if winMessage is received
+<b class="nc"><i>178</i>&nbsp;                    if (inputObject instanceof NameMessage &amp;&amp; ((NameMessage) inputObject).getType().equals(winMessage))</b>
+<b class="nc"><i>179</i>&nbsp;                        break;</b>
+<b class="nc"><i>180</i>&nbsp;                } catch (IOException | ClassNotFoundException e) {</b>
+<b class="nc"><i>181</i>&nbsp;                    view.displayNetworkError();</b>
+<b class="nc"><i>182</i>&nbsp;                    break;</b>
+<b class="nc"><i>183</i>&nbsp;                }</b>
+<i>184</i>&nbsp;            }
+<b class="nc"><i>185</i>&nbsp;        } catch(NoSuchElementException e) {</b>
+<b class="nc"><i>186</i>&nbsp;            view.displayNetworkError();</b>
+<i>187</i>&nbsp;        } finally {
+<b class="nc"><i>188</i>&nbsp;            try {</b>
+<b class="nc"><i>189</i>&nbsp;                socketIn.close();</b>
+<b class="nc"><i>190</i>&nbsp;                socketOut.close();</b>
+<b class="nc"><i>191</i>&nbsp;                socket.close();</b>
+<b class="nc"><i>192</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>193</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>194</i>&nbsp;            }</b>
+<b class="nc"><i>195</i>&nbsp;        }</b>
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    @Override
+<i>199</i>&nbsp;    public void update(String inputLine) {
+<b class="nc"><i>200</i>&nbsp;        socketOut.println(inputLine);</b>
+<b class="nc"><i>201</i>&nbsp;        socketOut.flush();</b>
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    @Override
+<i>205</i>&nbsp;    public void updateConnection(String ip, String port) {
+<i>206</i>&nbsp;        try {
+<b class="nc"><i>207</i>&nbsp;            socket = new Socket(ip, Integer.parseInt(port));</b>
+<b class="nc"><i>208</i>&nbsp;            ready = true;</b>
+<b class="nc"><i>209</i>&nbsp;            synchronized (this) {</b>
+<b class="nc"><i>210</i>&nbsp;                notifyAll();</b>
+<b class="nc"><i>211</i>&nbsp;            }</b>
+<i>212</i>&nbsp;
+<b class="nc"><i>213</i>&nbsp;        } catch (IOException | IllegalArgumentException e) {</b>
+<b class="nc"><i>214</i>&nbsp;            System.out.println(&quot;Server unreachable&quot;);</b>
+<b class="nc"><i>215</i>&nbsp;            System.exit(0);</b>
+<b class="nc"><i>216</i>&nbsp;        }</b>
+<b class="nc"><i>217</i>&nbsp;        System.out.println(&quot;Connection established&quot;);</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-22 19:04</div>
+</div>
+</body>
+</html>

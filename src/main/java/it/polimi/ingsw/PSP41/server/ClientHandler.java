@@ -184,7 +184,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     }
 
                     lobby.setNickname(this);
-                    lobby.setGodLike(this);
+                    lobby.setGodLike();
                 }
             }
             else {

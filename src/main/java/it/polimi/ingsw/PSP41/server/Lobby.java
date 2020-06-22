@@ -109,29 +109,20 @@ public class Lobby {
     /**
      * Random choice of the challenger from the connected clients
      */
-    public synchronized void setGodLike(ClientHandler client) {
+    public synchronized void setGodLike() {
+        //if block executed only once
+        if (chosenGods.size() == 0 && playersNumber == playersName.size()) {
+            Collections.shuffle(playersName);
 
-        //wait until the right number of players is connected
-        if (playersName.size() != playersNumber) {
-            //waitMessage useless here
-            //client.send(waitMessage);
-        }
+            Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
+            for (String key : playersName) {
+                shuffleMap.put(key, clientNames.get(key));
+            }
 
-        else {
-            //if block executed only once
-            if (chosenGods.size() == 0) {
-                Collections.shuffle(playersName);
+            setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
 
-                Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
-                for (String key : playersName) {
-                    shuffleMap.put(key, clientNames.get(key));
-                }
-
-                setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
-
-                for (String key : shuffleMap.keySet()) {
-                    setGodCard(shuffleMap.get(key));
-                }
+            for (String key : shuffleMap.keySet()) {
+                setGodCard(shuffleMap.get(key));
             }
         }
     }
@@ -192,7 +183,7 @@ public class Lobby {
      * Assign a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
      */
-    public synchronized void setGodCard(ClientHandler client) {
+    private synchronized void setGodCard(ClientHandler client) {
         if(!client.equals(clientNames.get(challenger))) {
             client.send(startTurnMessage);
             assignGod(client);
@@ -294,7 +285,7 @@ public class Lobby {
      * Create Board and Controller and start a new match
      * @param sortedPlayers match players list (and associated gods)
      */
-    public void startGame(List<Player> sortedPlayers) {
+    private void startGame(List<Player> sortedPlayers) {
         System.out.println("[SERVER] game starts");
         Board board = new Board();
         Controller controller = new Controller(board, userInputManager, virtualView, sortedPlayers);

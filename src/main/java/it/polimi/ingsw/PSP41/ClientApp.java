@@ -11,14 +11,16 @@ public class ClientApp {
     public static void main(String[] args) {
 
         if(args.length > 0) {
-            //start CLI ClientApp
-            CLI cli = new CLI();
+            if(args[0].equals("-cli")) {
+                //start CLI ClientApp
+                CLI cli = new CLI();
 
-            NetworkHandler networkHandler = new NetworkHandler(cli);
-            cli.addObserver(networkHandler);
+                NetworkHandler networkHandler = new NetworkHandler(cli);
+                cli.addObserver(networkHandler);
 
-            new Thread(networkHandler).start();
-            new Thread(cli).start();
+                new Thread(networkHandler).start();
+                new Thread(cli).start();
+            }
 
         }
         else {
