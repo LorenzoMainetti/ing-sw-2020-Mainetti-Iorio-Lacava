@@ -13,9 +13,9 @@ public class Server implements Runnable, LobbyObserver {
 
     ServerSocket serverSocket;
     private final int PORT = 9090;
-    private List<ClientHandler> clientsList = Collections.synchronizedList(new ArrayList<>()); // TODO coda concurrent
+    //TODO might use a queue instead
+    private final List<ClientHandler> clientsList = Collections.synchronizedList(new ArrayList<>());
     private boolean first = true;
-    private final Object lock = new Object();
 
     public void run() {
         try {
@@ -32,7 +32,9 @@ public class Server implements Runnable, LobbyObserver {
                 Socket newSocket = serverSocket.accept();
                 System.out.println("[SERVER] Client connected to server");
                 ClientHandler clientHandler = new ClientHandler(newSocket);
-                clientHandler.begin();
+                //Thread t = new Thread(clientHandler);
+                //t.start();
+                clientHandler.run();
 
                 addClientToLog(clientHandler);
 
@@ -46,10 +48,9 @@ public class Server implements Runnable, LobbyObserver {
     private void addClientToLog(ClientHandler client) {
         synchronized (clientsList) {
             clientsList.add(client);
-            System.out.println("[SERVER] new log.size(): " + clientsList.size());
+            //System.out.println("[SERVER] new log.size(): " + clientsList.size());
             System.out.println("[SERVER] client added in log");
             if (first) {
-                System.out.println("[SERVER] First player");
                 first = false;
                 createNewLobby();
             }
@@ -62,9 +63,7 @@ public class Server implements Runnable, LobbyObserver {
 
     @Override
     public void updatePlayersNumber(Lobby lobby) {
-        System.out.println("[SERVER] log.size() in updatePlayersNumber(): " + clientsList.size());
         synchronized (clientsList) {
-            System.out.println("[SERVER] log.size() in updatePlayersNumber(): " + clientsList.size());
             while (clientsList.size() == 0) {
                 try {
                     clientsList.wait();
@@ -74,7 +73,6 @@ public class Server implements Runnable, LobbyObserver {
             }
             ClientHandler client = clientsList.get(0);
             clientsList.remove(0);
-            System.out.println("[SERVER] addClient()");
             lobby.addClient(client);
         }
     }
@@ -87,9 +85,8 @@ public class Server implements Runnable, LobbyObserver {
 
     public void addLobby(Lobby lobby) {
         lobby.addObserver(this);
-        System.out.println("[SERVER] log.size() in addLobby(): " + clientsList.size());
         synchronized (clientsList) {
-            System.out.println("[SERVER] log.size() in addLobby(): " + clientsList.size());
+            //System.out.println("[SERVER] log.size() in addLobby(): " + clientsList.size());
             while (clientsList.size() == 0) {
                 try {
                     clientsList.wait();
@@ -99,7 +96,6 @@ public class Server implements Runnable, LobbyObserver {
             }
             ClientHandler client = clientsList.get(0);
             clientsList.remove(0);
-            System.out.println("[SERVER] addLobby()");
             lobby.addClient(client);
         }
     }

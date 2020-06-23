@@ -16,7 +16,6 @@ import java.util.*;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
-// Se mai volessimo fare multipartita, bisogna togliere gli static e creare un'istanza di lobby nel server, assegnandola direttamente ai clienthandler
 public class Lobby extends LobbyObservable implements ConnectionObserver  {
     private final VirtualView virtualView = new VirtualView();
     private final UserInputManager userInputManager = new UserInputManager(virtualView);
@@ -70,29 +69,28 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     public void addClient(ClientHandler client) {
-        //System.out.println("[SERVER] addClient() is called");
-        client.addObserver(this);
-        clients.add(client);
-        System.out.println("clients size: " + clients.size());
+        Thread t = new Thread( () -> {
+            client.addObserver(this);
+            clients.add(client);
 
-        if (clients.size() != playersNumber) {
-            if (clients.size() == 1 && playersNumber == -1) {
+            if (clients.size() != playersNumber) {
+                if (clients.size() == 1 && playersNumber == -1) {
                     setPlayersNumber(client);
-            }
-            else {
+                } else {
+                    client.send(playersNumber);
+                    client.send(waitMessage);
+                    notifyPlayersNumber(this);
+                }
+            } else {
                 client.send(playersNumber);
                 client.send(waitMessage);
-                notifyPlayersNumber(this);
             }
-        }
-        else {
-            client.send(playersNumber);
-            client.send(waitMessage);
-        }
 
-        synchronized (lock) {
-            lock.notifyAll();
-        }
+            synchronized (lock) {
+                lock.notifyAll();
+            }
+        });
+        t.start();
     }
 
     /**
@@ -120,10 +118,8 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
             }
         }
 
-        // TODO vanno in synchronized?
         ready = true;
         notifyLobbyIsReady();
-        System.out.println("[SERVER] setPlayers()");
         setPlayers();
     }
 
@@ -138,7 +134,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      * ask and set the current client's nickname
      * @param client current client
      */
-    private synchronized void setNickname(ClientHandler client) {
+    private void setNickname(ClientHandler client) {
 
         client.send(startTurnMessage);
 
@@ -152,11 +148,13 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
 
         //add user to the list of connected users
         playersName.add(nickname);
-        //clients.add(client);
         clientNames.put(nickname, client);
         virtualView.addClient(nickname, client);
 
         System.out.println("[SERVER] " + nickname + " registered!");
+
+        //tells client that it's been registered
+        client.send(new NameMessage(acceptedMessage, nickname));
 
         client.send(waitMessage);
         client.send(endTurnMessage);
@@ -166,21 +164,21 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     /**
      * random choice of the challenger from the connected clients
      */
-    private synchronized void setGodLike() {
+    private void setGodLike() {
+        //if block executed only once
+        if (chosenGods.size() == 0 && playersNumber == playersName.size()) {
+            Collections.shuffle(playersName);
 
-        Collections.shuffle(playersName);
+            Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
+            for (String key : playersName) {
+                shuffleMap.put(key, clientNames.get(key));
+            }
 
-        Map<String, ClientHandler> shuffleMap = new LinkedHashMap<>();
-        for (String key : playersName) {
-            shuffleMap.put(key, clientNames.get(key));
-        }
+            setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
 
-        System.out.println("[SERVER] before set challenger call");
-        setChallenger(shuffleMap.get(playersName.get(0)), playersName.get(0));
-        System.out.println("[SERVER] after set challenger call");
-
-        for (String key : shuffleMap.keySet()) {
-            setGodCard(shuffleMap.get(key));
+            for (String key : shuffleMap.keySet()) {
+                setGodCard(shuffleMap.get(key));
+            }
         }
     }
 
@@ -189,7 +187,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      * @param client challenger's client
      * @param name challenger's nickname
      */
-    private synchronized void setChallenger(ClientHandler client, String name) {
+    private void setChallenger(ClientHandler client, String name) {
 
         client.send(startTurnMessage);
         challenger = name;
@@ -205,9 +203,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
 
         outside:
         do {
-            System.out.println("[SERVER] before chooseGodMessage");
             client.send(new ChooseGodMessage(gameGodsMessage, gameGods));
-            System.out.println("[SERVER] after chooseGodMessage");
 
             String s = client.read();
             String[] selectedGods = s.split("/");
@@ -242,7 +238,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      * assign a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
      */
-    private synchronized void setGodCard(ClientHandler client) {
+    private void setGodCard(ClientHandler client) {
         if(!client.equals(clientNames.get(challenger))) {
             client.send(startTurnMessage);
             assignGod(client);
@@ -255,7 +251,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      * ask and set the chosen godCard
      * @param client current client
      */
-    private synchronized void assignGod(ClientHandler client) {
+    private void assignGod(ClientHandler client) {
 
         client.send(new ChooseGodMessage(yourGodMessage, chosenGods));
         String godName = client.read().toUpperCase();

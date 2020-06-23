@@ -77,9 +77,7 @@ public class ClientHandler extends ConnectionObservable {
                     e.printStackTrace();
                 }
                 try {
-                    //socketOut.reset();
                     socketOut.writeObject("");
-                    //socketOut.flush();
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
@@ -99,7 +97,6 @@ public class ClientHandler extends ConnectionObservable {
                     String fromClient = socketIn.readLine();
                     if (!fromClient.equals("")) {
                         if (myTurn) {
-                            //System.out.println("From client:" + answer);
                             answer = fromClient;
                             answerReady = true;
                             synchronized (this) {
@@ -110,9 +107,9 @@ public class ClientHandler extends ConnectionObservable {
                             System.out.println("[SERVER] Wrong turn message");
                         }
                     }
-                } catch (IOException | NullPointerException e) {
+                } catch (IOException | NullPointerException | IllegalArgumentException e) {
                     System.out.println("[SERVER] Client unreachable");
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     notifyDisconnection(this);
                     break;
                 }
@@ -135,12 +132,11 @@ public class ClientHandler extends ConnectionObservable {
                 }
             }
         }
-        //System.out.println("Read: " + answer);
         answerReady = false;
         return answer;
     }
 
-    public void begin() {
+    public void run() {
         try {
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketOut = new ObjectOutputStream(socket.getOutputStream());
