@@ -13,8 +13,8 @@ import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 public class ClientHandler extends ConnectionObservable {
 
     private Socket socket;
-    private boolean connected = true;
-    private boolean active = true;
+    private boolean connected = true; //Checks client connection
+    private boolean active = true; //Checks client state in the match
     private boolean myTurn = false;
     private String answer;
     private boolean answerReady = false;
@@ -33,8 +33,12 @@ public class ClientHandler extends ConnectionObservable {
         return active;
     }
 
+    public boolean isConnected() {
+        return connected;
+    }
+
     /**
-     * Message sender from server to client
+     * Messages sender from server to client
      * @param message object sent to client
      */
     public void send(Object message) {
@@ -68,6 +72,9 @@ public class ClientHandler extends ConnectionObservable {
         }
     }
 
+    /**
+     * Sends a ping message from Server to Client
+     */
     public void pingToClient() {
         Thread t = new Thread(() -> {
             while (connected) {
@@ -87,7 +94,7 @@ public class ClientHandler extends ConnectionObservable {
     }
 
     /**
-     * Loop read from client: when a message is read, answerReady is set true. If the client is unreachable, server is notified
+     * Loops read from client: when a message is read, answerReady is set true. If the client is unreachable, server is notified
      */
     public void readFromClient() {
         Thread t = new Thread(() -> {
@@ -119,7 +126,7 @@ public class ClientHandler extends ConnectionObservable {
     }
 
     /**
-     * Return client message: waits until a message is received
+     * Returns client message: waits until a message is received
      * @return client message
      */
     public String read() {
@@ -136,6 +143,9 @@ public class ClientHandler extends ConnectionObservable {
         return answer;
     }
 
+    /**
+     * Initializes socket and starts ping management
+     */
     public void run() {
         try {
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));

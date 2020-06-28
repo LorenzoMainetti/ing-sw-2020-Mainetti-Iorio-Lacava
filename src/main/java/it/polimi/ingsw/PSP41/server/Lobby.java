@@ -16,6 +16,9 @@ import java.util.*;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
+/**
+ * Single room for a match: contains clients linked to the match and manages the match creation
+ */
 public class Lobby extends LobbyObservable implements ConnectionObserver  {
     private final VirtualView virtualView = new VirtualView();
     private final UserInputManager userInputManager = new UserInputManager(virtualView);
@@ -32,7 +35,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     private boolean ready = false;
 
     /**
-     * remove the current client from the list of connected clients
+     * Removes the current client from the list of connected clients
      * @param client current client
      */
     public synchronized void deregisterConnection(ClientHandler client) {
@@ -49,17 +52,17 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     @Override
     public void updateDisconnection(ClientHandler client) {
         if (client.isActive()) {
-            if (ready) {
-                for (ClientHandler ch : clients) {
-                    ch.closeConnection();
-                    //deregisterConnection(client);
-                }
-            }
-            else {
-                client.closeConnection();
-                deregisterConnection(client);
-                if (playersNumber == -1) {
-                    notifyPlayersNumber(this);
+            if (client.isConnected()) {
+                if (ready) {
+                    for (ClientHandler ch : clients) {
+                        ch.closeConnection();
+                    }
+                } else {
+                    client.closeConnection();
+                    deregisterConnection(client);
+                    if (playersNumber == -1) {
+                        notifyPlayersNumber(this);
+                    }
                 }
             }
         }
@@ -68,6 +71,10 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
         }
     }
 
+    /**
+     * Clients addition manager: adds a client in the lobby list and if needed asks playersNumber
+     * @param client client added
+     */
     public void addClient(ClientHandler client) {
         Thread t = new Thread( () -> {
             client.addObserver(this);
@@ -94,7 +101,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * ask and set the number of players to the first connected user
+     * Asks and sets the number of players to the first connected user
      * @param client current client
      */
     private void setPlayersNumber(ClientHandler client) {
@@ -123,6 +130,9 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
         setPlayers();
     }
 
+    /**
+     * Asks nickname to the players, then starts the creation of the match
+     */
     private void setPlayers() {
         for (ClientHandler client : clients) {
             setNickname(client);
@@ -131,7 +141,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * ask and set the current client's nickname
+     * Asks and sets the current client's nickname
      * @param client current client
      */
     private void setNickname(ClientHandler client) {
@@ -162,7 +172,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * random choice of the challenger from the connected clients
+     * Random choice of the challenger from the connected clients
      */
     private void setGodLike() {
         //if block executed only once
@@ -183,7 +193,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * ask the challenger to choose the godCards that will be used in the game
+     * Asks the challenger to choose the godCards that will be used in the game
      * @param client challenger's client
      * @param name challenger's nickname
      */
@@ -235,7 +245,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * assign a godCard to the current client (the challenger gets the remaining card)
+     * Assigns a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
      */
     private void setGodCard(ClientHandler client) {
@@ -248,7 +258,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * ask and set the chosen godCard
+     * Asks and sets the chosen godCard
      * @param client current client
      */
     private void assignGod(ClientHandler client) {
@@ -280,7 +290,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * setup game creating model and controller, then notifies the server that will start the match
+     * Setups game creating model and controller, then notifies the server that will start the match
      * @param client current client
      */
     private void createGame(ClientHandler client) {
@@ -337,7 +347,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * create Board and Controller and start a new match
+     * Creates Board and Controller and starts a new match
      * @param sortedPlayers match players list (and associated gods)
      */
     private void startGame(List<Player> sortedPlayers) {

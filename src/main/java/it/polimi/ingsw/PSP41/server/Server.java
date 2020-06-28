@@ -13,10 +13,12 @@ public class Server implements Runnable, LobbyObserver {
 
     ServerSocket serverSocket;
     private final int PORT = 9090;
-    //TODO might use a queue instead
     private final List<ClientHandler> clientsList = Collections.synchronizedList(new ArrayList<>());
     private boolean first = true;
 
+    /**
+     * Manages clients reception
+     */
     public void run() {
         try {
             serverSocket = new ServerSocket(PORT);
@@ -36,7 +38,7 @@ public class Server implements Runnable, LobbyObserver {
                 //t.start();
                 clientHandler.run();
 
-                addClientToLog(clientHandler);
+                addClientToList(clientHandler);
 
             } catch (IOException e) {
                 System.out.println("[SERVER] Restarting server...");
@@ -45,7 +47,11 @@ public class Server implements Runnable, LobbyObserver {
         }
     }
 
-    private void addClientToLog(ClientHandler client) {
+    /**
+     * Adds client to the server's list: if the client is the first connected, creates a new lobby
+     * @param client
+     */
+    private void addClientToList(ClientHandler client) {
         synchronized (clientsList) {
             clientsList.add(client);
             //System.out.println("[SERVER] new log.size(): " + clientsList.size());
@@ -61,6 +67,10 @@ public class Server implements Runnable, LobbyObserver {
         }
     }
 
+    /**
+     * Takes the first client from the server's list and adds it to the clients list of the lobby that called the method
+     * @param lobby lobby that called the method
+     */
     @Override
     public void updatePlayersNumber(Lobby lobby) {
         synchronized (clientsList) {
@@ -77,12 +87,19 @@ public class Server implements Runnable, LobbyObserver {
         }
     }
 
+    /**
+     * Starts a new lobby on a new thread
+     */
     @Override
     public void createNewLobby() {
         Thread t = new Thread(() -> addLobby(new Lobby()));
         t.start();
     }
 
+    /**
+     * Takes the first client from server's list and adds it to the clients list of the lobby just created
+     * @param lobby lobby just created
+     */
     public void addLobby(Lobby lobby) {
         lobby.addObserver(this);
         synchronized (clientsList) {

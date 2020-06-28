@@ -129,7 +129,7 @@ public class NetworkHandler implements Runnable, UiObserver {
     }
 
     /**
-     * send a ping message from Client to Server
+     * Sends a ping message from Client to Server
      */
     public void pingToServer() {
         Thread t = new Thread(() -> {
@@ -145,7 +145,9 @@ public class NetworkHandler implements Runnable, UiObserver {
         t.start();
     }
 
-
+    /**
+     * Initializes socket and start ping management
+     */
     @Override
     public void run() {
 
@@ -195,12 +197,21 @@ public class NetworkHandler implements Runnable, UiObserver {
         }
     }
 
+    /**
+     * Sends a string to the server
+     * @param inputLine string read from client
+     */
     @Override
     public void update(String inputLine) {
         socketOut.println(inputLine);
         socketOut.flush();
     }
 
+    /**
+     * Tries connecting to the server
+     * @param ip server ip
+     * @param port server port
+     */
     @Override
     public void updateConnection(String ip, String port) {
         try {
