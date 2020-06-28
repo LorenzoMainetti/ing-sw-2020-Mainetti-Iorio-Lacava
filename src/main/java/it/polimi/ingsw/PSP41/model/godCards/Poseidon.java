@@ -50,18 +50,18 @@ public class Poseidon extends GodPower {
         }
     }
 
-    /**
-     * Perform a regular build and reset trigger in order to re-ask activation
-     * @param board board state
-     * @param row where the player wants to build
-     * @param column where the player wants to build
-     */
     @Override
     public void reset() {
         super.reset();
         firstTime = true;
     }
 
+    /**
+     * Perform a regular build and reset trigger in order to re-ask activation
+     * @param board board state
+     * @param row where the player wants to build
+     * @param column where the player wants to build
+     */
     @Override
     public void build(Board board, int row, int column) {
         triggered = false;

@@ -159,18 +159,6 @@ public class ActionManager {
                 collect(Collectors.toList());
 
         return otherWorker.get(0);
-
-
-        /*for(int i=0; i<Board.MAX_SIZE; i++) {
-            for(int j=0; j<Board.MAX_SIZE; j++) {
-                if(board.getCell(i, j).isOccupied()) {
-                    if(board.getCell(i, j).getWorker().getColor() == color && (i!=row || j!=column)) {
-                        return new Position(i, j);
-                    }
-                }
-            }
-        }
-        return null;*/
     }
 
 }

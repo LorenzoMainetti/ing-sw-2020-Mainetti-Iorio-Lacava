@@ -16,8 +16,8 @@ I seguenti diagrammi delle classi rappresentano rispettivamente il progetto iniz
 ### JavaDoc
 La seguente documentazione include una descrizione per la maggiore parte delle classi e dei metodi utilizzati, segue le tecniche di documentazione di Java e può essere consultata al seguente indirizzo: [Javadoc](https://github.com/LorenzoMainetti/ing-sw-2020-Mainetti-Iorio-Lacava/tree/master/deliveries/final/javadoc)
 
-### Jars
-I seguenti jar permettono il lancio del gioco secondo le funzionalità richieste dalla specifica. Le funzionalità realizzate sono elencate nella sezione __Funzionalità__, mentre i dettagli per come lanciare i jar sono definiti nella sezione __Esecuzione dei jar__. I file .jar di Client e Server sono dispobibili al seguente indirizzo: [Jars](https://github.com/LorenzoMainetti/ing-sw-2020-Mainetti-Iorio-Lacava/tree/master/deliveries/final/jar).
+### Jar
+I seguenti jar permettono il lancio del gioco secondo le funzionalità richieste dalla specifica. Le funzionalità realizzate sono elencate nella sezione __Funzionalità__, mentre i dettagli per come lanciare i jar sono definiti nella sezione __Esecuzione dei jar__. I file .jar di Client e Server sono dispobibili al seguente indirizzo: [Jar](https://github.com/LorenzoMainetti/ing-sw-2020-Mainetti-Iorio-Lacava/tree/master/deliveries/final/jar)
 
 ## Librerie e Plugins
 |Libreria/Plugin|Descrizione|
