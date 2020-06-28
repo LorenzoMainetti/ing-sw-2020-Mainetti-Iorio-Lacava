@@ -49,13 +49,11 @@ public class Server implements Runnable, LobbyObserver {
 
     /**
      * Adds client to the server's list: if the client is the first connected, creates a new lobby
-     * @param client
+     * @param client current client
      */
     private void addClientToList(ClientHandler client) {
         synchronized (clientsList) {
             clientsList.add(client);
-            //System.out.println("[SERVER] new log.size(): " + clientsList.size());
-            System.out.println("[SERVER] client added in log");
             if (first) {
                 first = false;
                 createNewLobby();

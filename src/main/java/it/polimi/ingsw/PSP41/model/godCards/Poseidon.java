@@ -37,10 +37,15 @@ public class Poseidon extends GodPower {
                 phases.add(TurnPhase.BUILD);
         }
         else {
-            firstTime = true;
             while(phases.size() > 3)
                 phases.remove(TurnPhase.BUILD);
         }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        firstTime = true;
     }
 
     @Override

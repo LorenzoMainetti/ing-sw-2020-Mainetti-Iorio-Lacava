@@ -498,11 +498,9 @@ public class CLI extends UiObservable implements Runnable, View {
                     if (board.getCell(i, j).isOccupied()) {
                         if(board.getCell(i, j).getWorker().getNumber() == 1){
                             boardCells[i * 3 + 2][j+1].setString("│    w1    ");
-                            //boardCells[i * 3 + 1][j].setString("│    ①    ");
                         }
                         else if(board.getCell(i, j).getWorker().getNumber() == 2) {
                             boardCells[i * 3 + 2][j+1].setString("│    w2    ");
-                            //boardCells[i * 3 + 1][j].setString("│    ②    ");
                         }
 
                         switch(board.getCell(i, j).getWorker().getColor()) {
@@ -580,11 +578,11 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     private void askConnection() {
-        /*System.out.println("IP address of server?");
+        System.out.println("IP address of server?");
         String ip = in.nextLine();
         System.out.println("Port?");
-        String port = in.nextLine();*/
-        notifyConnection("127.0.0.1", "9090");
+        String port = in.nextLine();
+        notifyConnection(ip, port);
     }
 
     @Override
