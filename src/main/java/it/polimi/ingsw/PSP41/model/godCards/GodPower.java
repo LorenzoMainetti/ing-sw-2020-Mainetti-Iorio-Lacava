@@ -76,7 +76,7 @@ public abstract class GodPower {
     public void applyEffect(List<Position> positions, Board board, Worker worker, TurnPhase phase) { }
 
     /**
-     * @return true if current turn phase needs to be executed with the other Player's worker
+     * @return true if current turn phase needs to be executed with the Player's other worker
      */
     public boolean switchWorker() { return false; }
 
@@ -84,6 +84,13 @@ public abstract class GodPower {
      * Add a phase to owner's turn
      */
     public void addPhase() { }
+
+    /**
+     * Reset to initial status
+     */
+    public void reset() {
+        triggered = false;
+    }
 
     /**
      * Default strategy for MOVE: set worker position equals to input cell

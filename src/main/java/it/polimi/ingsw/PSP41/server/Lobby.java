@@ -6,6 +6,8 @@ import it.polimi.ingsw.PSP41.model.GodPowerFactory;
 import it.polimi.ingsw.PSP41.controller.UserInputManager;
 import it.polimi.ingsw.PSP41.model.Color;
 import it.polimi.ingsw.PSP41.model.Player;
+import it.polimi.ingsw.PSP41.observer.ConnectionObserver;
+import it.polimi.ingsw.PSP41.observer.LobbyObservable;
 import it.polimi.ingsw.PSP41.utils.ChooseGodMessage;
 import it.polimi.ingsw.PSP41.utils.NameMessage;
 import it.polimi.ingsw.PSP41.utils.PlayersInfoMessage;
@@ -14,8 +16,10 @@ import java.util.*;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
-// Se mai volessimo fare multipartita, bisogna togliere gli static e creare un'istanza di lobby nel server, assegnandola direttamente ai clienthandler
-public class Lobby {
+/**
+ * Single room for a match: contains clients linked to the match and manages the match creation
+ */
+public class Lobby extends LobbyObservable implements ConnectionObserver  {
     private final VirtualView virtualView = new VirtualView();
     private final UserInputManager userInputManager = new UserInputManager(virtualView);
     private Map<String, ClientHandler> clientNames = new HashMap<>();
@@ -28,57 +32,119 @@ public class Lobby {
     private final Object lock = new Object();
     private String challenger;
     private int playersNumber = -1;
+    private boolean ready = false;
 
-    public int getPlayersNumber() {
-        return playersNumber;
+    /**
+     * Removes the current client from the list of connected clients
+     * @param client current client
+     */
+    public synchronized void deregisterConnection(ClientHandler client) {
+        System.out.println("[SERVER] Unregistering client...");
+        clients.remove(client);
+        System.out.println("[SERVER] Done!");
     }
 
     /**
-     * Ask and set the number of players to the first connected user
-     * @param client current client
+     * Manages disconnection: if the client disconnected is active, all the clients will be disconnected;
+     * else the client disconnected is removed from the server clients log
+     * @param client disconnected client
      */
-    public void setPlayersNumber(ClientHandler client) {
-
-        synchronized (lock) {
-            client.send(startTurnMessage);
-            virtualView.requestPlayersNum(client);
-            playersNumber = userInputManager.getPlayersNumber();
-            lock.notifyAll();
-            System.out.println("[SERVER] The game will have " + playersNumber + " players");
-            client.send(Integer.valueOf(playersNumber));
-            client.send(endTurnMessage);
+    @Override
+    public void updateDisconnection(ClientHandler client) {
+        if (client.isActive()) {
+            if (client.isConnected()) {
+                if (ready) {
+                    for (ClientHandler ch : clients) {
+                        ch.closeConnection();
+                    }
+                } else {
+                    client.closeConnection();
+                    deregisterConnection(client);
+                    if (playersNumber == -1) {
+                        notifyPlayersNumber(this);
+                    }
+                }
+            }
+        }
+        else {
+            deregisterConnection(client);
         }
     }
 
     /**
-     * Wait until the first connected user has not choose the playersNumber
+     * Clients addition manager: adds a client in the lobby list and if needed asks playersNumber
+     * @param client client added
+     */
+    public void addClient(ClientHandler client) {
+        Thread t = new Thread( () -> {
+            client.addObserver(this);
+            clients.add(client);
+
+            if (clients.size() != playersNumber) {
+                if (clients.size() == 1 && playersNumber == -1) {
+                    setPlayersNumber(client);
+                } else {
+                    client.send(playersNumber);
+                    client.send(waitMessage);
+                    notifyPlayersNumber(this);
+                }
+            } else {
+                client.send(playersNumber);
+                client.send(waitMessage);
+            }
+
+            synchronized (lock) {
+                lock.notifyAll();
+            }
+        });
+        t.start();
+    }
+
+    /**
+     * Asks and sets the number of players to the first connected user
      * @param client current client
      */
-    public void waitPlayersNumber(ClientHandler client) {
+    private void setPlayersNumber(ClientHandler client) {
+        client.send(startTurnMessage);
+        virtualView.requestPlayersNum(client);
+        playersNumber = userInputManager.getPlayersNumber();
+        System.out.println("[SERVER] The game will have " + playersNumber + " players");
+        client.send(Integer.valueOf(playersNumber));
+        client.send(waitMessage);
+        client.send(endTurnMessage);
+
+        notifyPlayersNumber(this);
+
         synchronized (lock) {
-            while (playersNumber == -1) {
+            while (clients.size() != playersNumber) {
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-
-            if (client.getPosition() > playersNumber) {
-                client.send(fullLobby);
-                client.setActive(false);
-                client.closeConnection();
-            } else {
-                client.send(Integer.valueOf(playersNumber));
-            }
         }
+
+        ready = true;
+        notifyLobbyIsReady();
+        setPlayers();
     }
 
     /**
-     * Ask and set the current client's nickname
+     * Asks nickname to the players, then starts the creation of the match
+     */
+    private void setPlayers() {
+        for (ClientHandler client : clients) {
+            setNickname(client);
+        }
+        setGodLike();
+    }
+
+    /**
+     * Asks and sets the current client's nickname
      * @param client current client
      */
-    public synchronized void setNickname(ClientHandler client) {
+    private void setNickname(ClientHandler client) {
 
         client.send(startTurnMessage);
 
@@ -92,7 +158,6 @@ public class Lobby {
 
         //add user to the list of connected users
         playersName.add(nickname);
-        clients.add(client);
         clientNames.put(nickname, client);
         virtualView.addClient(nickname, client);
 
@@ -109,7 +174,7 @@ public class Lobby {
     /**
      * Random choice of the challenger from the connected clients
      */
-    public synchronized void setGodLike() {
+    private void setGodLike() {
         //if block executed only once
         if (chosenGods.size() == 0 && playersNumber == playersName.size()) {
             Collections.shuffle(playersName);
@@ -128,11 +193,11 @@ public class Lobby {
     }
 
     /**
-     * Ask the challenger to choose the godCards that will be used in the game
+     * Asks the challenger to choose the godCards that will be used in the game
      * @param client challenger's client
      * @param name challenger's nickname
      */
-    private synchronized void setChallenger(ClientHandler client, String name) {
+    private void setChallenger(ClientHandler client, String name) {
 
         client.send(startTurnMessage);
         challenger = name;
@@ -180,10 +245,10 @@ public class Lobby {
     }
 
     /**
-     * Assign a godCard to the current client (the challenger gets the remaining card)
+     * Assigns a godCard to the current client (the challenger gets the remaining card)
      * @param client current client
      */
-    private synchronized void setGodCard(ClientHandler client) {
+    private void setGodCard(ClientHandler client) {
         if(!client.equals(clientNames.get(challenger))) {
             client.send(startTurnMessage);
             assignGod(client);
@@ -193,10 +258,10 @@ public class Lobby {
     }
 
     /**
-     * Ask and set the chosen godCard
+     * Asks and sets the chosen godCard
      * @param client current client
      */
-    private synchronized void assignGod(ClientHandler client) {
+    private void assignGod(ClientHandler client) {
 
         client.send(new ChooseGodMessage(yourGodMessage, chosenGods));
         String godName = client.read().toUpperCase();
@@ -225,7 +290,7 @@ public class Lobby {
     }
 
     /**
-     * Setup game creating model and controller, then notifies the server that will start the match
+     * Setups game creating model and controller, then notifies the server that will start the match
      * @param client current client
      */
     private void createGame(ClientHandler client) {
@@ -282,7 +347,7 @@ public class Lobby {
     }
 
     /**
-     * Create Board and Controller and start a new match
+     * Creates Board and Controller and starts a new match
      * @param sortedPlayers match players list (and associated gods)
      */
     private void startGame(List<Player> sortedPlayers) {

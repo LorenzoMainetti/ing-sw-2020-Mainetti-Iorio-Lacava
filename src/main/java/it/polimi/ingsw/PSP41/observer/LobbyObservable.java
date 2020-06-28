@@ -1,0 +1,32 @@
+package it.polimi.ingsw.PSP41.observer;
+
+import it.polimi.ingsw.PSP41.server.Lobby;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LobbyObservable {
+    private final List<LobbyObserver> observers = new ArrayList<>();
+
+    public void addObserver(LobbyObserver observer){
+        synchronized (observers) {
+            observers.add(observer);
+        }
+    }
+
+    public void notifyPlayersNumber(Lobby lobby){
+        synchronized (observers) {
+            for(LobbyObserver observer : observers){
+                observer.updatePlayersNumber(lobby);
+            }
+        }
+    }
+
+    public void notifyLobbyIsReady(){
+        synchronized (observers) {
+            for(LobbyObserver observer : observers){
+                observer.createNewLobby();
+            }
+        }
+    }
+}

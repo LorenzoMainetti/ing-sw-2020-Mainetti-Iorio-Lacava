@@ -45,7 +45,6 @@ public class Poseidon extends GodPower {
                 phases.add(TurnPhase.BUILD);
         }
         else {
-            firstTime = true;
             while(phases.size() > 3)
                 phases.remove(TurnPhase.BUILD);
         }
@@ -57,6 +56,12 @@ public class Poseidon extends GodPower {
      * @param row where the player wants to build
      * @param column where the player wants to build
      */
+    @Override
+    public void reset() {
+        super.reset();
+        firstTime = true;
+    }
+
     @Override
     public void build(Board board, int row, int column) {
         triggered = false;

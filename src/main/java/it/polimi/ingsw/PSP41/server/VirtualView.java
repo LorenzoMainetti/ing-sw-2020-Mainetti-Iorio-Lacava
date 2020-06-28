@@ -16,14 +16,14 @@ import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 public class VirtualView extends ViewObservable implements ModelObserver {
 
     private Map<String, ClientHandler> clients = new ConcurrentHashMap<>();
-    private String currPlayer;
+    String currPlayer;
 
     public void addClient(String name, ClientHandler client) {
         clients.put(name, client);
     }
 
     /**
-     * Set the current playing client
+     * Sets the current playing client
      * @param currPlayer current player
      */
     public void setCurrPlayer(String currPlayer) {
@@ -31,7 +31,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Ask the nickname
+     * Asks the nickname
      * @param currClient player addressee
      */
     public void requestNickname(ClientHandler currClient) {
@@ -40,6 +40,10 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         notifyNickname(nickname);
     }
 
+    /**
+     * Sends an error message during the nickname choice
+     * @param currClient player addressee
+     */
     public void errorTakenNickname(ClientHandler currClient) {
         currClient.send(takenNameMessage);
         String nickname = currClient.read();
@@ -47,7 +51,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Ask the lobby size
+     * Asks the lobby size
      * @param currClient first player in the lobby
      */
     public void requestPlayersNum(ClientHandler currClient) {
@@ -65,7 +69,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Ask workers' initial position
+     * Asks workers' initial position
      */
     public void requestInitPos() {
         ClientHandler current = clients.get(currPlayer);
@@ -76,12 +80,15 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         notifyPosition(new Position(position/10, position%10));
     }
 
+    /**
+     * Sends an error message during the workers' initial position choice
+     */
     public void errorTakenPosition() {
         clients.get(currPlayer).send(occupiedCellMessage);
     }
 
     /**
-     * Ask the number of the worker to play with
+     * Asks the number of the worker to play with
      */
     public void requestWorkerNum() {
         clients.get(currPlayer).send(workerNumMessage);
@@ -96,7 +103,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Ask if the god power would be activated
+     * Asks if the god power would be activated
      */
     public void requestActivatePow() {
         clients.get(currPlayer).send(activatePowMessage);
@@ -111,7 +118,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Send the available cells for the move or build and ask a cell
+     * Sends the available cells for the move or build and asks a cell
      * @param positionMessage available cells
      */
     public void requestPosition(PositionMessage positionMessage) {
@@ -141,6 +148,10 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     //OBSERVER
 
+    /**
+     * Sends the updated board to all the players
+     * @param board
+     */
     @Override
     public void updateState(Board board) {
         //send serialized board
@@ -150,7 +161,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Send players a win message with the winner nickname
+     * Sends players a win message with the winner nickname
      * @param winner winner player
      */
     @Override
@@ -174,7 +185,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Send players information
+     * Sends players information
      * @param message nickname, color and god chosen by the player
      */
     public void sendPlayersInfo(PlayersInfoMessage message) {
@@ -183,7 +194,12 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         }
     }
 
+
     //TURN:
+
+    /**
+     * Sends players the name of the current player
+     */
     public void startTurn() {
         for (ClientHandler ch : clients.values()) {
             if(ch.equals(clients.get(currPlayer)))
@@ -192,20 +208,29 @@ public class VirtualView extends ViewObservable implements ModelObserver {
         }
     }
 
+    /**
+     * Sends a move message to the current player
+     */
     public void movePhase() {
         clients.get(currPlayer).send(moveMessage);
     }
 
+    /**
+     * Sends a build message to the current player
+     */
     public void buildPhase() {
         clients.get(currPlayer).send(buildMessage);
     }
 
+    /**
+     * Sends an end turn message to the current player
+     */
     public void endTurn() {
         clients.get(currPlayer).send(endTurnMessage);
     }
 
     /**
-     * Prints empty board
+     * Sends empty board
      * @param board empty board
      */
     public void emptyBoard(Board board) {

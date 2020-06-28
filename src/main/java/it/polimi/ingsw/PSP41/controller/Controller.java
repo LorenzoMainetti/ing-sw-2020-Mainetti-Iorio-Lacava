@@ -146,7 +146,7 @@ public class Controller {
             }
         }
         //at the end of each turn reset godPower's trigger
-        player.getGodCard().setTriggered(false);
+        player.getGodCard().reset();
         virtualView.endTurn();
     }
 

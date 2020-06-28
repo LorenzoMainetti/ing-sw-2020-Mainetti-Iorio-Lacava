@@ -7,34 +7,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
-public class ClientHandler extends ConnectionObservable implements Runnable {
+public class ClientHandler extends ConnectionObservable {
 
     private Socket socket;
-    private Lobby lobby; //NON FINAL ALTRIMENTI NON FUNZIONA NIENTE, INTELLIJ MENTE
-    private int position;
-    private boolean connected = true;
-    private boolean active = true;
+    private boolean connected = true; //Checks client connection
+    private boolean active = true; //Checks client state in the match
     private boolean myTurn = false;
     private String answer;
     private boolean answerReady = false;
     private ObjectOutputStream socketOut;
     private BufferedReader socketIn;
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public ClientHandler(Socket socket, Lobby lobby) {
+    public ClientHandler(Socket socket) {
         this.socket = socket;
-        this.lobby = lobby;
     }
 
     public void setActive(boolean active) {
@@ -45,8 +33,12 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
         return active;
     }
 
+    public boolean isConnected() {
+        return connected;
+    }
+
     /**
-     * Message sender from server to client
+     * Messages sender from server to client
      * @param message object sent to client
      */
     public void send(Object message) {
@@ -63,24 +55,26 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                 socketOut.flush();
             }
         } catch (IOException | NullPointerException e) {
-            System.err.println("Error in method send #" + position + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     /**
      * Closes connection with client
      */
-    public void closeConnection() {
+    public synchronized void closeConnection() {
         try {
             connected = false;
             socket.close();
-            System.out.println("Connection closed with client #" + position);
+            System.out.println("[SERVER] Connection closed with client");
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Error in method close connection: " + e.getMessage());
         }
     }
 
+    /**
+     * Sends a ping message from Server to Client
+     */
     public void pingToClient() {
         Thread t = new Thread(() -> {
             while (connected) {
@@ -90,9 +84,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                     e.printStackTrace();
                 }
                 try {
-                    //socketOut.reset();
                     socketOut.writeObject("");
-                    //socketOut.flush();
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
@@ -102,17 +94,16 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     }
 
     /**
-     * Loop read from client: when a message is read, answerReady is set true. If the client is unreachable, server is notified
+     * Loops read from client: when a message is read, answerReady is set true. If the client is unreachable, server is notified
      */
-    public void readFromClient(){
+    public void readFromClient() {
         Thread t = new Thread(() -> {
-            while (true) {
+            while (connected) {
                 try {
                     socket.setSoTimeout(5000);
                     String fromClient = socketIn.readLine();
                     if (!fromClient.equals("")) {
                         if (myTurn) {
-                            //System.out.println("From client:" + answer);
                             answer = fromClient;
                             answerReady = true;
                             synchronized (this) {
@@ -124,9 +115,10 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                         }
                     }
                 } catch (IOException | NullPointerException | IllegalArgumentException e) {
-                        System.out.println("[SERVER] Client #" + position + " unreachable");
-                        notifyDisconnection(this);
-                        break;
+                    System.out.println("[SERVER] Client unreachable");
+                    //e.printStackTrace();
+                    notifyDisconnection(this);
+                    break;
                 }
             }
         });
@@ -134,7 +126,7 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
     }
 
     /**
-     * Return client message: waits until a message is received
+     * Returns client message: waits until a message is received
      * @return client message
      */
     public String read() {
@@ -147,14 +139,14 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
                 }
             }
         }
-        //System.out.println("Read: " + answer);
         answerReady = false;
         return answer;
     }
 
-    @Override
+    /**
+     * Initializes socket and starts ping management
+     */
     public void run() {
-
         try {
             socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketOut = new ObjectOutputStream(socket.getOutputStream());
@@ -162,39 +154,8 @@ public class ClientHandler extends ConnectionObservable implements Runnable {
             e.printStackTrace();
         }
 
-        pingToClient();
         readFromClient();
-
-        if (position > 3) {
-            send(fullLobby);
-            active = false;
-            closeConnection();
-        }
-
-        try {
-            if (lobby.getPlayersNumber() == -1 || position <= lobby.getPlayersNumber()) {
-                if (position <= 3) {
-                    // Lobby creation
-                    if (position == 1) {
-                        lobby.setPlayersNumber(this);
-                    }
-                    else {
-                        send(waitPlayersNum);
-                        lobby.waitPlayersNumber(this);
-                    }
-
-                    lobby.setNickname(this);
-                    lobby.setGodLike();
-                }
-            }
-            else {
-                send(fullLobby);
-                setActive(false);
-                closeConnection();
-            }
-
-        } catch (NoSuchElementException e) {
-            System.err.println("[SERVER] Error!" + e.getMessage());
-        }
+        pingToClient();
     }
+
 }

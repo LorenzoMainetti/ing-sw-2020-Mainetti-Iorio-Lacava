@@ -1,61 +1,24 @@
 package it.polimi.ingsw.PSP41.server;
 
-import it.polimi.ingsw.PSP41.observer.ConnectionObserver;
+import it.polimi.ingsw.PSP41.observer.LobbyObserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import static it.polimi.ingsw.PSP41.utils.GameMessage.fullLobby;
+import static it.polimi.ingsw.PSP41.utils.GameMessage.waitPlayersNum;
 
-public class Server implements Runnable, ConnectionObserver {
+public class Server implements Runnable, LobbyObserver {
 
     ServerSocket serverSocket;
     private final int PORT = 9090;
-    private final ExecutorService executor = Executors.newFixedThreadPool(64);
-    private List<ClientHandler> log = new ArrayList<>();
-    private final Object lock = new Object();
+    private final List<ClientHandler> clientsList = Collections.synchronizedList(new ArrayList<>());
+    private boolean first = true;
 
     /**
-     * Remove the current client from the list of connected clients
-     * @param client current client
+     * Manages clients reception
      */
-    public synchronized void deregisterConnection(ClientHandler client) {
-        System.out.println("[SERVER] Unregistering client...");
-        log.remove(client);
-        System.out.println("[SERVER] Done!");
-    }
-
-    /*public Server() throws IOException {
-        this.serverSocket = new ServerSocket(PORT);
-    }*/
-
-    /**
-     * Manages disconnection: if the client disconnected is active, all the clients will be disconnected;
-     * else the client disconnected is removed from the server clients log
-     * @param client disconnected client
-     */
-    @Override
-    public void updateDisconnection(ClientHandler client) {
-        if (client.isActive()) {
-            for (ClientHandler ch : log) {
-                ch.closeConnection();
-            }
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            deregisterConnection(client);
-        }
-    }
-
-    @Override
     public void run() {
         try {
             serverSocket = new ServerSocket(PORT);
@@ -64,31 +27,91 @@ public class Server implements Runnable, ConnectionObserver {
             System.out.println("Socket close");
         }
 
-        Lobby lobby = new Lobby();
-
-        while(true){
+        while (true) {
             try {
                 // Create socket
                 System.out.println("[SERVER] Waiting for client connection...");
                 Socket newSocket = serverSocket.accept();
                 System.out.println("[SERVER] Client connected to server");
-                ClientHandler clientHandler = new ClientHandler(newSocket, lobby);
+                ClientHandler clientHandler = new ClientHandler(newSocket);
+                //Thread t = new Thread(clientHandler);
+                //t.start();
+                clientHandler.run();
 
-                synchronized (lock) {
-                    clientHandler.setPosition(log.size() + 1);
-                    // Max 3 clients connected
-                    if (clientHandler.getPosition() <= 3) {
-                        log.add(clientHandler);
-                        clientHandler.addObserver(this);
-                    }
-                }
-
-                executor.submit(clientHandler);
+                addClientToList(clientHandler);
 
             } catch (IOException e) {
                 System.out.println("[SERVER] Restarting server...");
                 return;
             }
+        }
+    }
+
+    /**
+     * Adds client to the server's list: if the client is the first connected, creates a new lobby
+     * @param client current client
+     */
+    private void addClientToList(ClientHandler client) {
+        synchronized (clientsList) {
+            clientsList.add(client);
+            if (first) {
+                first = false;
+                createNewLobby();
+            }
+            else {
+               client.send(waitPlayersNum);
+            }
+            clientsList.notifyAll();
+        }
+    }
+
+    /**
+     * Takes the first client from the server's list and adds it to the clients list of the lobby that called the method
+     * @param lobby lobby that called the method
+     */
+    @Override
+    public void updatePlayersNumber(Lobby lobby) {
+        synchronized (clientsList) {
+            while (clientsList.size() == 0) {
+                try {
+                    clientsList.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            ClientHandler client = clientsList.get(0);
+            clientsList.remove(0);
+            lobby.addClient(client);
+        }
+    }
+
+    /**
+     * Starts a new lobby on a new thread
+     */
+    @Override
+    public void createNewLobby() {
+        Thread t = new Thread(() -> addLobby(new Lobby()));
+        t.start();
+    }
+
+    /**
+     * Takes the first client from server's list and adds it to the clients list of the lobby just created
+     * @param lobby lobby just created
+     */
+    public void addLobby(Lobby lobby) {
+        lobby.addObserver(this);
+        synchronized (clientsList) {
+            //System.out.println("[SERVER] log.size() in addLobby(): " + clientsList.size());
+            while (clientsList.size() == 0) {
+                try {
+                    clientsList.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            ClientHandler client = clientsList.get(0);
+            clientsList.remove(0);
+            lobby.addClient(client);
         }
     }
 
