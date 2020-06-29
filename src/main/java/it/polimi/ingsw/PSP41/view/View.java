@@ -34,8 +34,6 @@ public interface View {
 
     void displayNetworkError();  //client-side
 
-    void displayFullLobby();
-
     //Update User Interface
     void waitPlayersNum();
 

@@ -13,7 +13,6 @@ public class GameMessage {
     public final static String workerNumMessage = "workerNumMessage";
     public final static String activatePowMessage = "activatePowMessage ";
 
-    public final static String fullLobby = "fullLobby";
     public final static String takenNameMessage = "takenNameMessage";
     public final static String occupiedCellMessage = "occupiedCellMessage";
 

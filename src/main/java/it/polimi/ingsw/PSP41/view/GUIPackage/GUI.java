@@ -187,17 +187,6 @@ public class GUI extends Application implements View {
     }
 
     @Override
-    public void displayFullLobby() {
-        Platform.runLater(() -> new AlertPopup().display("Sorry, the lobby is already full. Try again later."));
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Platform.exit();
-    }
-
-    @Override
     public void waitPlayersNum() {
         waiting();
     }

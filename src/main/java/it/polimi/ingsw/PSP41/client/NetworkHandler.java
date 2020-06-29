@@ -115,9 +115,6 @@ public class NetworkHandler implements Runnable, UiObserver {
                     case waitMessage:
                         view.waiting();
                         break;
-                    case fullLobby:
-                        view.displayFullLobby();
-                        break;
                     case wrongTurnMessage:
                         view.displayWrongTurn();
                         break;
