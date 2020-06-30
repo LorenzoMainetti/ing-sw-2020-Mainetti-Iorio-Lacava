@@ -53,7 +53,7 @@
     100%
   </span>
   <span class="absValue">
-    (5/ 5)
+    (6/ 6)
   </span>
 </td>
 <td class="coverageStat">
@@ -61,7 +61,7 @@
     100%
   </span>
   <span class="absValue">
-    (24/ 24)
+    (26/ 26)
   </span>
 </td>
 </tr>
@@ -119,31 +119,36 @@
 <b class="fc"><i>45</i>&nbsp;                phases.add(TurnPhase.BUILD);</b>
 <i>46</i>&nbsp;        }
 <i>47</i>&nbsp;        else {
-<b class="fc"><i>48</i>&nbsp;            firstTime = true;</b>
-<b class="fc"><i>49</i>&nbsp;            while(phases.size() &gt; 3)</b>
-<b class="fc"><i>50</i>&nbsp;                phases.remove(TurnPhase.BUILD);</b>
-<i>51</i>&nbsp;        }
-<b class="fc"><i>52</i>&nbsp;    }</b>
-<i>53</i>&nbsp;
-<i>54</i>&nbsp;    /**
-<i>55</i>&nbsp;     * Perform a regular build and reset trigger in order to re-ask activation
-<i>56</i>&nbsp;     * @param board board state
-<i>57</i>&nbsp;     * @param row where the player wants to build
-<i>58</i>&nbsp;     * @param column where the player wants to build
-<i>59</i>&nbsp;     */
-<i>60</i>&nbsp;    @Override
-<i>61</i>&nbsp;    public void build(Board board, int row, int column) {
-<b class="fc"><i>62</i>&nbsp;        triggered = false;</b>
-<b class="fc"><i>63</i>&nbsp;        super.build(board, row, column);</b>
-<b class="fc"><i>64</i>&nbsp;    }</b>
-<i>65</i>&nbsp;
-<i>66</i>&nbsp;}
+<b class="fc"><i>48</i>&nbsp;            while(phases.size() &gt; 3)</b>
+<b class="fc"><i>49</i>&nbsp;                phases.remove(TurnPhase.BUILD);</b>
+<i>50</i>&nbsp;        }
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public void reset() {
+<b class="fc"><i>55</i>&nbsp;        super.reset();</b>
+<b class="fc"><i>56</i>&nbsp;        firstTime = true;</b>
+<b class="fc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * Perform a regular build and reset trigger in order to re-ask activation
+<i>61</i>&nbsp;     * @param board board state
+<i>62</i>&nbsp;     * @param row where the player wants to build
+<i>63</i>&nbsp;     * @param column where the player wants to build
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    public void build(Board board, int row, int column) {
+<b class="fc"><i>67</i>&nbsp;        triggered = false;</b>
+<b class="fc"><i>68</i>&nbsp;        super.build(board, row, column);</b>
+<b class="fc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-06-22 19:04</div>
+    <div style="float:right;">generated on 2020-06-30 21:45</div>
 </div>
 </body>
 </html>

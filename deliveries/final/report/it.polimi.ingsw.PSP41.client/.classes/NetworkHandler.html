@@ -61,7 +61,7 @@
     0%
   </span>
   <span class="absValue">
-    (0/ 118)
+    (0/ 116)
   </span>
 </td>
 </tr>
@@ -189,114 +189,122 @@
 <i>115</i>&nbsp;                    case waitMessage:
 <b class="nc"><i>116</i>&nbsp;                        view.waiting();</b>
 <b class="nc"><i>117</i>&nbsp;                        break;</b>
-<i>118</i>&nbsp;                    case fullLobby:
-<b class="nc"><i>119</i>&nbsp;                        view.displayFullLobby();</b>
-<b class="nc"><i>120</i>&nbsp;                        break;</b>
-<i>121</i>&nbsp;                    case wrongTurnMessage:
-<b class="nc"><i>122</i>&nbsp;                        view.displayWrongTurn();</b>
-<i>123</i>&nbsp;                        break;
-<i>124</i>&nbsp;                }
-<b class="nc"><i>125</i>&nbsp;            }</b>
-<i>126</i>&nbsp;        } else {
-<b class="nc"><i>127</i>&nbsp;            throw new IllegalArgumentException();</b>
-<i>128</i>&nbsp;        }
-<i>129</i>&nbsp;    }
-<i>130</i>&nbsp;
-<i>131</i>&nbsp;    /**
-<i>132</i>&nbsp;     * Send a ping message from Client to Server
-<i>133</i>&nbsp;     */
-<i>134</i>&nbsp;    public void pingToServer() {
-<b class="nc"><i>135</i>&nbsp;        Thread t = new Thread(() -&gt; {</b>
-<i>136</i>&nbsp;            while (true) {
-<i>137</i>&nbsp;                try {
-<b class="nc"><i>138</i>&nbsp;                    Thread.sleep(1000);</b>
-<b class="nc"><i>139</i>&nbsp;                } catch (InterruptedException e) {</b>
-<b class="nc"><i>140</i>&nbsp;                    e.printStackTrace();</b>
-<b class="nc"><i>141</i>&nbsp;                }</b>
-<b class="nc"><i>142</i>&nbsp;                socketOut.println(&quot;&quot;);</b>
-<i>143</i>&nbsp;            }
-<i>144</i>&nbsp;        });
-<b class="nc"><i>145</i>&nbsp;        t.start();</b>
-<i>146</i>&nbsp;    }
-<i>147</i>&nbsp;
-<i>148</i>&nbsp;
-<i>149</i>&nbsp;    @Override
-<i>150</i>&nbsp;    public void run() {
-<i>151</i>&nbsp;
-<b class="nc"><i>152</i>&nbsp;        synchronized (this) {</b>
-<b class="nc"><i>153</i>&nbsp;            while (!ready) {</b>
-<i>154</i>&nbsp;                try {
-<b class="nc"><i>155</i>&nbsp;                    wait();</b>
-<b class="nc"><i>156</i>&nbsp;                } catch (InterruptedException e) {</b>
-<b class="nc"><i>157</i>&nbsp;                    e.printStackTrace();</b>
-<b class="nc"><i>158</i>&nbsp;                }</b>
-<i>159</i>&nbsp;            }
-<b class="nc"><i>160</i>&nbsp;        }</b>
-<i>161</i>&nbsp;
-<i>162</i>&nbsp;        try {
-<b class="nc"><i>163</i>&nbsp;            socketIn = new ObjectInputStream(socket.getInputStream());</b>
-<b class="nc"><i>164</i>&nbsp;            socketOut = new PrintWriter(socket.getOutputStream(), true);</b>
-<b class="nc"><i>165</i>&nbsp;        } catch (IOException e) {</b>
-<b class="nc"><i>166</i>&nbsp;            e.printStackTrace();</b>
-<b class="nc"><i>167</i>&nbsp;        }</b>
-<i>168</i>&nbsp;
-<b class="nc"><i>169</i>&nbsp;        pingToServer();</b>
-<i>170</i>&nbsp;
-<i>171</i>&nbsp;        try{
-<i>172</i>&nbsp;            while (true) {
-<i>173</i>&nbsp;                try {
-<b class="nc"><i>174</i>&nbsp;                    socket.setSoTimeout(5000);</b>
-<b class="nc"><i>175</i>&nbsp;                    Object inputObject = socketIn.readObject();</b>
-<b class="nc"><i>176</i>&nbsp;                    manageInputFromServer(inputObject);</b>
-<i>177</i>&nbsp;                    // close socket if winMessage is received
-<b class="nc"><i>178</i>&nbsp;                    if (inputObject instanceof NameMessage &amp;&amp; ((NameMessage) inputObject).getType().equals(winMessage))</b>
-<b class="nc"><i>179</i>&nbsp;                        break;</b>
-<b class="nc"><i>180</i>&nbsp;                } catch (IOException | ClassNotFoundException e) {</b>
-<b class="nc"><i>181</i>&nbsp;                    view.displayNetworkError();</b>
-<b class="nc"><i>182</i>&nbsp;                    break;</b>
-<b class="nc"><i>183</i>&nbsp;                }</b>
-<i>184</i>&nbsp;            }
-<b class="nc"><i>185</i>&nbsp;        } catch(NoSuchElementException e) {</b>
-<b class="nc"><i>186</i>&nbsp;            view.displayNetworkError();</b>
-<i>187</i>&nbsp;        } finally {
-<b class="nc"><i>188</i>&nbsp;            try {</b>
-<b class="nc"><i>189</i>&nbsp;                socketIn.close();</b>
-<b class="nc"><i>190</i>&nbsp;                socketOut.close();</b>
-<b class="nc"><i>191</i>&nbsp;                socket.close();</b>
-<b class="nc"><i>192</i>&nbsp;            } catch (IOException e) {</b>
-<b class="nc"><i>193</i>&nbsp;                e.printStackTrace();</b>
-<b class="nc"><i>194</i>&nbsp;            }</b>
-<b class="nc"><i>195</i>&nbsp;        }</b>
-<i>196</i>&nbsp;    }
-<i>197</i>&nbsp;
-<i>198</i>&nbsp;    @Override
-<i>199</i>&nbsp;    public void update(String inputLine) {
-<b class="nc"><i>200</i>&nbsp;        socketOut.println(inputLine);</b>
-<b class="nc"><i>201</i>&nbsp;        socketOut.flush();</b>
-<i>202</i>&nbsp;    }
-<i>203</i>&nbsp;
-<i>204</i>&nbsp;    @Override
-<i>205</i>&nbsp;    public void updateConnection(String ip, String port) {
-<i>206</i>&nbsp;        try {
-<b class="nc"><i>207</i>&nbsp;            socket = new Socket(ip, Integer.parseInt(port));</b>
-<b class="nc"><i>208</i>&nbsp;            ready = true;</b>
-<b class="nc"><i>209</i>&nbsp;            synchronized (this) {</b>
-<b class="nc"><i>210</i>&nbsp;                notifyAll();</b>
-<b class="nc"><i>211</i>&nbsp;            }</b>
-<i>212</i>&nbsp;
-<b class="nc"><i>213</i>&nbsp;        } catch (IOException | IllegalArgumentException e) {</b>
-<b class="nc"><i>214</i>&nbsp;            System.out.println(&quot;Server unreachable&quot;);</b>
-<b class="nc"><i>215</i>&nbsp;            System.exit(0);</b>
-<b class="nc"><i>216</i>&nbsp;        }</b>
-<b class="nc"><i>217</i>&nbsp;        System.out.println(&quot;Connection established&quot;);</b>
-<i>218</i>&nbsp;    }
-<i>219</i>&nbsp;}
+<i>118</i>&nbsp;                    case wrongTurnMessage:
+<b class="nc"><i>119</i>&nbsp;                        view.displayWrongTurn();</b>
+<i>120</i>&nbsp;                        break;
+<i>121</i>&nbsp;                }
+<b class="nc"><i>122</i>&nbsp;            }</b>
+<i>123</i>&nbsp;        } else {
+<b class="nc"><i>124</i>&nbsp;            throw new IllegalArgumentException();</b>
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Sends a ping message from Client to Server
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    public void pingToServer() {
+<b class="nc"><i>132</i>&nbsp;        Thread t = new Thread(() -&gt; {</b>
+<i>133</i>&nbsp;            while (true) {
+<i>134</i>&nbsp;                try {
+<b class="nc"><i>135</i>&nbsp;                    Thread.sleep(1000);</b>
+<b class="nc"><i>136</i>&nbsp;                } catch (InterruptedException e) {</b>
+<b class="nc"><i>137</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>138</i>&nbsp;                }</b>
+<b class="nc"><i>139</i>&nbsp;                socketOut.println(&quot;&quot;);</b>
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;        });
+<b class="nc"><i>142</i>&nbsp;        t.start();</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Initializes socket and start ping management
+<i>147</i>&nbsp;     */
+<i>148</i>&nbsp;    @Override
+<i>149</i>&nbsp;    public void run() {
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;        synchronized (this) {</b>
+<b class="nc"><i>152</i>&nbsp;            while (!ready) {</b>
+<i>153</i>&nbsp;                try {
+<b class="nc"><i>154</i>&nbsp;                    wait();</b>
+<b class="nc"><i>155</i>&nbsp;                } catch (InterruptedException e) {</b>
+<b class="nc"><i>156</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>157</i>&nbsp;                }</b>
+<i>158</i>&nbsp;            }
+<b class="nc"><i>159</i>&nbsp;        }</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        try {
+<b class="nc"><i>162</i>&nbsp;            socketIn = new ObjectInputStream(socket.getInputStream());</b>
+<b class="nc"><i>163</i>&nbsp;            socketOut = new PrintWriter(socket.getOutputStream(), true);</b>
+<b class="nc"><i>164</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>165</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>166</i>&nbsp;        }</b>
+<i>167</i>&nbsp;
+<b class="nc"><i>168</i>&nbsp;        pingToServer();</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;        try{
+<i>171</i>&nbsp;            while (true) {
+<i>172</i>&nbsp;                try {
+<b class="nc"><i>173</i>&nbsp;                    socket.setSoTimeout(5000);</b>
+<b class="nc"><i>174</i>&nbsp;                    Object inputObject = socketIn.readObject();</b>
+<b class="nc"><i>175</i>&nbsp;                    manageInputFromServer(inputObject);</b>
+<i>176</i>&nbsp;                    // close socket if winMessage is received
+<b class="nc"><i>177</i>&nbsp;                    if (inputObject instanceof NameMessage &amp;&amp; ((NameMessage) inputObject).getType().equals(winMessage))</b>
+<b class="nc"><i>178</i>&nbsp;                        break;</b>
+<b class="nc"><i>179</i>&nbsp;                } catch (IOException | ClassNotFoundException e) {</b>
+<b class="nc"><i>180</i>&nbsp;                    view.displayNetworkError();</b>
+<b class="nc"><i>181</i>&nbsp;                    break;</b>
+<b class="nc"><i>182</i>&nbsp;                }</b>
+<i>183</i>&nbsp;            }
+<b class="nc"><i>184</i>&nbsp;        } catch(NoSuchElementException e) {</b>
+<b class="nc"><i>185</i>&nbsp;            view.displayNetworkError();</b>
+<i>186</i>&nbsp;        } finally {
+<b class="nc"><i>187</i>&nbsp;            try {</b>
+<b class="nc"><i>188</i>&nbsp;                socketIn.close();</b>
+<b class="nc"><i>189</i>&nbsp;                socketOut.close();</b>
+<b class="nc"><i>190</i>&nbsp;                socket.close();</b>
+<b class="nc"><i>191</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>192</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>193</i>&nbsp;            }</b>
+<b class="nc"><i>194</i>&nbsp;        }</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    /**
+<i>198</i>&nbsp;     * Sends a string to the server
+<i>199</i>&nbsp;     * @param inputLine string read from client
+<i>200</i>&nbsp;     */
+<i>201</i>&nbsp;    @Override
+<i>202</i>&nbsp;    public void update(String inputLine) {
+<b class="nc"><i>203</i>&nbsp;        socketOut.println(inputLine);</b>
+<b class="nc"><i>204</i>&nbsp;        socketOut.flush();</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * Tries connecting to the server
+<i>209</i>&nbsp;     * @param ip server ip
+<i>210</i>&nbsp;     * @param port server port
+<i>211</i>&nbsp;     */
+<i>212</i>&nbsp;    @Override
+<i>213</i>&nbsp;    public void updateConnection(String ip, String port) {
+<i>214</i>&nbsp;        try {
+<b class="nc"><i>215</i>&nbsp;            socket = new Socket(ip, Integer.parseInt(port));</b>
+<b class="nc"><i>216</i>&nbsp;            ready = true;</b>
+<b class="nc"><i>217</i>&nbsp;            synchronized (this) {</b>
+<b class="nc"><i>218</i>&nbsp;                notifyAll();</b>
+<b class="nc"><i>219</i>&nbsp;            }</b>
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;        } catch (IOException | IllegalArgumentException e) {</b>
+<b class="nc"><i>222</i>&nbsp;            System.out.println(&quot;Server unreachable&quot;);</b>
+<b class="nc"><i>223</i>&nbsp;            System.exit(0);</b>
+<b class="nc"><i>224</i>&nbsp;        }</b>
+<b class="nc"><i>225</i>&nbsp;        System.out.println(&quot;Connection established&quot;);</b>
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-06-22 19:04</div>
+    <div style="float:right;">generated on 2020-06-30 21:45</div>
 </div>
 </body>
 </html>

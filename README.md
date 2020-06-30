@@ -5,7 +5,7 @@ Scopo del progetto è quello di implementare il gioco da tavola [Santorini](http
 
 ## Documentazione
 ### Coverage Report
-Documentazione HTML che riporta nel dettaglio la test coverage complessiva raggiunta dai singoli package e dalle singole classi. Si è testato in particolare il Model, che raggiunge una copertura delle istruzioni del 96%. 
+Documentazione HTML che riporta nel dettaglio la test coverage complessiva raggiunta dai singoli package e dalle singole classi. Si è testato in particolare il Model, che raggiunge una copertura delle istruzioni del 99%. 
 È consultabile al seguente indirizzo: [Report](https://github.com/LorenzoMainetti/ing-sw-2020-Mainetti-Iorio-Lacava/tree/master/deliveries/final/report)
 
 ### UML

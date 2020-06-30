@@ -66,6 +66,13 @@ public class PoseidonTest {
     }
 
     @Test
+    public void testReset() {
+        godPower.isActionable(board, player.getWorker1());
+        godPower.reset();
+        assertFalse(godPower.isTriggered());
+    }
+
+    @Test
     public void testBuild() {
         player.build(board, 3, 4);
         assertFalse(godPower.isTriggered());

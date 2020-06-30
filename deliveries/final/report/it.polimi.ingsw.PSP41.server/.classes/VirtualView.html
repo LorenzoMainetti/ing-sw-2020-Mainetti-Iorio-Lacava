@@ -90,14 +90,14 @@
 <b class="nc"><i>16</i>&nbsp;public class VirtualView extends ViewObservable implements ModelObserver {</b>
 <i>17</i>&nbsp;
 <b class="nc"><i>18</i>&nbsp;    private Map&lt;String, ClientHandler&gt; clients = new ConcurrentHashMap&lt;&gt;();</b>
-<i>19</i>&nbsp;    private String currPlayer;
+<i>19</i>&nbsp;    String currPlayer;
 <i>20</i>&nbsp;
 <i>21</i>&nbsp;    public void addClient(String name, ClientHandler client) {
 <b class="nc"><i>22</i>&nbsp;        clients.put(name, client);</b>
 <i>23</i>&nbsp;    }
 <i>24</i>&nbsp;
 <i>25</i>&nbsp;    /**
-<i>26</i>&nbsp;     * Set the current playing client
+<i>26</i>&nbsp;     * Sets the current playing client
 <i>27</i>&nbsp;     * @param currPlayer current player
 <i>28</i>&nbsp;     */
 <i>29</i>&nbsp;    public void setCurrPlayer(String currPlayer) {
@@ -105,7 +105,7 @@
 <i>31</i>&nbsp;    }
 <i>32</i>&nbsp;
 <i>33</i>&nbsp;    /**
-<i>34</i>&nbsp;     * Ask the nickname
+<i>34</i>&nbsp;     * Asks the nickname
 <i>35</i>&nbsp;     * @param currClient player addressee
 <i>36</i>&nbsp;     */
 <i>37</i>&nbsp;    public void requestNickname(ClientHandler currClient) {
@@ -114,186 +114,211 @@
 <b class="nc"><i>40</i>&nbsp;        notifyNickname(nickname);</b>
 <i>41</i>&nbsp;    }
 <i>42</i>&nbsp;
-<i>43</i>&nbsp;    public void errorTakenNickname(ClientHandler currClient) {
-<b class="nc"><i>44</i>&nbsp;        currClient.send(takenNameMessage);</b>
-<b class="nc"><i>45</i>&nbsp;        String nickname = currClient.read();</b>
-<b class="nc"><i>46</i>&nbsp;        notifyNickname(nickname);</b>
-<i>47</i>&nbsp;    }
-<i>48</i>&nbsp;
-<i>49</i>&nbsp;    /**
-<i>50</i>&nbsp;     * Ask the lobby size
-<i>51</i>&nbsp;     * @param currClient first player in the lobby
-<i>52</i>&nbsp;     */
-<i>53</i>&nbsp;    public void requestPlayersNum(ClientHandler currClient) {
-<i>54</i>&nbsp;        //send a message that when received by the client trigger askPlayersNumber method in View
-<b class="nc"><i>55</i>&nbsp;        currClient.send(playersNumMessage);</b>
-<b class="nc"><i>56</i>&nbsp;        String message = currClient.read();</b>
-<i>57</i>&nbsp;
-<i>58</i>&nbsp;        // Server side check
-<b class="nc"><i>59</i>&nbsp;        while (!message.equals(&quot;2&quot;) &amp;&amp; !message.equals(&quot;3&quot;)) {</b>
-<b class="nc"><i>60</i>&nbsp;            currClient.send(playersNumMessage);</b>
-<b class="nc"><i>61</i>&nbsp;            message = currClient.read();</b>
-<i>62</i>&nbsp;        }
-<i>63</i>&nbsp;
-<b class="nc"><i>64</i>&nbsp;        notifyPlayersNumber(Integer.parseInt(message));</b>
-<i>65</i>&nbsp;    }
-<i>66</i>&nbsp;
-<i>67</i>&nbsp;    /**
-<i>68</i>&nbsp;     * Ask workers&#39; initial position
-<i>69</i>&nbsp;     */
-<i>70</i>&nbsp;    public void requestInitPos() {
-<b class="nc"><i>71</i>&nbsp;        ClientHandler current = clients.get(currPlayer);</b>
-<b class="nc"><i>72</i>&nbsp;        current.send(initPosMessage);</b>
-<b class="nc"><i>73</i>&nbsp;        String message = current.read();</b>
-<b class="nc"><i>74</i>&nbsp;        int position = Integer.parseInt(message);</b>
-<i>75</i>&nbsp;
-<b class="nc"><i>76</i>&nbsp;        notifyPosition(new Position(position/10, position%10));</b>
-<i>77</i>&nbsp;    }
-<i>78</i>&nbsp;
-<i>79</i>&nbsp;    public void errorTakenPosition() {
-<b class="nc"><i>80</i>&nbsp;        clients.get(currPlayer).send(occupiedCellMessage);</b>
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * Sends an error message during the nickname choice
+<i>45</i>&nbsp;     * @param currClient player addressee
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public void errorTakenNickname(ClientHandler currClient) {
+<b class="nc"><i>48</i>&nbsp;        currClient.send(takenNameMessage);</b>
+<b class="nc"><i>49</i>&nbsp;        String nickname = currClient.read();</b>
+<b class="nc"><i>50</i>&nbsp;        notifyNickname(nickname);</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * Asks the lobby size
+<i>55</i>&nbsp;     * @param currClient first player in the lobby
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    public void requestPlayersNum(ClientHandler currClient) {
+<i>58</i>&nbsp;        //send a message that when received by the client trigger askPlayersNumber method in View
+<b class="nc"><i>59</i>&nbsp;        currClient.send(playersNumMessage);</b>
+<b class="nc"><i>60</i>&nbsp;        String message = currClient.read();</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;        // Server side check
+<b class="nc"><i>63</i>&nbsp;        while (!message.equals(&quot;2&quot;) &amp;&amp; !message.equals(&quot;3&quot;)) {</b>
+<b class="nc"><i>64</i>&nbsp;            currClient.send(playersNumMessage);</b>
+<b class="nc"><i>65</i>&nbsp;            message = currClient.read();</b>
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;        notifyPlayersNumber(Integer.parseInt(message));</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Asks workers&#39; initial position
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    public void requestInitPos() {
+<b class="nc"><i>75</i>&nbsp;        ClientHandler current = clients.get(currPlayer);</b>
+<b class="nc"><i>76</i>&nbsp;        current.send(initPosMessage);</b>
+<b class="nc"><i>77</i>&nbsp;        String message = current.read();</b>
+<b class="nc"><i>78</i>&nbsp;        int position = Integer.parseInt(message);</b>
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;        notifyPosition(new Position(position/10, position%10));</b>
 <i>81</i>&nbsp;    }
 <i>82</i>&nbsp;
 <i>83</i>&nbsp;    /**
-<i>84</i>&nbsp;     * Ask the number of the worker to play with
+<i>84</i>&nbsp;     * Sends an error message during the workers&#39; initial position choice
 <i>85</i>&nbsp;     */
-<i>86</i>&nbsp;    public void requestWorkerNum() {
-<b class="nc"><i>87</i>&nbsp;        clients.get(currPlayer).send(workerNumMessage);</b>
-<b class="nc"><i>88</i>&nbsp;        String chosenWorker = clients.get(currPlayer).read();</b>
-<i>89</i>&nbsp;        /*
-<i>90</i>&nbsp;        while (Integer.parseInt(chosenWorker) != 1 &amp;&amp; Integer.parseInt(chosenWorker) != 2) {
-<i>91</i>&nbsp;            clients.get(currPlayer).send(&quot;Invalid worker number, choose 1 or 2:&quot;);
-<i>92</i>&nbsp;            chosenWorker = clients.get(currPlayer).read();
-<i>93</i>&nbsp;        }
-<i>94</i>&nbsp;        */
-<b class="nc"><i>95</i>&nbsp;        notifyWorker(Integer.parseInt(chosenWorker) == 1);</b>
-<i>96</i>&nbsp;    }
-<i>97</i>&nbsp;
-<i>98</i>&nbsp;    /**
-<i>99</i>&nbsp;     * Ask if the god power would be activated
-<i>100</i>&nbsp;     */
-<i>101</i>&nbsp;    public void requestActivatePow() {
-<b class="nc"><i>102</i>&nbsp;        clients.get(currPlayer).send(activatePowMessage);</b>
-<b class="nc"><i>103</i>&nbsp;        String power = clients.get(currPlayer).read();</b>
-<i>104</i>&nbsp;        /*
-<i>105</i>&nbsp;        while (!power.equals(&quot;yes&quot;) &amp;&amp; !power.equals(&quot;no&quot;)) {
-<i>106</i>&nbsp;            clients.get(currPlayer).send(&quot;Invalid answer, choose yes or no:&quot;);
-<i>107</i>&nbsp;            power = clients.get(currPlayer).read();
-<i>108</i>&nbsp;        }
-<i>109</i>&nbsp;        */
-<b class="nc"><i>110</i>&nbsp;        notifyPower(power.equals(&quot;yes&quot;));</b>
-<i>111</i>&nbsp;    }
-<i>112</i>&nbsp;
-<i>113</i>&nbsp;    /**
-<i>114</i>&nbsp;     * Send the available cells for the move or build and ask a cell
-<i>115</i>&nbsp;     * @param positionMessage available cells
-<i>116</i>&nbsp;     */
-<i>117</i>&nbsp;    public void requestPosition(PositionMessage positionMessage) {
-<i>118</i>&nbsp;        int row;
-<i>119</i>&nbsp;        int column;
-<i>120</i>&nbsp;
-<i>121</i>&nbsp;        outside:
-<i>122</i>&nbsp;        do {
-<b class="nc"><i>123</i>&nbsp;            ClientHandler current = clients.get(currPlayer);</b>
-<b class="nc"><i>124</i>&nbsp;            current.send(positionMessage);</b>
-<b class="nc"><i>125</i>&nbsp;            String message = current.read();</b>
-<b class="nc"><i>126</i>&nbsp;            row = Integer.parseInt(message) / 10;</b>
-<b class="nc"><i>127</i>&nbsp;            column = Integer.parseInt(message) % 10;</b>
-<i>128</i>&nbsp;
-<b class="nc"><i>129</i>&nbsp;            if (row &gt;= 0 &amp;&amp; row &lt;= 4 &amp;&amp; column &gt;= 0 &amp;&amp; column &lt;= 4) {</b>
-<b class="nc"><i>130</i>&nbsp;                for (Position position : positionMessage.getValidPos()) {</b>
-<b class="nc"><i>131</i>&nbsp;                    if (position.getPosRow() == row &amp;&amp; position.getPosColumn() == column) {</b>
-<b class="nc"><i>132</i>&nbsp;                        break outside;</b>
-<i>133</i>&nbsp;                    }
-<b class="nc"><i>134</i>&nbsp;                }</b>
-<i>135</i>&nbsp;            }
-<b class="nc"><i>136</i>&nbsp;        } while(true);</b>
-<i>137</i>&nbsp;
-<b class="nc"><i>138</i>&nbsp;        notifyPosition(new Position(row, column));</b>
-<i>139</i>&nbsp;    }
-<i>140</i>&nbsp;
-<i>141</i>&nbsp;
-<i>142</i>&nbsp;    //OBSERVER
-<i>143</i>&nbsp;
-<i>144</i>&nbsp;    @Override
-<i>145</i>&nbsp;    public void updateState(Board board) {
-<i>146</i>&nbsp;        //send serialized board
-<b class="nc"><i>147</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
-<b class="nc"><i>148</i>&nbsp;            ch.send(board);</b>
-<b class="nc"><i>149</i>&nbsp;        }</b>
-<i>150</i>&nbsp;    }
-<i>151</i>&nbsp;
-<i>152</i>&nbsp;    /**
-<i>153</i>&nbsp;     * Send players a win message with the winner nickname
-<i>154</i>&nbsp;     * @param winner winner player
-<i>155</i>&nbsp;     */
-<i>156</i>&nbsp;    @Override
-<i>157</i>&nbsp;    public void updateWinner(String winner) {
-<b class="nc"><i>158</i>&nbsp;        System.out.println(&quot;[SERVER] The winner is &quot; + winner);</b>
-<b class="nc"><i>159</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
-<b class="nc"><i>160</i>&nbsp;            ch.send(new NameMessage(winMessage, winner));</b>
-<b class="nc"><i>161</i>&nbsp;        }</b>
-<i>162</i>&nbsp;    }
-<i>163</i>&nbsp;
-<i>164</i>&nbsp;    /**
-<i>165</i>&nbsp;     * Notifies players the loser player (stuck)
-<i>166</i>&nbsp;     * @param loser loser nickname
-<i>167</i>&nbsp;     */
-<i>168</i>&nbsp;    @Override
-<i>169</i>&nbsp;    public void updateLoser(String loser) {
-<b class="nc"><i>170</i>&nbsp;        clients.get(loser).setActive(false);</b>
-<b class="nc"><i>171</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
-<b class="nc"><i>172</i>&nbsp;            ch.send(new NameMessage(loseMessage, loser));</b>
-<b class="nc"><i>173</i>&nbsp;        }</b>
-<i>174</i>&nbsp;    }
-<i>175</i>&nbsp;
-<i>176</i>&nbsp;    /**
-<i>177</i>&nbsp;     * Send players information
-<i>178</i>&nbsp;     * @param message nickname, color and god chosen by the player
-<i>179</i>&nbsp;     */
-<i>180</i>&nbsp;    public void sendPlayersInfo(PlayersInfoMessage message) {
-<b class="nc"><i>181</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
-<b class="nc"><i>182</i>&nbsp;            ch.send(message);</b>
-<b class="nc"><i>183</i>&nbsp;        }</b>
-<i>184</i>&nbsp;    }
-<i>185</i>&nbsp;
-<i>186</i>&nbsp;    //TURN:
-<i>187</i>&nbsp;    public void startTurn() {
-<b class="nc"><i>188</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
-<b class="nc"><i>189</i>&nbsp;            if(ch.equals(clients.get(currPlayer)))</b>
-<b class="nc"><i>190</i>&nbsp;                ch.send(startTurnMessage);</b>
-<b class="nc"><i>191</i>&nbsp;            ch.send(new NameMessage(currPlayer, currPlayer));</b>
-<b class="nc"><i>192</i>&nbsp;        }</b>
-<i>193</i>&nbsp;    }
-<i>194</i>&nbsp;
-<i>195</i>&nbsp;    public void movePhase() {
-<b class="nc"><i>196</i>&nbsp;        clients.get(currPlayer).send(moveMessage);</b>
-<i>197</i>&nbsp;    }
-<i>198</i>&nbsp;
-<i>199</i>&nbsp;    public void buildPhase() {
-<b class="nc"><i>200</i>&nbsp;        clients.get(currPlayer).send(buildMessage);</b>
-<i>201</i>&nbsp;    }
-<i>202</i>&nbsp;
-<i>203</i>&nbsp;    public void endTurn() {
-<b class="nc"><i>204</i>&nbsp;        clients.get(currPlayer).send(endTurnMessage);</b>
-<i>205</i>&nbsp;    }
-<i>206</i>&nbsp;
-<i>207</i>&nbsp;    /**
-<i>208</i>&nbsp;     * Prints empty board
-<i>209</i>&nbsp;     * @param board empty board
-<i>210</i>&nbsp;     */
-<i>211</i>&nbsp;    public void emptyBoard(Board board) {
-<b class="nc"><i>212</i>&nbsp;        for (ClientHandler client : clients.values()) {</b>
-<b class="nc"><i>213</i>&nbsp;            client.send(board);</b>
-<b class="nc"><i>214</i>&nbsp;        }</b>
-<i>215</i>&nbsp;    }
-<i>216</i>&nbsp;}
+<i>86</i>&nbsp;    public void errorTakenPosition() {
+<b class="nc"><i>87</i>&nbsp;        clients.get(currPlayer).send(occupiedCellMessage);</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    /**
+<i>91</i>&nbsp;     * Asks the number of the worker to play with
+<i>92</i>&nbsp;     */
+<i>93</i>&nbsp;    public void requestWorkerNum() {
+<b class="nc"><i>94</i>&nbsp;        clients.get(currPlayer).send(workerNumMessage);</b>
+<b class="nc"><i>95</i>&nbsp;        String chosenWorker = clients.get(currPlayer).read();</b>
+<i>96</i>&nbsp;        /*
+<i>97</i>&nbsp;        while (Integer.parseInt(chosenWorker) != 1 &amp;&amp; Integer.parseInt(chosenWorker) != 2) {
+<i>98</i>&nbsp;            clients.get(currPlayer).send(&quot;Invalid worker number, choose 1 or 2:&quot;);
+<i>99</i>&nbsp;            chosenWorker = clients.get(currPlayer).read();
+<i>100</i>&nbsp;        }
+<i>101</i>&nbsp;        */
+<b class="nc"><i>102</i>&nbsp;        notifyWorker(Integer.parseInt(chosenWorker) == 1);</b>
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    /**
+<i>106</i>&nbsp;     * Asks if the god power would be activated
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public void requestActivatePow() {
+<b class="nc"><i>109</i>&nbsp;        clients.get(currPlayer).send(activatePowMessage);</b>
+<b class="nc"><i>110</i>&nbsp;        String power = clients.get(currPlayer).read();</b>
+<i>111</i>&nbsp;        /*
+<i>112</i>&nbsp;        while (!power.equals(&quot;yes&quot;) &amp;&amp; !power.equals(&quot;no&quot;)) {
+<i>113</i>&nbsp;            clients.get(currPlayer).send(&quot;Invalid answer, choose yes or no:&quot;);
+<i>114</i>&nbsp;            power = clients.get(currPlayer).read();
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;        */
+<b class="nc"><i>117</i>&nbsp;        notifyPower(power.equals(&quot;yes&quot;));</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Sends the available cells for the move or build and asks a cell
+<i>122</i>&nbsp;     * @param positionMessage available cells
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public void requestPosition(PositionMessage positionMessage) {
+<i>125</i>&nbsp;        int row;
+<i>126</i>&nbsp;        int column;
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;        outside:
+<i>129</i>&nbsp;        do {
+<b class="nc"><i>130</i>&nbsp;            ClientHandler current = clients.get(currPlayer);</b>
+<b class="nc"><i>131</i>&nbsp;            current.send(positionMessage);</b>
+<b class="nc"><i>132</i>&nbsp;            String message = current.read();</b>
+<b class="nc"><i>133</i>&nbsp;            row = Integer.parseInt(message) / 10;</b>
+<b class="nc"><i>134</i>&nbsp;            column = Integer.parseInt(message) % 10;</b>
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;            if (row &gt;= 0 &amp;&amp; row &lt;= 4 &amp;&amp; column &gt;= 0 &amp;&amp; column &lt;= 4) {</b>
+<b class="nc"><i>137</i>&nbsp;                for (Position position : positionMessage.getValidPos()) {</b>
+<b class="nc"><i>138</i>&nbsp;                    if (position.getPosRow() == row &amp;&amp; position.getPosColumn() == column) {</b>
+<b class="nc"><i>139</i>&nbsp;                        break outside;</b>
+<i>140</i>&nbsp;                    }
+<b class="nc"><i>141</i>&nbsp;                }</b>
+<i>142</i>&nbsp;            }
+<b class="nc"><i>143</i>&nbsp;        } while(true);</b>
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;        notifyPosition(new Position(row, column));</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    //OBSERVER
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    /**
+<i>152</i>&nbsp;     * Sends the updated board to all the players
+<i>153</i>&nbsp;     * @param board
+<i>154</i>&nbsp;     */
+<i>155</i>&nbsp;    @Override
+<i>156</i>&nbsp;    public void updateState(Board board) {
+<i>157</i>&nbsp;        //send serialized board
+<b class="nc"><i>158</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
+<b class="nc"><i>159</i>&nbsp;            ch.send(board);</b>
+<b class="nc"><i>160</i>&nbsp;        }</b>
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /**
+<i>164</i>&nbsp;     * Sends players a win message with the winner nickname
+<i>165</i>&nbsp;     * @param winner winner player
+<i>166</i>&nbsp;     */
+<i>167</i>&nbsp;    @Override
+<i>168</i>&nbsp;    public void updateWinner(String winner) {
+<b class="nc"><i>169</i>&nbsp;        System.out.println(&quot;[SERVER] The winner is &quot; + winner);</b>
+<b class="nc"><i>170</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
+<b class="nc"><i>171</i>&nbsp;            ch.send(new NameMessage(winMessage, winner));</b>
+<b class="nc"><i>172</i>&nbsp;        }</b>
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    /**
+<i>176</i>&nbsp;     * Notifies players the loser player (stuck)
+<i>177</i>&nbsp;     * @param loser loser nickname
+<i>178</i>&nbsp;     */
+<i>179</i>&nbsp;    @Override
+<i>180</i>&nbsp;    public void updateLoser(String loser) {
+<b class="nc"><i>181</i>&nbsp;        clients.get(loser).setActive(false);</b>
+<b class="nc"><i>182</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
+<b class="nc"><i>183</i>&nbsp;            ch.send(new NameMessage(loseMessage, loser));</b>
+<b class="nc"><i>184</i>&nbsp;        }</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    /**
+<i>188</i>&nbsp;     * Sends players information
+<i>189</i>&nbsp;     * @param message nickname, color and god chosen by the player
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    public void sendPlayersInfo(PlayersInfoMessage message) {
+<b class="nc"><i>192</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
+<b class="nc"><i>193</i>&nbsp;            ch.send(message);</b>
+<b class="nc"><i>194</i>&nbsp;        }</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    //TURN:
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    /**
+<i>201</i>&nbsp;     * Sends players the name of the current player
+<i>202</i>&nbsp;     */
+<i>203</i>&nbsp;    public void startTurn() {
+<b class="nc"><i>204</i>&nbsp;        for (ClientHandler ch : clients.values()) {</b>
+<b class="nc"><i>205</i>&nbsp;            if(ch.equals(clients.get(currPlayer)))</b>
+<b class="nc"><i>206</i>&nbsp;                ch.send(startTurnMessage);</b>
+<b class="nc"><i>207</i>&nbsp;            ch.send(new NameMessage(currPlayer, currPlayer));</b>
+<b class="nc"><i>208</i>&nbsp;        }</b>
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    /**
+<i>212</i>&nbsp;     * Sends a move message to the current player
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    public void movePhase() {
+<b class="nc"><i>215</i>&nbsp;        clients.get(currPlayer).send(moveMessage);</b>
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    /**
+<i>219</i>&nbsp;     * Sends a build message to the current player
+<i>220</i>&nbsp;     */
+<i>221</i>&nbsp;    public void buildPhase() {
+<b class="nc"><i>222</i>&nbsp;        clients.get(currPlayer).send(buildMessage);</b>
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    /**
+<i>226</i>&nbsp;     * Sends an end turn message to the current player
+<i>227</i>&nbsp;     */
+<i>228</i>&nbsp;    public void endTurn() {
+<b class="nc"><i>229</i>&nbsp;        clients.get(currPlayer).send(endTurnMessage);</b>
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Sends empty board
+<i>234</i>&nbsp;     * @param board empty board
+<i>235</i>&nbsp;     */
+<i>236</i>&nbsp;    public void emptyBoard(Board board) {
+<b class="nc"><i>237</i>&nbsp;        for (ClientHandler client : clients.values()) {</b>
+<b class="nc"><i>238</i>&nbsp;            client.send(board);</b>
+<b class="nc"><i>239</i>&nbsp;        }</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-06-22 19:04</div>
+    <div style="float:right;">generated on 2020-06-30 21:45</div>
 </div>
 </body>
 </html>

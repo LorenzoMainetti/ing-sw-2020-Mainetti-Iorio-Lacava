@@ -70,6 +70,12 @@ public class ApolloTest {
     }
 
     @Test
+    public void testReset() {
+        godPower.reset();
+        assertFalse(godPower.isTriggered());
+    }
+
+    @Test
     public void testMove() {
         godPower.move(player.getWorker1(), board, 3, 4);
         assertTrue(board.getCell(4,4).isOccupied());
