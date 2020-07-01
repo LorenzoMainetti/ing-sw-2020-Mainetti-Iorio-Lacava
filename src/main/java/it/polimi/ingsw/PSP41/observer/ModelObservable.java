@@ -5,6 +5,9 @@ import it.polimi.ingsw.PSP41.model.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Observable class used by Model classes
+ */
 public class ModelObservable {
     private final List<ModelObserver> observers = new ArrayList<>();
 

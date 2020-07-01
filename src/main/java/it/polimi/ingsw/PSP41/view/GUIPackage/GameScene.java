@@ -43,8 +43,11 @@ public class GameScene extends UiObservable {
     private String clientName;
     private boolean myTurn;
 
-
-
+    /**
+     * Sets up the GameScene
+     * @param players current players' info
+     * @param clientName user's nickname
+     */
     public GameScene(List<PlayersInfoMessage> players, String clientName) {
         try {
             root = FXMLLoader.load(getClass().getResource("/gameScene.fxml"));
@@ -231,16 +234,26 @@ public class GameScene extends UiObservable {
         }
     }
 
+    /**
+     * Updates phase to move phase
+     */
     public void startMovePhase() {
         phaseName.setText("MOVE");
         phaseText.setText("Choose where you want to move.");
     }
 
+    /**
+     * Updates phase to build phase
+     */
     public void startBuildPhase() {
         phaseName.setText("BUILD");
         phaseText.setText("Choose where you want to build.");
     }
 
+    /**
+     * Highlights current player's god card
+     * @param currPlayer current player's nickname
+     */
     public void displayCurrentPlayer(String currPlayer) {
         myTurn = currPlayer.equals(clientName);
 
@@ -257,6 +270,9 @@ public class GameScene extends UiObservable {
         }
     }
 
+    /**
+     * Asks the user where to place his worker and gets the input
+     */
     public void askInitPosition() {
         phaseName.setText(null);
         phaseText.setText("Set workers' position.");
@@ -313,7 +329,9 @@ public class GameScene extends UiObservable {
 
     }
 
-
+    /**
+     * Asks the user to select on of his/her workers and gets the input
+     */
     public void askWorker() {
         phaseName.setText(null);
         phaseText.setText("Choose the worker you want to use.");
@@ -361,8 +379,10 @@ public class GameScene extends UiObservable {
 
     }
 
-
-
+    /**
+     * Displays available cells to move or build, asks the user to choose one and gets the input
+     * @param availablePositions where player can play its action
+     */
     public void askPosition(List<Position> availablePositions) {
 
         for(Position pos : availablePositions){
@@ -418,6 +438,10 @@ public class GameScene extends UiObservable {
         }
     }
 
+    /**
+     * Displays the loser
+     * @param loser loser's nickname
+     */
     public void displayLoser(String loser) {
 
         int i = 0;
@@ -464,7 +488,10 @@ public class GameScene extends UiObservable {
         new LoserPopup().display(loser, clientName);
     }
 
-
+    /**
+     * Refreshes and shows the game board
+     * @param board that has to be represented
+     */
     public void displayBoard(Board board) {
 
         //clear the old board state

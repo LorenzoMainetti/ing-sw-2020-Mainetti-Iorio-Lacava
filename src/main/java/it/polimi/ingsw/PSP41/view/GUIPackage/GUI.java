@@ -197,18 +197,27 @@ public class GUI extends Application implements View {
         Platform.runLater(() -> gameScene.askPosition(positions));
     }
 
+    /**
+     * Warns that the chosen nickname is already taken and asks a different one
+     */
     @Override
     public void displayTakenNickname() {
         Platform.runLater(() -> new AlertPopup().display("ERROR: Nickname already taken. Try again."));
         askNickname();
     }
 
+    /**
+     * Warns that the chosen position is occupied
+     */
     @Override
     public void displayTakenPosition() {
         //Platform.runLater(() -> new AlertPopup().display("ERROR: this position is occupied. Try again."));
         askInitPosition();
     }
 
+    /**
+     * Warns the user that a network error has occurred
+     */
     @Override
     public void displayNetworkError() {
         Platform.runLater(() -> new AlertPopup().display("ERROR: Connection closed from server side."));
@@ -246,21 +255,37 @@ public class GUI extends Application implements View {
             Platform.runLater(() -> gameScene.displayBoard(board));
     }
 
+    /**
+     * Saves user's nickname
+     * @param name user's nickname
+     */
     @Override
     public void setClientName(String name) {
         clientName = name;
     }
 
+    /**
+     * Saves player's info
+     * @param message player's info
+     */
     @Override
     public void addPlayersInfo(PlayersInfoMessage message) {
         playersInfo.add(message);
     }
 
+    /**
+     * Saves the number of players
+     * @param number number of players
+     */
     @Override
     public void displayPlayersNumber(int number) {
         playersNumber = number;
     }
 
+    /**
+     * Displays the challenger's nickname
+     * @param name challenger's nickname
+     */
     @Override
     public void displayChallenger(String name) {
         challenger = name;
@@ -268,6 +293,10 @@ public class GUI extends Application implements View {
             Platform.runLater(() -> new AlertPopup().display(name + " is the most godlike! " + name + " is the Challenger!"));
     }
 
+    /**
+     * Highlights current player
+     * @param name current player's nickname
+     */
     @Override
     public void displayCurrentPlayer(String name) {
         //if it's the first time this method is called create the GameScene
@@ -282,6 +311,10 @@ public class GUI extends Application implements View {
         Platform.runLater(() -> gameScene.displayCurrentPlayer(name));
     }
 
+    /**
+     * Displays the loser
+     * @param name loser's nickname
+     */
     @Override
     public void displayLoser(String name) {
         playersInfo.removeIf(message -> message.getPlayerName().equals(name));
@@ -289,6 +322,10 @@ public class GUI extends Application implements View {
         Platform.runLater(() -> gameScene.displayLoser(name));
     }
 
+    /**
+     * Displays the winner
+     * @param name winner's nickname
+     */
     @Override
     public void displayWinner(String name) {
         WinnerScene winnerScene = new WinnerScene(name);
@@ -296,21 +333,33 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toWinnerScene);
     }
 
+    /**
+     * Warns the user that it's not his/her turn
+     */
     @Override
     public void displayWrongTurn() {
         Platform.runLater(() -> new AlertPopup().display("It's not your turn."));
     }
 
+    /**
+     * Updates phase to move phase
+     */
     @Override
     public void startMovePhase() {
         Platform.runLater(() -> gameScene.startMovePhase());
     }
 
+    /**
+     * Updates phase to build phase
+     */
     @Override
     public void startBuildPhase() {
         Platform.runLater(() -> gameScene.startBuildPhase());
     }
 
+    /**
+     * Shuts down the GUI
+     */
     @Override
     public void stop() {
         System.exit(0);

@@ -13,6 +13,9 @@ import java.util.NoSuchElementException;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
+/**
+ * Handles network connection on the Client side
+ */
 public class NetworkHandler implements Runnable, UiObserver {
 
     Socket socket;

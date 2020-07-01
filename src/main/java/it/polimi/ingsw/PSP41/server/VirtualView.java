@@ -16,8 +16,13 @@ import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 public class VirtualView extends ViewObservable implements ModelObserver {
 
     private Map<String, ClientHandler> clients = new ConcurrentHashMap<>();
-    String currPlayer;
+    private String currPlayer;
 
+    /**
+     * Adds client and its nickname to the clients' map
+     * @param name player's nickname
+     * @param client player addressee
+     */
     public void addClient(String name, ClientHandler client) {
         clients.put(name, client);
     }
@@ -150,7 +155,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     /**
      * Sends the updated board to all the players
-     * @param board
+     * @param board current board state
      */
     @Override
     public void updateState(Board board) {
@@ -162,7 +167,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     /**
      * Sends players a win message with the winner nickname
-     * @param winner winner player
+     * @param winner winner's nickname
      */
     @Override
     public void updateWinner(String winner) {
@@ -174,7 +179,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
 
     /**
      * Notifies players the loser player (stuck)
-     * @param loser loser nickname
+     * @param loser loser's nickname
      */
     @Override
     public void updateLoser(String loser) {

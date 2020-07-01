@@ -5,6 +5,9 @@ import it.polimi.ingsw.PSP41.model.Position;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Observable class used by VirtualView
+ */
 public class ViewObservable {
     private final List<ViewObserver> observers = new ArrayList<>();
 
@@ -28,7 +31,6 @@ public class ViewObservable {
         }
     }
 
-    // non serve più (lo faccio in lobby)
     public void notifyPlayersNumber(int numbers){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -45,7 +47,6 @@ public class ViewObservable {
         }
     }
 
-    // serve per la scelta del worker
     public void notifyWorker(boolean chosenWorker){
         synchronized (observers) {
             for(ViewObserver observer : observers){
@@ -54,7 +55,6 @@ public class ViewObservable {
         }
     }
 
-    // serve per la scelta del potere
     public void notifyPower(boolean power){
         synchronized (observers) {
             for(ViewObserver observer : observers){

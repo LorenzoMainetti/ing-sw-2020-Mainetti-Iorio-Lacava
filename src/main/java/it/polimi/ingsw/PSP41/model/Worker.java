@@ -16,7 +16,7 @@ public class Worker extends ModelObservable implements Serializable {
 
     /**
      * Worker constructor: it sets worker's color and number, the position will be set later by the player
-     * @param color worker color decided by the player
+     * @param color Player's color
      */
     public Worker(Color color, int number) {
         this.color = color;

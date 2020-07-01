@@ -12,7 +12,6 @@ import java.util.*;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
-
 public class CLI extends UiObservable implements Runnable, View {
     private final Scanner in;
     private boolean needAnswer = false;
@@ -101,6 +100,10 @@ public class CLI extends UiObservable implements Runnable, View {
         t.start();
     }
 
+    /**
+     * Prints the number of players
+     * @param number number of players
+     */
     @Override
     public void displayPlayersNumber(int number) {
         playersNumber = number;
@@ -121,6 +124,9 @@ public class CLI extends UiObservable implements Runnable, View {
         t.start();
     }
 
+    /**
+     * Warns that the chosen nickname is already taken and asks a different one
+     */
     @Override
     public void displayTakenNickname() {
         System.out.println("This nickname is already taken. Please try again.");
@@ -232,6 +238,9 @@ public class CLI extends UiObservable implements Runnable, View {
         t.start();
     }
 
+    /**
+     * Warns that the chosen position is occupied
+     */
     @Override
     public void displayTakenPosition() {
         System.out.println("The chosen cell is already occupied!");
@@ -358,11 +367,17 @@ public class CLI extends UiObservable implements Runnable, View {
         t.start();
     }
 
+    /**
+     * Prints that move phase is starting
+     */
     @Override
     public void startMovePhase() {
         System.out.println(ColorCLI.ANSI_MAGENTA +"MOVE"+ColorCLI.RESET+" PHASE");
     }
 
+    /**
+     * Prints that build phase is starting
+     */
     @Override
     public void startBuildPhase() {
         System.out.println(ColorCLI.ANSI_MAGENTA +"BUILD"+ColorCLI.RESET+" PHASE");
@@ -375,17 +390,29 @@ public class CLI extends UiObservable implements Runnable, View {
         System.exit(0);
     }
 
+    /**
+     * Prints the challenger's nickname
+     * @param name challenger's nickname
+     */
     @Override
     public void displayChallenger(String name) {
         challenger = name;
         System.out.println(ColorCLI.ANSI_MAGENTA + name + ColorCLI.RESET  + " is the most godlike! " + ColorCLI.ANSI_MAGENTA + name + ColorCLI.RESET + " is the challenger!");
     }
 
+    /**
+     * Prints current player's nickname
+     * @param name current player's nickname
+     */
     @Override
     public void displayCurrentPlayer(String name) {
         System.out.println("It's " + ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET + "'s turn!");
     }
 
+    /**
+     * Prints the loser's nickname
+     * @param name loser's nickname
+     */
     @Override
     public void displayLoser(String name) {
         System.out.println(ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET +"'s workers are both stuck. He/She has lost.\n");
@@ -393,6 +420,10 @@ public class CLI extends UiObservable implements Runnable, View {
         players.remove(name);
     }
 
+    /**
+     * Prints the winner's nickname
+     * @param name winner's nickname
+     */
     @Override
     public void displayWinner(String name) {
         System.out.println("Game over! The winner is "+ ColorCLI.colorCLI(getColorFromName(name)) + name + ColorCLI.RESET + "!!!");
@@ -409,12 +440,20 @@ public class CLI extends UiObservable implements Runnable, View {
         System.out.println(ColorCLI.colorCLI(color) + nickname + ColorCLI.RESET + " (" + godPower + ")");
     }
 
+    /**
+     * Saves player's info
+     * @param message player's info
+     */
     @Override
     public void addPlayersInfo(PlayersInfoMessage message) {
         playersInfo.add(message);
         players.add(message.getPlayerName());
     }
 
+    /**
+     * Saves user's nickname
+     * @param name user's nickname
+     */
     @Override
     public void setClientName(String name) {
         //unused in CLI
@@ -587,11 +626,17 @@ public class CLI extends UiObservable implements Runnable, View {
         notifyConnection(ip, port);
     }
 
+    /**
+     * Warns the user that it's not his/her turn
+     */
     @Override
     public void displayWrongTurn() {
         System.out.println("It's not your turn.");
     }
 
+    /**
+     * Warns the user that a network error has occurred
+     */
     @Override
     public void displayNetworkError() {
         System.out.println("Connection closed from server side");
@@ -608,6 +653,9 @@ public class CLI extends UiObservable implements Runnable, View {
         System.out.println("Wait...");
     }
 
+    /**
+     * Starts CLI
+     */
     @Override
     public void run() {
         askConnection();

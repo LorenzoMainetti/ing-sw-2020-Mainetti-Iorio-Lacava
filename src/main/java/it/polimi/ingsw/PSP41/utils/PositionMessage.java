@@ -6,8 +6,10 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Message class used to send a list of Positions
+ */
 public class PositionMessage implements Serializable {
-
     private static final long serialVersionUID = 3772134586452877455L;
     private final List<Position> validPos;
 

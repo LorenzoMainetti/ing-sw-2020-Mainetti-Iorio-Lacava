@@ -13,9 +13,10 @@ public class Player extends ModelObservable {
     private boolean stuck;
 
     /**
-     * Player constructor: it sets the name and the color of the player and creates two workers
-     * @param nickname name chosen by the player
-     * @param color color chosen by the player
+     * Player constructor: it sets the name, the color and the GodPower of the player and creates two workers
+     * @param nickname chosen nickname
+     * @param color given color
+     * @param godCard chosen GodPower card
      */
     public Player(String nickname, Color color, GodPower godCard) {
         this.nickname = nickname;

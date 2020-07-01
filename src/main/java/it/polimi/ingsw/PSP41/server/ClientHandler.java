@@ -10,6 +10,9 @@ import java.net.Socket;
 
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
+/**
+ * Handles network connection on the Server side
+ */
 public class ClientHandler extends ConnectionObservable {
 
     private Socket socket;

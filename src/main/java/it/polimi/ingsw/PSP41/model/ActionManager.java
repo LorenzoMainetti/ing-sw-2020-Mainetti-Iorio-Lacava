@@ -112,7 +112,7 @@ public class ActionManager {
     }
 
     /**
-     * Makes the list of Positions unmodifiable
+     * Makes the list of opponent's worker's Positions unmodifiable
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column

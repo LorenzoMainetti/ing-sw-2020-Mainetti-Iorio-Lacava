@@ -36,6 +36,10 @@ public class AlertPopup {
 
     }
 
+    /**
+     * Displays alert message
+     * @param message alert message
+     */
     public void display(String message){
         Stage stage = new Stage();
         Scene scene = new Scene(root);

@@ -23,7 +23,7 @@ public class Apollo extends GodPower {
     }
 
     /**
-     * Finds workers placed where the godPower is actionable, if there are any
+     * Finds workers placed in a cell where the godPower is actionable, if there are any
      * @param board current board state
      * @param player chosen worker
      * @return no available workers (-1), worker1 (1), worker2 (2), user's choice (0)

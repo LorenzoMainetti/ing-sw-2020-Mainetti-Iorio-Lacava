@@ -1,5 +1,8 @@
 package it.polimi.ingsw.PSP41.utils;
 
+/**
+ * Class that contains a set of messages needed to handle the network connection
+ */
 public class GameMessage {
 
     public final static String playersNumMessage = "playersNumMessage";

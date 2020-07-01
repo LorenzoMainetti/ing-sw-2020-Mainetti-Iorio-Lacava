@@ -1,9 +1,11 @@
 package it.polimi.ingsw.PSP41.view.CLIPackage;
 
+/**
+ * Class used to draw the game board
+ */
 public class CellCLI {
     private String string;
     private ColorCLI color;
-
 
     /**
      * Initializes the CellCLI setting the attributes to default values

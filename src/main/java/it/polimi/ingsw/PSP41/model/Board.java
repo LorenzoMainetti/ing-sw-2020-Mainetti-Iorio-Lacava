@@ -18,6 +18,9 @@ public class Board implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * @return the matrix of Cells
+     */
     public Cell[][] getGrid() {
         return grid;
     }
@@ -39,7 +42,7 @@ public class Board implements Cloneable, Serializable {
      * Checks if the given position is part of the grid
      * @param row given row
      * @param column given column
-     * @return true if it is part
+     * @return true if it is part of the grid
      */
     public boolean inBound(int row, int column) {
         return (row >= 0 && row < MAX_SIZE && column >= 0 && column < MAX_SIZE);

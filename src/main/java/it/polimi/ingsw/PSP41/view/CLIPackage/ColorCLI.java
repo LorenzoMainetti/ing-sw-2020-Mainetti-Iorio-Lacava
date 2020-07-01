@@ -3,6 +3,9 @@ package it.polimi.ingsw.PSP41.view.CLIPackage;
 
 import it.polimi.ingsw.PSP41.model.Color;
 
+/**
+ * Class that contains some ANSI escape colors
+ */
 public enum ColorCLI {
     ANSI_RED("\u001B[31m"), ANSI_BLUE("\u001B[34m"), ANSI_YELLOW("\u001B[33m"), ANSI_MAGENTA("\u001B[35m");
 

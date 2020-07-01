@@ -5,6 +5,9 @@ import it.polimi.ingsw.PSP41.server.Lobby;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Observable class used by Lobby
+ */
 public class LobbyObservable {
     private final List<LobbyObserver> observers = new ArrayList<>();
 

@@ -5,6 +5,9 @@ import it.polimi.ingsw.PSP41.server.ClientHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Observable class used by ClientHandler
+ */
 public class ConnectionObservable {
     private final List<ConnectionObserver> observers = new ArrayList<>();
 

@@ -2,8 +2,17 @@ package it.polimi.ingsw.PSP41.model;
 
 import it.polimi.ingsw.PSP41.model.godCards.*;
 
+/**
+ * Factory method pattern for the creation of a Player and his chosen god card
+ */
 public class GodPowerFactory {
 
+    /**
+     * @param nickname given nickname
+     * @param color given color
+     * @param godName given god card name
+     * @return a Player with the specified parameters
+     */
     public Player createGodPower(String nickname, Color color, String godName) {
 
         switch (godName) {

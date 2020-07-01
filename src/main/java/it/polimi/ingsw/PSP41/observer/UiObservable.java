@@ -3,6 +3,9 @@ package it.polimi.ingsw.PSP41.observer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Observable class used by CLI and GUI
+ */
 public class UiObservable {
     private final List<UiObserver> observers = new ArrayList<>();
 

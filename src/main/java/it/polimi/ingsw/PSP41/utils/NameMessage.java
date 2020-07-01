@@ -2,6 +2,9 @@ package it.polimi.ingsw.PSP41.utils;
 
 import java.io.Serializable;
 
+/**
+ * Message class used to send a nickname
+ */
 public class NameMessage implements Serializable {
     private static final long serialVersionUID = 5279507548737122174L;
 

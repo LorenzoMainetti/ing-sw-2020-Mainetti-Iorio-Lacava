@@ -35,6 +35,10 @@ public class UserInputManager implements ViewObserver {
         return nickname;
     }
 
+    /**
+     * Sets nickname
+     * @param nickname given nickname
+     */
     @Override
     public void updateNickname(String nickname) {
         this.nickname = nickname;
@@ -43,6 +47,10 @@ public class UserInputManager implements ViewObserver {
 
     public int getPlayersNumber() { return playersNumber; }
 
+    /**
+     * Sets playersNumber
+     * @param number of players
+     */
     @Override
     public void updatePlayersNumber(int number) {
         playersNumber = number;
@@ -51,6 +59,10 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isChosenWorker() { return chosenWorker; }
 
+    /**
+     * Sets chosen Worker
+     * @param chosenWorker true is Worker1, false is Worker2
+     */
     @Override
     public void updateWorker(boolean chosenWorker) {
         this.chosenWorker = chosenWorker;
@@ -59,6 +71,10 @@ public class UserInputManager implements ViewObserver {
 
     public boolean isPower() { return power; }
 
+    /**
+     * Sets power activation
+     * @param power is true if power is active
+     */
     @Override
     public void updatePower(boolean power) {
         this.power = power;
@@ -73,6 +89,10 @@ public class UserInputManager implements ViewObserver {
         return chosenColumn;
     }
 
+    /**
+     * Sets Position
+     * @param position given Position
+     */
     @Override
     public void updatePosition(Position position) {
         chosenRow = position.getPosRow();
@@ -80,7 +100,7 @@ public class UserInputManager implements ViewObserver {
     }
 
     /**
-     * Tells the View to display valid Positions (moves/builds)
+     * Tells the View to display the valid Positions (moves/builds)
      * @param positions list of valid Positions for moving/building
      */
     public void readChosenDirection(List<Position> positions) {
