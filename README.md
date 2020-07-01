@@ -35,7 +35,7 @@ The following jar files permit the game launch according to the functionalities 
 - Socket
 
 ### Advanced Functionalities Developed
-- Multipla Games
+- Multiple Games
 - Advanced Gods
 
 ## JAR Execution
