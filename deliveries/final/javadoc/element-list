@@ -1,0 +1,12 @@
+module:it.polimi.ingsw.PSP41
+it.polimi.ingsw.PSP41
+it.polimi.ingsw.PSP41.client
+it.polimi.ingsw.PSP41.controller
+it.polimi.ingsw.PSP41.model
+it.polimi.ingsw.PSP41.model.godCards
+it.polimi.ingsw.PSP41.observer
+it.polimi.ingsw.PSP41.server
+it.polimi.ingsw.PSP41.utils
+it.polimi.ingsw.PSP41.view
+it.polimi.ingsw.PSP41.view.CLIPackage
+it.polimi.ingsw.PSP41.view.GUIPackage

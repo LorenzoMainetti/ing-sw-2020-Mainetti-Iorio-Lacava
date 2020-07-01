@@ -76,7 +76,7 @@ public class Player extends ModelObservable {
     }
 
     /**
-     * Apply GodPower's strategy for the BUILD phase
+     * Applies GodPower's strategy for the BUILD phase
      * @param board board state
      * @param row where the player wants to build
      * @param column where the player wants to build
