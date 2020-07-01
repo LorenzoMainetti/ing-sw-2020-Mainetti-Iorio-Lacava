@@ -15,7 +15,7 @@ public class Zeus extends GodPower {
     /**
      * @param board current board state
      * @param worker chosen worker
-     * @return true if chosen worker's level is lower then the third
+     * @return true if the chosen worker's level is lower then the third
      */
     @Override
     public boolean isActionable(Board board, Worker worker) {
@@ -23,7 +23,7 @@ public class Zeus extends GodPower {
     }
 
     /**
-     * When actionable add current worker's position to the available ones
+     * When actionable adds current worker's position to the available ones
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker

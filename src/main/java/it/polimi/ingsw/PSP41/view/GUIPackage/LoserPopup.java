@@ -16,7 +16,7 @@ import java.io.IOException;
 
 
 /**
- * Popup used to display a player who has lost because both his workers are stuck
+ * Popup used to display a player who has lost because both of his workers are stuck
  */
 public class LoserPopup {
     private Pane root;

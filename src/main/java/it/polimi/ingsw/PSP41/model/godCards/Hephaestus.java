@@ -25,7 +25,7 @@ public class Hephaestus extends GodPower {
     }
 
     /**
-     * When triggered make only available position the one where it has been built previously
+     * When triggered makes the position where it has been built previously the only one available
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -40,7 +40,7 @@ public class Hephaestus extends GodPower {
     }
 
     /**
-     * Add build phase, reset to default when not triggered
+     * Adds build phase, resets to default when not triggered
      */
     @Override
     public void addPhase() {
@@ -55,7 +55,7 @@ public class Hephaestus extends GodPower {
     }
 
     /**
-     * Save current build position and perform a regular build
+     * Saves current build position and performs a regular build
      * @param board board state
      * @param row where the player wants to build
      * @param column where the player wants to build

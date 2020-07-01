@@ -21,6 +21,9 @@ public abstract class CardPopup {
     protected int counter = 0;
     protected List<Boolean> selectedCards;
 
-
+    /**
+     * @param title popup title
+     * @param message displayed in the popup
+     */
     public abstract void display(String title, String message);
 }

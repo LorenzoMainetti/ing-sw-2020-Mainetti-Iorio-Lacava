@@ -24,7 +24,7 @@ public class Triton extends GodPower {
     }
 
     /**
-     * Add move phase, reset to default when not triggered
+     * Adds move phase, resets to default when not triggered
      */
     @Override
     public void addPhase() {
@@ -39,7 +39,7 @@ public class Triton extends GodPower {
     }
 
     /**
-     * Perform a regular move and reset trigger in order to re-ask activation
+     * Performs a regular move and resets trigger in order to re-ask activation
      * @param worker worker that the player wants to move
      * @param board board state
      * @param row selected by the player where the worker will move

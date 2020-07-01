@@ -35,8 +35,9 @@ public class GUI extends Application implements View {
     private boolean firstTime = true;
     private boolean emptyBoard = true;
 
-
-
+    /**
+     * Sets up the GUI
+     */
     @Override
     public void start(Stage primaryStage) {
         Font.loadFont(getClass().getResourceAsStream("/fonts/AvenirBook.ttf"), 28);
@@ -93,7 +94,9 @@ public class GUI extends Application implements View {
 
     }
 
-
+    /**
+     * Sets the scene that asks for ip address and port
+     */
     private void askConnection() {
         //ask ip and port
         ConnectionScene connectionScene = new ConnectionScene();
@@ -102,6 +105,10 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toConnectionScene);
     }
 
+    /**
+     * Sets the scene that asks the first user connected the number of
+     * players for the game
+     */
     @Override
     public void askPlayersNumber() {
         NumberScene numberScene = new NumberScene();
@@ -110,6 +117,9 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toNumberScene);
     }
 
+    /**
+     * Sets the scene that asks the user to choose a nickname
+     */
     @Override
     public void askNickname() {
         LoginScene loginScene = new LoginScene();
@@ -118,6 +128,10 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toLoginScene);
     }
 
+    /**
+     * Sets the scene that asks the user to choose a number of god cards equals to the number of players
+     * @param gods deck containing all the available god cards
+     */
     @Override
     public void askGameGods(List<String> gods) {
         GodPowerScene godPowerScene = new GodPowerScene(playersNumber);
@@ -126,6 +140,10 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toGodPowerScene);
     }
 
+    /**
+     * Sets the scene that asks the user to choose a god card from the ones available
+     * @param gods list of available god cards
+     */
     @Override
     public void askGodCard(List<String> gods) {
         CardChoiceScene cardChoiceScene = new CardChoiceScene(gods);
@@ -134,6 +152,10 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toCardChoiceScene);
     }
 
+    /**
+     * Sets the scene that shows the players'info and asks the user (if challenger) to choose the start player
+     * @param name username
+     */
     @Override
     public void askFirstPlayer(String name) {
         PlayerScene playerScene = new PlayerScene(playersInfo, challenger, name);
@@ -142,21 +164,34 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toPlayerScene);
     }
 
+    /**
+     * Asks the user where to place his worker and gets the input
+     */
     @Override
     public void askInitPosition() {
         Platform.runLater(() -> gameScene.askInitPosition());
     }
 
+    /**
+     * Asks the user to select on of his/her workers and gets the input
+     */
     @Override
     public void askWorker() {
         Platform.runLater(() -> gameScene.askWorker());
     }
 
+    /**
+     * Asks the user if he wants to activate the God Power through a popup and gets the input
+     */
     @Override
     public void askPowerActivation() {
         Platform.runLater(() -> new PowerPopup(networkHandler).display());
     }
 
+    /**
+     * Displays available cells to move or build, asks the user to choose one and gets the input
+     * @param positions where player can play its action
+     */
     @Override
     public void askPosition(List<Position> positions) {
         Platform.runLater(() -> gameScene.askPosition(positions));
@@ -198,9 +233,13 @@ public class GUI extends Application implements View {
         Platform.runLater(TransitionHandler::toWaitingScene);
     }
 
+    /**
+     * Refreshes and shows the game board
+     * @param board that has to be represented
+     */
     @Override
     public void displayBoard(Board board) {
-        //the first time the server send an emptyBoard
+        //the first time the server sends an emptyBoard
         if(emptyBoard)
             emptyBoard = false;
         else

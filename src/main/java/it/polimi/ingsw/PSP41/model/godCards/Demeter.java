@@ -27,7 +27,7 @@ public class Demeter extends GodPower {
     }
 
     /**
-     * When triggered remove previous build position from the available ones
+     * When triggered removes previous build position from the available ones
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -40,7 +40,7 @@ public class Demeter extends GodPower {
     }
 
     /**
-     * Add build phase, reset to default when not triggered
+     * Adds build phase, resets to default when not triggered
      */
     @Override
     public void addPhase() {

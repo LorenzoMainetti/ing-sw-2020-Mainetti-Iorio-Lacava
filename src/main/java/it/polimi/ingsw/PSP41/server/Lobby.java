@@ -17,7 +17,7 @@ import java.util.*;
 import static it.polimi.ingsw.PSP41.utils.GameMessage.*;
 
 /**
- * Single room for a match: contains clients linked to the match and manages the match creation
+ * Single room for a match: contains the clients linked to the match and manages the match creation
  */
 public class Lobby extends LobbyObservable implements ConnectionObserver  {
     private final VirtualView virtualView = new VirtualView();
@@ -46,7 +46,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
 
     /**
      * Manages disconnection: if the client disconnected is active, all the clients will be disconnected;
-     * else the client disconnected is removed from the server clients log
+     * else the client disconnected is removed from the server's clients' list
      * @param client disconnected client
      */
     @Override
@@ -101,7 +101,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * Asks and sets the number of players to the first connected user
+     * Asks and sets the number of players to the first user connected
      * @param client current client
      */
     private void setPlayersNumber(ClientHandler client) {
@@ -290,7 +290,7 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
     }
 
     /**
-     * Setups game creating model and controller, then notifies the server that will start the match
+     * Sets up game creating model and controller, then notifies the server that will start the match
      * @param client current client
      */
     private void createGame(ClientHandler client) {

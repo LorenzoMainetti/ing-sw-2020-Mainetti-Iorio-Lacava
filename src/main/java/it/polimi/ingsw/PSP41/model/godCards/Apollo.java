@@ -23,7 +23,7 @@ public class Apollo extends GodPower {
     }
 
     /**
-     * Find workers placed where the godPower is actionable, if there are any
+     * Finds workers placed where the godPower is actionable, if there are any
      * @param board current board state
      * @param player chosen worker
      * @return no available workers (-1), worker1 (1), worker2 (2), user's choice (0)
@@ -43,7 +43,7 @@ public class Apollo extends GodPower {
     }
 
     /**
-     * When actionable add neighboring opponent's workers' positions to the available ones
+     * When actionable adds neighboring opponent's workers' positions to the available ones
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker

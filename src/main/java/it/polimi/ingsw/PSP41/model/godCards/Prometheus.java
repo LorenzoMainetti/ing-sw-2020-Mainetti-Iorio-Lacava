@@ -32,8 +32,8 @@ public class Prometheus extends GodPower {
     }
 
     /**
-     * When triggered: if it's build phase handle corner case (only one not higher cell available),
-     * if it's move phase remove higher cells from the available moves
+     * When triggered: during the BUILD phase handles the corner case (only one not higher cell available),
+     * during the MOVE phase removes higher cells from the available moves
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -60,7 +60,7 @@ public class Prometheus extends GodPower {
     }
 
     /**
-     * Add build phase, reset to default when not triggered
+     * Adds build phase, resets to default when not triggered
      */
     @Override
     public void addPhase() {

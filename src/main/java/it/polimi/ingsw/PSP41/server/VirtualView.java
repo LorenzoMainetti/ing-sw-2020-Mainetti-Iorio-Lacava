@@ -103,7 +103,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Asks if the god power would be activated
+     * Asks the player if he wants to activate the god power of his card
      */
     public void requestActivatePow() {
         clients.get(currPlayer).send(activatePowMessage);
@@ -118,7 +118,7 @@ public class VirtualView extends ViewObservable implements ModelObserver {
     }
 
     /**
-     * Sends the available cells for the move or build and asks a cell
+     * Sends to the playet the cells that are available for the MOVE or BUILD phase and asks a cell
      * @param positionMessage available cells
      */
     public void requestPosition(PositionMessage positionMessage) {

@@ -31,7 +31,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Read input from user when it's needed
+     * Reads input from user when needed
      */
     private void readInput() {
         while(true) {
@@ -51,7 +51,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Wait until an input is needed
+     * Waits until an input is needed
      * @return input read from client
      */
     private String getInput() {
@@ -84,7 +84,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the first user connected the number of Players that are going to play (2 or 3) and get the input
+     * Asks the first user connected the number of Players that are going to play (2 or 3) and gets the input
      */
     @Override
     public void askPlayersNumber() {
@@ -108,7 +108,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user his nickname and get the input
+     * Asks the user his nickname and gets the input
      */
     @Override
     public void askNickname() {
@@ -128,7 +128,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user to choose a number of god cards equals to the number of players
+     * Asks the user to choose a number of god cards equals to the number of players
      * @param gameGods deck containing all the available god cards
      */
     @Override
@@ -163,7 +163,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user to choose a god card from the ones available
+     * Asks the user to choose a god card from the ones available
      * @param gods list of available god cards
      */
     @Override
@@ -190,7 +190,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Show players'info and ask the user (if challenger) to choose the start player
+     * Shows players'info and asks the user (if challenger) to choose the start player
      * @param name username
      */
     @Override
@@ -216,7 +216,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user where to place his worker and get the input
+     * Asks the user where to place his worker and gets the input
      */
     @Override
     public void askInitPosition() {
@@ -238,7 +238,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask row to the user and get the input
+     * Asks row to the user and gets the input
      * @return chosen row
      */
     private int askRow() {
@@ -261,7 +261,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask column to the user and get the input
+     * Asks column to the user and gets the input
      * @return chosen column
      */
     private int askColumn() {
@@ -286,7 +286,7 @@ public class CLI extends UiObservable implements Runnable, View {
     //TURN methods
 
     /**
-     * Display available cells to move or build, ask the user to choose one and get the input
+     * Displays available cells to move or build, asks the user to choose one and gets the input
      * @param positions where player can play its action
      */
     @Override
@@ -323,7 +323,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user if he wants to use Worker 1 or 2 and get the input
+     * Asks the user if he wants to use Worker 1 or 2 and gets the input
      */
     @Override
     public void askWorker() {
@@ -341,7 +341,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Ask the user if he wants to activate the God Power and get the input
+     * Asks the user if he wants to activate the God Power and gets the input
      */
     @Override
     public void askPowerActivation() {
@@ -400,7 +400,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Prints player and his/her respective god card and color
+     * Prints the player's nickname, his/her respective god card and color
      * @param nickname nickname of the player
      * @param color color of the player
      * @param godPower god chosen by the player
@@ -534,7 +534,7 @@ public class CLI extends UiObservable implements Runnable, View {
     }
 
     /**
-     * Method to print game board
+     * Prints the game board
      * @param board that has to be printed
      */
     @Override

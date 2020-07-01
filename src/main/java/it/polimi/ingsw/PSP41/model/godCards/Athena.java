@@ -15,7 +15,7 @@ public class Athena extends GodPower {
     }
 
     /**
-     * If a worker moved up, remove higher positions from opponent's available ones
+     * If a worker moved up, removes higher positions from opponent's available ones
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -29,7 +29,7 @@ public class Athena extends GodPower {
     }
 
     /**
-     * Perform a regular move and register if the worker moved up
+     * Performs a regular move and registers if the worker moved up
      * @param worker worker that the player wants to move
      * @param board board state
      * @param row selected by the player where the worker will move

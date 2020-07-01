@@ -9,7 +9,7 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 
 /**
- * Scene that asks for ip and port needed for connecting to server
+ * Scene that asks for ip and port needed to connect to the server
  */
 public class ConnectionScene extends UiObservable {
     private Pane root;

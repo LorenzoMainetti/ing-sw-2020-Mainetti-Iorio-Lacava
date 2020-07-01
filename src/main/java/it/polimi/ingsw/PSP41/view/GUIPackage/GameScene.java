@@ -25,7 +25,7 @@ import java.util.List;
 
 
 /**
- * Main game scene where the board and all the changes that happens to it are displayed
+ * Main game scene where the board and all the changes that happen to it are displayed
  */
 public class GameScene extends UiObservable {
     private Pane root;
@@ -523,6 +523,12 @@ public class GameScene extends UiObservable {
         }
     }
 
+    /**
+     * Adds an ImageView to a Pane
+     * @param pane where to add the image
+     * @param image path
+     * @return the new image
+     */
     private ImageView addImage(Pane pane, String image) {
         ImageView view = new ImageView();
         view.setImage(new Image(image));
@@ -534,6 +540,12 @@ public class GameScene extends UiObservable {
         return view;
     }
 
+    /**
+     * Looks for a node between the children of a Pane by part of its id
+     * @param pane where the node is contained
+     * @param id contained in the node's id
+     * @return node child of the Pane with the wanted id
+     */
     private Node findId(Pane pane, String id){
         for(Node node : pane.getChildren()) {
             ImageView img = (ImageView) node;
@@ -544,6 +556,12 @@ public class GameScene extends UiObservable {
         return null;
     }
 
+    /**
+     * @param row of the node
+     * @param column of the node
+     * @param gridPane where the node is contained
+     * @return node of the GridPane that has row and column as indexes
+     */
     private Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
         Node result = null;
         ObservableList<Node> childrens = gridPane.getChildren();

@@ -26,7 +26,7 @@ public class Controller {
     }
 
     /**
-     * Set Worker initial Positions for each player
+     * Sets Workers' initial Position for each player
      */
     public void setWorkers() {
         virtualView.emptyBoard(board);
@@ -45,7 +45,7 @@ public class Controller {
     }
 
     /**
-     * Set a Worker initial Position and handle any possible exception
+     * Sets a Worker initial Position and handles any possible exception
      * @param worker worker to be set
      */
     private void checkWorkerPos(Worker worker) {
@@ -65,7 +65,7 @@ public class Controller {
     }
 
     /**
-     * Handle turn shifts
+     * Handles turn shifts
      */
     public void play() {
 
@@ -94,7 +94,7 @@ public class Controller {
     }
 
     /**
-     * Handle a player's turn
+     * Handles a player's turn
      * @param player current player
      */
     private void performTurn(Player player) {
@@ -153,7 +153,7 @@ public class Controller {
 
     /**
      * First Phase: CHOOSE WORKER
-     * management of the worker choice at the start of a turn:
+     * manages the worker's choice at the start of a turn:
      * the player can only choose workers that are able to move,
      * if both workers are blocked the player can check if his GodPower can be used
      * @param player current Player
@@ -217,7 +217,7 @@ public class Controller {
     }
 
     /**
-     * Tells VirtualView to ask for worker number and set the answer
+     * Tells VirtualView to ask for worker number and sets the answer
      * @param player current Player
      */
     private void askWorkerNum(Player player) {
@@ -231,7 +231,7 @@ public class Controller {
 
     /**
      * Second Phase: MOVE
-     * handle a Player's move phase applying opponent's or his godPowers in case they are active
+     * handles a Player's move phase applying opponent's or his godPowers in case they are active
      * @param player current Player
      */
     private void movePhase(Player player) {
@@ -260,7 +260,7 @@ public class Controller {
 
     /**
      * Third Phase: BUILD
-     * handle a Player's build phase applying opponent's or his godPowers in case they are active
+     * handles a Player's build phase applying opponent's or his godPowers in case they are active
      * @param player current Player
      */
     private void buildPhase(Player player) {
@@ -279,7 +279,7 @@ public class Controller {
     }
 
     /**
-     * Apply any additional phase
+     * Applies any additional phase
      * @param player current Player
      * @param turnPhase current turnPhase
      */
@@ -314,7 +314,7 @@ public class Controller {
     }
 
     /**
-     * Switch the current Worker with the other one of the same Player
+     * Switches the current Worker with the other one of the same Player
      * @param player current Player
      */
     private void applySwitchWorker(Player player) {
@@ -326,7 +326,7 @@ public class Controller {
 
     /**
      * Special Phase: POWER ACTIVATION
-     * handle power activation asking user if needed
+     * handles power activation asking user if needed
      * @param player current Player
      */
     private void activePower(Player player) {

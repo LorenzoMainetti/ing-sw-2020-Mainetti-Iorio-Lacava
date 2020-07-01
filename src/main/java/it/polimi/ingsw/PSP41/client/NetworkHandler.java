@@ -26,7 +26,7 @@ public class NetworkHandler implements Runnable, UiObserver {
     }
 
     /**
-     * Server messages manager
+     * Server messages' manager
      * @param inputObject message from server
      */
     private void manageInputFromServer(Object inputObject) {
@@ -143,7 +143,7 @@ public class NetworkHandler implements Runnable, UiObserver {
     }
 
     /**
-     * Initializes socket and start ping management
+     * Initializes socket and starts ping management
      */
     @Override
     public void run() {

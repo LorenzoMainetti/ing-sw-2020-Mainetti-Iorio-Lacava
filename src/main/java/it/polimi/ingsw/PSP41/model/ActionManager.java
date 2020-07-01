@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class ActionManager {
 
     /**
-     * Find all the neighbouring Positions of a given Cell position, considering the perimeter
+     * Finds all the neighbouring Positions of a given Cell position, considering the perimeter
      * @param row of the Cell of which I need the neighbors
      * @param column of the Cell of which I need the neighbors
      * @return list of the neighbouring Positions of the given Cell
@@ -31,7 +31,7 @@ public class ActionManager {
     }
 
     /**
-     * Find all the valid Positions where the Worker, in the specified position, can move
+     * Finds all the the valid Positions where the Worker, in the specified position, can move
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
@@ -49,11 +49,11 @@ public class ActionManager {
     }
 
     /**
-     * Find all the valid Positions that are on a not higher level than the specified one
+     * Finds all the valid Positions that are on a not higher level than the specified one
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @return list of the Positions where it is allowed to move in on a same or lower level
+     * @return list of the Positions where it is allowed to move in on the same or lower level
      */
     public List<Position> getNotHigherCells(Board board, int row, int column) {
         return getValidMoves(board, row, column).
@@ -64,7 +64,7 @@ public class ActionManager {
     }
 
     /**
-     * Find all the valid Positions where the Worker, in the specified position, can build
+     * Finds all the valid Positions where the Worker, in the specified position, can build
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
@@ -79,7 +79,7 @@ public class ActionManager {
     }
 
     /**
-     * Find all the valid Positions where the Worker, in the specified position, can remove a block
+     * Finds all the valid Positions where the Worker, in the specified position, can remove a block
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
@@ -93,7 +93,7 @@ public class ActionManager {
     }
 
     /**
-     * Find all the Positions where are placed Opponent's workers
+     * Finds all the Positions where are situated the Opponent's workers
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
@@ -112,7 +112,7 @@ public class ActionManager {
     }
 
     /**
-     * Make the list of Positions unmodifiable
+     * Makes the list of Positions unmodifiable
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
@@ -125,12 +125,12 @@ public class ActionManager {
     }
 
     /**
-     * Find all the Positions where are placed Opponent's workers and where is possible to build from
+     * Finds all the Positions where are situated the Opponent's workers and where it is possible to build in
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @return list of the Positions
-     * where are placed Opponent's workers surrounded by at least one cell where building is possible
+     * @return list of the Positions where the Opponent's workers are situated,
+     * surrounded by at least one cell where building is possible
      */
     public List<Position> getActiveOpponentWorkers(Board board, int row, int column) {
         return findOpponentWorker(board, row, column).
@@ -140,11 +140,11 @@ public class ActionManager {
     }
 
     /**
-     * Given a Player's worker find the other one
+     * Given a Player's worker, finds the other one
      * @param board current board state
      * @param row current Worker's row
      * @param column current Worker's column
-     * @return Position where it is the other Worker of the same Player
+     * @return Position where the other Worker of the same Player is situated
      */
     public Position getOtherWorker(Board board, int row, int column) {
         Color color = board.getCell(row, column).getWorker().getColor();

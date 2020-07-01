@@ -12,7 +12,7 @@ public class Cell implements Serializable {
     private Worker worker;
 
     /**
-     * Initialize the Cell setting the attributes to default values
+     * Initializes the Cell setting the attributes to default values
      */
     public Cell() {
         level = 0;
@@ -36,7 +36,7 @@ public class Cell implements Serializable {
     public int getLevel() { return level; }
 
     /**
-     * Increase the Cell level by one if there isn't a dome already
+     * Increases the Cell level by one if there isn't a dome already
      */
     public void addLevel() throws IllegalStateException {
         if(!isDome() && level < 4) {
@@ -50,7 +50,7 @@ public class Cell implements Serializable {
     }
 
     /**
-     * Decrease the Cell level by one if it isn't the ground level
+     * Decreases the Cell level by one if it isn't the ground level
      */
     public void removeLevel() throws IllegalStateException {
         if (level > 0)
@@ -72,7 +72,7 @@ public class Cell implements Serializable {
     }
 
     /**
-     * Set Worker in the Cell
+     * Sets Worker in the Cell
      * @param worker to be placed in the Cell
      */
     public void attachWorker(Worker worker) throws IllegalStateException {
@@ -88,7 +88,7 @@ public class Cell implements Serializable {
     }
 
     /**
-     * Remove worker from the Cell
+     * Removes Worker from the Cell
      */
     public void detachWorker() throws IllegalStateException {
         if (isOccupied()) {

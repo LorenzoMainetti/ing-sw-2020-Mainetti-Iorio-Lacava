@@ -6,7 +6,7 @@ public class CellCLI {
 
 
     /**
-     * Initialize the CellCLI setting the attributes to default values
+     * Initializes the CellCLI setting the attributes to default values
      * */
     public CellCLI() {
         string = "        ";

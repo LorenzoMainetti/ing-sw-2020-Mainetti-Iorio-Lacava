@@ -36,7 +36,7 @@ public class Board implements Cloneable, Serializable {
     }
 
     /**
-     * Check if the given position is part of the grid
+     * Checks if the given position is part of the grid
      * @param row given row
      * @param column given column
      * @return true if it is part

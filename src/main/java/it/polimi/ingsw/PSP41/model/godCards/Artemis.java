@@ -27,7 +27,7 @@ public class Artemis extends GodPower {
     }
 
     /**
-     * When triggered remove worker's starting position from the available ones
+     * When triggered removes worker's starting position from the available ones
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -40,7 +40,7 @@ public class Artemis extends GodPower {
     }
 
     /**
-     * Add move phase, reset to default when not triggered
+     * Adds move phase, resets to default when not triggered
      */
     @Override
     public void addPhase() {
@@ -56,7 +56,7 @@ public class Artemis extends GodPower {
     }
 
     /**
-     * Save worker's starting position and perform a regular move
+     * Saves worker's starting position and performs a regular move
      * @param worker worker that the player wants to move
      * @param board board state
      * @param row selected by the player where the worker will move

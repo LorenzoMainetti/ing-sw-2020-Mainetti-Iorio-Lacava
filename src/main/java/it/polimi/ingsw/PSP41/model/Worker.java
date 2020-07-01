@@ -38,7 +38,7 @@ public class Worker extends ModelObservable implements Serializable {
     public int getColumn() { return column; }
 
     /**
-     * Set worker position equals to input cell
+     * Sets worker position equals to the input cell
      * @param board board state
      * @param row of the worker position
      * @param column of the worker position

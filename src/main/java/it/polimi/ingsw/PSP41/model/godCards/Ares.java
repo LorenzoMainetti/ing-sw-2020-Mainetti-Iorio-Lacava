@@ -24,7 +24,7 @@ public class Ares extends GodPower {
     }
 
     /**
-     * When triggered remove ground level positions
+     * When triggered removes ground level positions
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -43,7 +43,7 @@ public class Ares extends GodPower {
     }
 
     /**
-     * Add build phase, reset to default when not triggered
+     * Adds build phase, resets to default when not triggered
      */
     @Override
     public void addPhase() {

@@ -5,6 +5,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
+/**
+ * Class used to set the scenes go to a specific scene
+ */
 public class TransitionHandler {
     private static Stage primaryStage;
     private static Scene loadingScene;

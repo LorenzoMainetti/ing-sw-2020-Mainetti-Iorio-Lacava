@@ -23,7 +23,7 @@ public abstract class GodPower {
     }
 
     /**
-     * Get the worker's number if the only available move is guaranteed by the use of the GodPower
+     * Gets the worker's number if the only available move is guaranteed by the use of the GodPower
      * @param board current board state
      * @param player chosen worker
      * @return no available workers (-1), worker1 (1), worker2 (2), user's choice (0)
@@ -59,7 +59,7 @@ public abstract class GodPower {
     }
 
     /**
-     * Modify the given list of positions applying godPower's constraints that are triggered during opponent's turn
+     * Modifies the given list of positions applying godPower's constraints that are triggered during opponent's turn
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -67,7 +67,7 @@ public abstract class GodPower {
     public void applyOpponentConstraints(List<Position> positions, Board board, Worker worker) { }
 
     /**
-     * Modify the given list of positions applying godPower's extenders/constraints that trigger during owner's turn
+     * Modifies the given list of positions applying godPower's extenders/constraints that trigger during owner's turn
      * @param positions current list of valid positions
      * @param board current board state
      * @param worker chosen worker
@@ -81,19 +81,19 @@ public abstract class GodPower {
     public boolean switchWorker() { return false; }
 
     /**
-     * Add a phase to owner's turn
+     * Adds a phase to owner's turn
      */
     public void addPhase() { }
 
     /**
-     * Reset to initial status
+     * Resets to initial status
      */
     public void reset() {
         triggered = false;
     }
 
     /**
-     * Default strategy for MOVE: set worker position equals to input cell
+     * Default strategy for MOVE: sets worker position equals to the input cell
      * @param worker worker that the player wants to move
      * @param board board state
      * @param row selected by the player where the worker will move
@@ -110,7 +110,7 @@ public abstract class GodPower {
     }
 
     /**
-     * Default strategy for BUILD: build a level on the input cell
+     * Default strategy for BUILD: builds a level on the input cell
      * @param board board state
      * @param row where the player wants to build
      * @param column where the player wants to build
@@ -121,7 +121,7 @@ public abstract class GodPower {
 
     /**
      * Default strategy for WIN CONDITION:
-     * check player's win condition comparing the position of the worker
+     * checks player's win condition comparing the position of the worker
      * that is going to move with the position chosen for the movement
      * @param startCell worker present cell
      * @param endCell worker future cell

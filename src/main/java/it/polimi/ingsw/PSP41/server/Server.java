@@ -17,7 +17,7 @@ public class Server implements Runnable, LobbyObserver {
     private boolean first = true;
 
     /**
-     * Manages clients reception
+     * Manages clients' reception
      */
     public void run() {
         try {
@@ -95,7 +95,7 @@ public class Server implements Runnable, LobbyObserver {
     }
 
     /**
-     * Takes the first client from server's list and adds it to the clients list of the lobby just created
+     * Takes the first client from the server's list and adds it to the clients list of the lobby just created
      * @param lobby lobby just created
      */
     public void addLobby(Lobby lobby) {

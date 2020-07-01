@@ -16,7 +16,7 @@ import java.io.IOException;
 
 
 /**
- * Popup used to ask user if he wants to activate his god power
+ * Popup used to ask the user if he wants to activate his god power
  */
 public class PowerPopup extends UiObservable {
     private Pane root;
