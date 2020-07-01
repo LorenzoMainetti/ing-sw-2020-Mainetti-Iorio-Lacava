@@ -61,7 +61,7 @@ To launch the client with the graphic interface double click on the jar, or digi
 java -jar clientApp.jar 
 ```
 
-## Group Components
+## Group Members
 - [__Lorenzo Mainetti__](https://github.com/LorenzoMainetti)
 - [__Ginevra Iorio__](https://github.com/ginevraiorioo)
 - [__Marco Lacava__](https://github.com/LacavaMarco)
