@@ -1,4 +1,4 @@
-# Prova Finale di Ingegneria del Software - a.a. 2019-2020
+# Software Engineering Final Project - a.y. 2019-2020
 ![alt text](https://github.com/LorenzoMainetti/ing-sw-2020-Mainetti-Iorio-Lacava/blob/master/src/main/resources/SantoriniLogo.png)
 
 The goal of the project is to implement the board game [Santorini](https://roxley.com/products/santorini) in the Java language, following the architectural pattern  Model-View-Controller and following the object-oriented programming paradigm. The final result completely covers the rules defined by the game and allows to interact with it both from the command line (CLI) and the graphic interface (GUI). The network has been managed by the socket approach.
