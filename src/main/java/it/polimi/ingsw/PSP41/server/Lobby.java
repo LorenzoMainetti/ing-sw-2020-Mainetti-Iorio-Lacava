@@ -77,25 +77,24 @@ public class Lobby extends LobbyObservable implements ConnectionObserver  {
      */
     public void addClient(ClientHandler client) {
         Thread t = new Thread( () -> {
-            client.addObserver(this);
-            clients.add(client);
+            synchronized (lock) {
+                client.addObserver(this);
+                clients.add(client);
 
-            if (clients.size() != playersNumber) {
-                if (clients.size() == 1 && playersNumber == -1) {
-                    setPlayersNumber(client);
+                if (clients.size() != playersNumber) {
+                    if (clients.size() == 1 && playersNumber == -1) {
+                        setPlayersNumber(client);
+                    } else {
+                        client.send(playersNumber);
+                        client.send(waitMessage);
+                        notifyPlayersNumber(this);
+                    }
                 } else {
                     client.send(playersNumber);
                     client.send(waitMessage);
-                    notifyPlayersNumber(this);
                 }
-            } else {
-                client.send(playersNumber);
-                client.send(waitMessage);
-            }
-
-            synchronized (lock) {
                 lock.notifyAll();
-            }
+                }
         });
         t.start();
     }

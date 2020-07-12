@@ -6,10 +6,10 @@ public class ServerApp {
 
     public static void main(String[] args) {
         Server server;
-        while(true) {
-            server = new Server();
-            server.run();
-        }
+
+        server = new Server();
+        server.run();
+
     }
 
 }
