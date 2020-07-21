@@ -19,7 +19,7 @@ The following documentation includes a description of the used classes and metho
 ### Jar
 The following jar files permit the game launch according to the functionalities required by the project assignment. The functionalities are listed on the __Functionalities__ section, and the details on how to launch the jar files are defined on the __Jar Execution__ section. The files .jar of Client and Server are available at the following address: [Jar](https://github.com/LorenzoMainetti/ing-sw-2020-Mainetti-Iorio-Lacava/tree/master/deliveries/final/jar)
 
-## Libraries e Plugins
+## Libraries and Plugins
 |Library/Plugin|Description|
 |--------------|-----------|
 |__maven__|tool to manage softwares based on Java and build automation|
